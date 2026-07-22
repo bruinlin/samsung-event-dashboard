@@ -34,6 +34,8 @@ Open `http://localhost:8080/`. Directly opening `index.html` also works because 
 
 The safety script uses Python with `pypdf` to inspect PDF text, metadata, annotations and embedded content, and fails closed when reliable inspection is unavailable. If Python is not on `PATH`, pass its executable with `-PythonPath`. Non-PDF formats are reported as requiring manual review before publication. Historical and working versions belong in the internal archive, not the public download directory.
 
+For compatibility with the current Cloudflare Workers Static Assets deployment, keep each public download below 25 MiB. Do not compress, split, or alter an Approved Final merely to meet that limit; leave an oversized source in the internal archive unless a separate publishing route is explicitly approved.
+
 ## Add another event
 
 1. Copy `data/OCTS_2026.js` to a new file such as `data/NEW_EVENT_2026.js`.
