@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.0-web - 2026-07-22
+
+- Added the OCTS 2026 Final Deliverables module with category filters and file statistics.
+- Published the reviewed Chinese and English Final Main Forum Keynote PDFs under repository-relative download paths.
+- Added download inventory, file existence, path, hash-aware content, metadata and sensitive-value safety checks.
+- Added responsive Final Deliverables cards and documented the future Final-file maintenance workflow.
+- Added static asset version parameters so deployed browsers refresh the updated dashboard and event data together.
+
 ## 1.0.0-web - 2026-07-22
 
 - Prepared the existing Samsung Event Dashboard as a framework-free static website for GitHub and Cloudflare Pages.

@@ -15,7 +15,7 @@ window.EVENT_INDEX = {
     {
       eventId: "OCTS_2026",
       label: "OCTS 2026",
-      dataFile: "data/OCTS_2026.js",
+      dataFile: "data/OCTS_2026.js?v=1.1.0",
       dataKey: "OCTS_2026"
     }
   ]

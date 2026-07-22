@@ -10,7 +10,9 @@
   7. Key Documents：link 仅填写 OneDrive 或百度网盘共享链接；没有链接时保持空字符串。
   8. 活动结束后结果：在 event.resultMetrics 中增加或修改大标题栏结果数据。
   9. 展出产品：修改 event.showcasedProducts 数组。
-  10. 有效状态：Not Started, In Progress, Internal Review, HQ Review,
+  10. 最终交付文件：将已确认可公开下载的 Final 文件放入 downloads/OCTS_2026/，
+      并在 finalDocuments 中登记相对路径、格式、大小和状态。
+  11. 有效状态：Not Started, In Progress, Internal Review, HQ Review,
      Pending Approval, Confirmed, In Production, Completed, Blocked,
      Needs Update, Not Applicable。
 
@@ -21,8 +23,8 @@ window.EVENT_DATASETS = window.EVENT_DATASETS || {};
 
 window.EVENT_DATASETS.OCTS_2026 = {
   meta: {
-    schemaVersion: "1.4",
-    lastUpdated: "2026-07-20",
+    schemaVersion: "1.5",
+    lastUpdated: "2026-07-22",
     updatedBy: "待补充"
   },
 
@@ -330,5 +332,44 @@ window.EVENT_DATASETS.OCTS_2026 = {
     { documentId: "D-12", name: "Event Photos", status: "Needs Update", link: "", comments: "" },
     { documentId: "D-13", name: "Post-event Report · PDF", status: "Confirmed", link: "", comments: "" },
     { documentId: "D-14", name: "Post-event Report · DOCX", status: "Confirmed", link: "", comments: "" }
+  ],
+
+  finalDocuments: [
+    {
+      id: "OCTS-DOC-001",
+      nameZh: "OCTS 2026 主论坛演讲中文最终版",
+      nameEn: "OCTS 2026 Main Forum Keynote · Chinese Final",
+      category: "Presentation",
+      subcategory: "Main Forum",
+      version: "Final",
+      finalDate: "2026-07-06",
+      format: "PDF",
+      fileSize: "30.6 MB",
+      fileSizeBytes: 32056302,
+      filePath: "downloads/OCTS_2026/presentations/OCTS_2026_Main_Forum_Keynote_CN_Final.pdf",
+      descriptionZh: "田成勳主论坛演讲中文正式版本",
+      descriptionEn: "Final Chinese main forum keynote presentation",
+      speaker: "田成勳 / Sunghoon Chun",
+      status: "Available",
+      downloadable: true
+    },
+    {
+      id: "OCTS-DOC-002",
+      nameZh: "OCTS 2026 主论坛演讲英文最终版",
+      nameEn: "OCTS 2026 Main Forum Keynote · English Final",
+      category: "Presentation",
+      subcategory: "Main Forum",
+      version: "Final",
+      finalDate: "2026-07-06",
+      format: "PDF",
+      fileSize: "31.4 MB",
+      fileSizeBytes: 32916772,
+      filePath: "downloads/OCTS_2026/presentations/OCTS_2026_Main_Forum_Keynote_EN_Final.pdf",
+      descriptionZh: "田成勳主论坛演讲英文正式版本",
+      descriptionEn: "Final English main forum keynote presentation",
+      speaker: "田成勳 / Sunghoon Chun",
+      status: "Available",
+      downloadable: true
+    }
   ]
 };

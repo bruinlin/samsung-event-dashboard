@@ -48,13 +48,22 @@
     { id: "confirmed", label: "已确认" }
   ];
 
+  const FINAL_DOCUMENT_CATEGORIES = [
+    { id: "all", label: "All / 全部" },
+    { id: "Presentation", label: "Presentation / 演讲材料" },
+    { id: "Report", label: "Report / 报告" },
+    { id: "Photos", label: "Photos / 照片" },
+    { id: "Other", label: "Other / 其他" }
+  ];
+
   const state = {
     data: null,
     eventId: "",
     quickFilter: "all",
     status: "all",
     owner: "all",
-    hideCompleted: false
+    hideCompleted: false,
+    documentCategory: "all"
   };
 
   const $ = (id) => document.getElementById(id);
@@ -124,6 +133,7 @@
     state.status = "all";
     state.owner = "all";
     state.hideCompleted = false;
+    state.documentCategory = "all";
     window.location.hash = eventId;
     renderDashboard();
   }
@@ -379,6 +389,79 @@
     }).join("");
   }
 
+  function finalDocumentHref(item) {
+    const path = String(item.filePath || "").trim();
+    const isSafeRelativePath = path &&
+      !/^[a-z][a-z0-9+.-]*:/i.test(path) &&
+      !path.startsWith("/") &&
+      !path.includes("\\") &&
+      !/(^|\/)\.\.(\/|$)/.test(path);
+    return item.downloadable === true && item.status === "Available" && isSafeRelativePath ? path : "";
+  }
+
+  function formatDownloadSize(bytes) {
+    const value = Number(bytes);
+    if (!Number.isFinite(value) || value <= 0) return "0 MB";
+    return `${(value / 1024 / 1024).toFixed(1)} MB`;
+  }
+
+  function renderFinalDocuments(data) {
+    const documents = Array.isArray(data.finalDocuments) ? data.finalDocuments : [];
+    const filtered = state.documentCategory === "all"
+      ? documents
+      : documents.filter((item) => item.category === state.documentCategory);
+    const presentationCount = documents.filter((item) => item.category === "Presentation").length;
+    const reportCount = documents.filter((item) => item.category === "Report").length;
+    const totalBytes = documents.reduce((total, item) => total + (Number(item.fileSizeBytes) || 0), 0);
+
+    $("final-document-filters").innerHTML = FINAL_DOCUMENT_CATEGORIES.map((item) =>
+      `<button type="button" class="filter-chip ${item.id === state.documentCategory ? "active" : ""}" data-document-category="${escapeHtml(item.id)}">${safeText(item.label)}</button>`
+    ).join("");
+
+    $("final-document-stats").innerHTML = [
+      ["Final Files", documents.length],
+      ["Total Download Size", formatDownloadSize(totalBytes)],
+      ["Presentations", presentationCount],
+      ["Reports", reportCount]
+    ].map(([label, value]) => `
+      <div class="final-stat">
+        <span>${safeText(label)}</span>
+        <b>${safeText(value)}</b>
+      </div>`).join("");
+
+    $("final-document-empty").hidden = filtered.length !== 0;
+    $("final-document-list").innerHTML = filtered.map((item) => {
+      const href = finalDocumentHref(item);
+      const fileName = href
+        ? `<a class="final-document-name" href="${escapeHtml(href)}" download target="_blank" rel="noopener">${safeText(item.nameZh)}</a>`
+        : `<div class="final-document-name">${safeText(item.nameZh)}</div>`;
+      const action = href
+        ? `<a class="download-button" href="${escapeHtml(href)}" download target="_blank" rel="noopener">Download / 下载</a>`
+        : `<span class="download-button unavailable" aria-disabled="true">File unavailable / 文件不可用</span>`;
+      return `
+        <article class="final-document-card">
+          <div class="final-document-content">
+            <div class="final-document-labels">
+              ${badge(item.category, "blue")}
+              ${badge(item.version, "grey")}
+              ${badge(item.status, item.status === "Available" ? "green" : "grey")}
+            </div>
+            ${fileName}
+            <div class="final-document-name-en">${safeText(item.nameEn)}</div>
+            <div class="final-document-meta">
+              <span>${safeText(item.subcategory)}</span>
+              <span>${formatDate(item.finalDate)}</span>
+              <span>${safeText(item.format)}</span>
+              <span>${safeText(item.fileSize)}</span>
+            </div>
+            <p class="final-document-description">${safeText(item.descriptionZh)} · ${safeText(item.descriptionEn)}</p>
+            ${item.speaker ? `<div class="final-document-speaker">Speaker: ${safeText(item.speaker)}</div>` : ""}
+          </div>
+          <div class="final-document-action">${action}</div>
+        </article>`;
+    }).join("");
+  }
+
   function renderDashboard() {
     const data = state.data;
     renderHero(data);
@@ -390,6 +473,7 @@
     renderSessions(data);
     renderMilestones(data);
     renderDocuments(data);
+    renderFinalDocuments(data);
     $("footer-event-id").textContent = `${data.event.eventId} · Schema ${data.meta.schemaVersion}`;
   }
 
@@ -420,6 +504,13 @@
       state.quickFilter = button.dataset.filter;
       $("quick-filters").querySelectorAll("button").forEach((item) => item.classList.toggle("active", item === button));
       renderWorkstreams();
+    });
+
+    $("final-document-filters").addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-document-category]");
+      if (!button) return;
+      state.documentCategory = button.dataset.documentCategory;
+      renderFinalDocuments(state.data);
     });
 
     $("workstream-body").addEventListener("click", (event) => {

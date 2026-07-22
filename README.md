@@ -18,9 +18,21 @@ Open `http://localhost:8080/`. Directly opening `index.html` also works because 
 
 - `event_data.js` is the root event registry. Add each new event here and point `dataFile` to its local data file.
 - `data/OCTS_2026.js` contains the OCTS 2026 event details, workstreams, milestones, sessions, result metrics, and document references.
+- `data/OCTS_2026.js` also contains `finalDocuments`, which controls the Final Deliverables list, file metadata, category filters, and download links.
 - Keep the data structure consistent with the existing event file. Use only the supported status values documented at the top of the data file.
 - Update `meta.lastUpdated`, `meta.updatedBy`, and `CHANGELOG.md` with every meaningful revision.
 - Do not put contract values, quotation values, credentials, personal data, or non-public source documents in the repository.
+
+## Add or replace Final Deliverables
+
+1. Confirm that the source is an approved Final file and is suitable for public or cross-team sharing.
+2. Inspect the file content, properties, comments/notes, contacts, amounts, local paths, private links, and embedded content before copying it.
+3. Put the verified copy in `downloads/<EVENT_ID>/presentations`, `reports`, `photos`, or `other`.
+4. Add or update its record in `data/<EVENT_ID>.js` under `finalDocuments`. Use a repository-relative `filePath` only.
+5. Keep an existing public filename when replacing a file so old links do not break. If the filename changes, update `filePath` at the same time.
+6. Run `scripts/check_download_safety.ps1`, test each local download URL, then commit and push.
+
+The safety script uses Python with `pypdf` to inspect PDF text, metadata, annotations and embedded content, and fails closed when reliable inspection is unavailable. If Python is not on `PATH`, pass its executable with `-PythonPath`. Non-PDF formats are reported as requiring manual review before publication. Historical and working versions belong in the internal archive, not the public download directory.
 
 ## Add another event
 
@@ -32,25 +44,16 @@ Open `http://localhost:8080/`. Directly opening `index.html` also works because 
 ## Publish updates to GitHub
 
 ```powershell
-git add index.html event_data.js assets data README.md CHANGELOG.md VERSION_INDEX.md .gitignore
+git add index.html event_data.js assets data downloads scripts README.md CHANGELOG.md VERSION_INDEX.md .gitignore
 git commit -m "Update event dashboard"
 git push origin main
 ```
 
 Review `git status` before committing. The backup folder and legacy Supabase helper files are intentionally ignored.
 
-## Cloudflare Pages settings
+## Deployment
 
-Create a Pages project using **Connect to Git** and use these exact settings:
-
-- Repository: `bruinlin/samsung-event-dashboard`
-- Production branch: `main`
-- Framework preset: `None`
-- Build command: `exit 0`
-- Build output directory: `.`
-- Root directory: leave blank
-
-This project does not use Workers or Wrangler. Do not add `wrangler.toml` or `wrangler.jsonc` for this deployment.
+The `main` branch is currently published through GitHub Pages and the existing Cloudflare Workers deployment. Final files use the same repository-relative paths on both hosts. Do not add Worker download logic or change the current Cloudflare deployment method merely to force downloads; PDF preview behavior is browser-dependent and expected.
 
 ## Supabase status and security
 

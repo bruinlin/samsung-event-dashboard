@@ -465,6 +465,78 @@ select {
 
 .empty-state { padding: 28px; color: var(--ink-500); text-align: center; font-size: 12px; }
 
+.final-deliverables-heading { align-items: flex-end; }
+
+.final-document-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--line-soft);
+  background: #fbfdff;
+}
+
+.final-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+  padding: 10px 11px;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  background: var(--blue-50);
+}
+
+.final-stat span { color: var(--ink-500); font-size: 10px; font-weight: 650; }
+.final-stat b { color: var(--blue-700); font-size: 17px; line-height: 1; white-space: nowrap; }
+.final-document-list { display: grid; gap: 10px; padding: 16px 18px 18px; }
+
+.final-document-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--line-soft);
+  border-radius: 13px;
+  background: #fbfdff;
+}
+
+.final-document-content { min-width: 0; }
+.final-document-labels { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.final-document-name { display: block; color: var(--ink-900); font-size: 15px; font-weight: 740; line-height: 1.4; overflow-wrap: anywhere; text-decoration: none; }
+a.final-document-name:hover, a.final-document-name:focus-visible { color: var(--blue-700); text-decoration: underline; outline: none; }
+.final-document-name-en { margin-top: 2px; color: var(--ink-500); font-size: 11px; line-height: 1.45; overflow-wrap: anywhere; }
+.final-document-meta { display: flex; flex-wrap: wrap; gap: 5px 14px; margin-top: 10px; color: var(--ink-700); font-size: 11px; }
+.final-document-meta span { position: relative; }
+.final-document-meta span:not(:last-child)::after { content: "·"; position: absolute; right: -9px; color: #9aa8b7; }
+.final-document-description { margin: 8px 0 0; color: var(--ink-700); font-size: 12px; line-height: 1.55; overflow-wrap: anywhere; }
+.final-document-speaker { margin-top: 7px; color: var(--ink-500); font-size: 11px; }
+.final-document-action { flex: 0 0 auto; }
+
+.download-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 132px;
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--blue-600);
+  border-radius: 9px;
+  background: var(--blue-600);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+}
+
+.download-button:hover, .download-button:focus-visible { border-color: #095bbd; background: #095bbd; outline: none; }
+.download-button.unavailable { border-color: var(--line); background: var(--grey-bg); color: var(--grey); }
+
 .session-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 18px 20px; }
 .session-card { padding: 15px; border: 1px solid var(--line-soft); border-radius: 13px; background: #fbfdff; }
 .session-top { display: flex; align-items: start; justify-content: space-between; gap: 10px; }
@@ -518,6 +590,7 @@ footer { display: flex; justify-content: space-between; gap: 16px; padding: 4px 
   .overview-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .summary-block { grid-template-columns: 1fr; }
   .workstream-heading { align-items: flex-start; flex-direction: column; }
+  .final-deliverables-heading { align-items: flex-start; flex-direction: column; }
   .filter-chips { justify-content: flex-start; }
   .session-grid { grid-template-columns: 1fr; }
   .side-column { display: block; }
@@ -530,6 +603,11 @@ footer { display: flex; justify-content: space-between; gap: 16px; padding: 4px 
   .overview-grid { grid-template-columns: 1fr; }
   .panel-heading, .panel-body, .session-grid { padding-left: 15px; padding-right: 15px; }
   .status-count-item { flex: 1 1 130px; }
+  .final-document-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); padding-left: 15px; padding-right: 15px; }
+  .final-stat { display: grid; gap: 5px; align-content: start; }
+  .final-document-list { padding-left: 15px; padding-right: 15px; }
+  .final-document-card { align-items: stretch; flex-direction: column; gap: 14px; }
+  .final-document-action, .download-button { width: 100%; }
   footer { flex-direction: column; }
 }
 

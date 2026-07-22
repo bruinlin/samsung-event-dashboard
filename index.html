@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <title>Samsung Event Dashboard</title>
-  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/style.css?v=1.1.0">
 </head>
 <body>
   <div class="page-shell">
@@ -93,6 +93,19 @@
           <div class="empty-state" id="workstream-empty" hidden>没有匹配的工作模块。</div>
         </section>
 
+        <section class="panel final-deliverables-panel" aria-labelledby="final-deliverables-title">
+          <div class="panel-heading final-deliverables-heading">
+            <div>
+              <h2 id="final-deliverables-title">Final Deliverables</h2>
+              <p>最终交付文件 · 仅展示已确认可公开下载的 Final Output</p>
+            </div>
+            <div class="filter-chips no-print" id="final-document-filters" aria-label="最终文件分类筛选"></div>
+          </div>
+          <div class="final-document-stats" id="final-document-stats" aria-label="最终文件统计"></div>
+          <div class="final-document-list" id="final-document-list"></div>
+          <div class="empty-state" id="final-document-empty" hidden>该分类暂无可下载的最终文件。</div>
+        </section>
+
         <section class="panel" aria-labelledby="sessions-title">
           <div class="panel-heading">
             <div>
@@ -137,7 +150,7 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-  <script src="event_data.js"></script>
-  <script src="assets/app.js"></script>
+  <script src="event_data.js?v=1.1.0"></script>
+  <script src="assets/app.js?v=1.1.0"></script>
 </body>
 </html>
