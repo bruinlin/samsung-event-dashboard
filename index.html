@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Samsung Event Dashboard</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero" aria-labelledby="event-title">
+      <div class="hero-main">
+        <div class="eyebrow">SAMSUNG SEMICONDUCTOR · EVENT DASHBOARD</div>
+        <h1 id="event-title">Samsung Event Dashboard</h1>
+        <p class="hero-subtitle" id="event-subtitle">正在载入活动数据…</p>
+        <div class="hero-meta" id="hero-meta"></div>
+        <div class="hero-results" id="hero-results" aria-label="活动结果数据" hidden></div>
+      </div>
+      <div class="hero-side">
+        <div class="hero-status" id="hero-status"></div>
+        <div class="hero-updated" id="hero-updated"></div>
+      </div>
+    </header>
+
+    <section class="toolbar no-print" aria-label="Dashboard controls">
+      <label class="field-control">
+        <span>活动</span>
+        <select id="event-select" aria-label="选择活动"></select>
+      </label>
+      <label class="field-control">
+        <span>状态</span>
+        <select id="status-select" aria-label="按状态筛选"></select>
+      </label>
+      <label class="field-control">
+        <span>负责人</span>
+        <select id="owner-select" aria-label="按负责人筛选"></select>
+      </label>
+      <label class="check-control">
+        <input type="checkbox" id="hide-completed">
+        <span>隐藏已完成</span>
+      </label>
+      <button class="button button-primary" id="print-button" type="button">打印页面</button>
+    </section>
+
+    <section class="metric-grid" id="metric-grid" aria-label="活动总览指标"></section>
+
+    <div class="dashboard-grid">
+      <main class="main-column">
+        <section class="panel" aria-labelledby="overview-title">
+          <div class="panel-heading">
+            <div>
+              <h2 id="overview-title">Event Overview</h2>
+              <p>活动基础信息与当前事实摘要</p>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="overview-grid" id="overview-grid"></div>
+            <div class="summary-block">
+              <div>
+                <h3>Current Summary</h3>
+                <p id="current-summary"></p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="workstream-title">
+          <div class="panel-heading workstream-heading">
+            <div>
+              <h2 id="workstream-title">Workstream Progress</h2>
+              <p>按实际进展维护；待补充项不按 0% 处理</p>
+            </div>
+            <div class="filter-chips no-print" id="quick-filters" aria-label="快速筛选"></div>
+          </div>
+          <div class="status-counts" id="status-counts" aria-label="全部任务状态统计"></div>
+          <div class="table-wrap">
+            <table class="workstream-table">
+              <thead>
+                <tr>
+                  <th class="col-workstream">工作模块</th>
+                  <th class="col-status">状态</th>
+                  <th class="col-progress">进度</th>
+                  <th class="col-owner">负责人 / 截止</th>
+                  <th class="col-update">最新进展</th>
+                  <th class="col-action">下一步</th>
+                  <th class="col-detail no-print">详情</th>
+                </tr>
+              </thead>
+              <tbody id="workstream-body"></tbody>
+            </table>
+          </div>
+          <div class="empty-state" id="workstream-empty" hidden>没有匹配的工作模块。</div>
+        </section>
+
+        <section class="panel" aria-labelledby="sessions-title">
+          <div class="panel-heading">
+            <div>
+              <h2 id="sessions-title">Sessions &amp; Speakers</h2>
+              <p>主论坛、分论坛与领奖环节</p>
+            </div>
+          </div>
+          <div class="session-grid" id="sessions-grid"></div>
+        </section>
+      </main>
+
+      <aside class="side-column">
+        <section class="panel" aria-labelledby="milestones-title">
+          <div class="panel-heading">
+            <div>
+              <h2 id="milestones-title">Key Milestones</h2>
+              <p>已确认日期优先；待补充日期置后</p>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="timeline" id="timeline"></div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="documents-title">
+          <div class="panel-heading">
+            <div>
+              <h2 id="documents-title">Key Documents</h2>
+              <p>最终通过 OneDrive 或百度网盘共享</p>
+            </div>
+          </div>
+          <div class="document-list" id="document-list"></div>
+        </section>
+      </aside>
+    </div>
+
+    <footer>
+      <span>Local static dashboard · Offline-ready</span>
+      <span id="footer-event-id"></span>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="event_data.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
