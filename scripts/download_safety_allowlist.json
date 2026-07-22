@@ -2,10 +2,22 @@
   "schemaVersion": "1.0",
   "files": [
     {
+      "path": "downloads/OCTS_2026/presentations/OCTS_2026_Main_Forum_Keynote_CN_Final.pdf",
+      "sha256": "2AF8431B2EF9969DD944E9D9D537F1BCF765DE5CE485DAA2C75D719B45FD1EE2",
+      "allowedFinding": "public-market-size-currency",
+      "note": "Currency-like values are cited IDC global market-size figures, not project commercial amounts. Manually reviewed 2026-07-22."
+    },
+    {
+      "path": "downloads/OCTS_2026/presentations/OCTS_2026_Main_Forum_Keynote_EN_Final.pdf",
+      "sha256": "8E47373B7D077402161FE23D62B5574582F24E9987C034BFD3B59E1BE837D130",
+      "allowedFinding": "public-market-size-currency",
+      "note": "Currency-like values are cited IDC global market-size figures, not project commercial amounts. Manually reviewed 2026-07-22."
+    },
+    {
       "path": "downloads/OCTS_2026/presentations/OCTS_2026_Main_Forum_Speech_Script_Final.pdf",
       "sha256": "B8CB1E360FC2A78F689C45374545856F29FB888778328F8CD0CC74F33A27EF9C",
       "allowedFinding": "public-market-size-currency",
-      "note": "Currency-like values are cited IDC global market-size figures, not project commercial amounts. Manually reviewed 2026-07-22."
+      "note": "Currency-like values are cited public market-size figures, not project commercial amounts. Manually reviewed 2026-07-22."
     }
   ]
 }

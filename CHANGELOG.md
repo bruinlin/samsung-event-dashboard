@@ -1,10 +1,16 @@
 # Changelog
 
+## 1.1.1-web - 2026-07-22
+
+- Added the reviewed Final Main Forum speech script alongside the Chinese and English Final Keynote PDFs.
+- Confirmed GitHub Pages as the acceptance target for downloadable Final files; Cloudflare download parity is not required for files above its static-asset limit.
+- Refreshed static asset version parameters so browsers load the final three-file registry.
+
 ## 1.1.0-web - 2026-07-22
 
 - Added the OCTS 2026 Final Deliverables module with category filters and file statistics.
-- Published the reviewed Final Main Forum speech script PDF under a repository-relative download path.
-- Kept the two 30+ MiB Final Keynote slide PDFs out of the active download tree because they exceed the 25 MiB Cloudflare Workers static-asset limit.
+- Published the reviewed Chinese and English Final Main Forum Keynote PDFs and Final speech script under repository-relative download paths.
+- Set GitHub Pages as the Final-file download acceptance target; 30+ MiB Keynote PDFs exceed the current Cloudflare Workers static-asset limit.
 - Added download inventory, file existence, path, hash-aware content, metadata and sensitive-value safety checks.
 - Added responsive Final Deliverables cards and documented the future Final-file maintenance workflow.
 - Added static asset version parameters so deployed browsers refresh the updated dashboard and event data together.
