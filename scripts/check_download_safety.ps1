@@ -89,15 +89,22 @@ foreach ($file in $downloadFiles) {
             $errors.Add("Invalid PDF inspection result: $relativePath")
             continue
         }
+        $hash = (Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash
+        $entry = $allowByPath[$relativePath]
+        $matchesApprovedHash = $entry -and $entry.sha256 -eq $hash
         foreach ($finding in $inspection.errors) {
-            $errors.Add("${relativePath}: $finding")
+            if ($matchesApprovedHash -and @($entry.allowedInspectionErrors) -contains $finding) {
+                $information.Add("${relativePath}: reviewed, hash-bound inspection exception: $finding")
+            } else {
+                $errors.Add("${relativePath}: $finding")
+            }
         }
 
         if ($inspection.currencyFindings -gt 0) {
-            $hash = (Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash
-            $entry = $allowByPath[$relativePath]
-            if ($entry -and $entry.sha256 -eq $hash -and $entry.allowedFinding -eq "public-market-size-currency") {
+            if ($matchesApprovedHash -and $entry.allowedFinding -eq "public-market-size-currency") {
                 $information.Add("${relativePath}: $($inspection.currencyFindings) currency-like value(s) match the reviewed public market-data allowlist.")
+            } elseif ($matchesApprovedHash -and $entry.allowedCurrencyFinding -eq $true) {
+                $information.Add("${relativePath}: $($inspection.currencyFindings) reviewed, hash-bound currency inspection exception.")
             } else {
                 $errors.Add("${relativePath}: currency-like values require manual context review and a matching hash allowlist entry.")
             }

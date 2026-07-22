@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.2-web - 2026-07-22
+
+- Merged the former Key Documents and Final Deliverables areas into one Documents & Deliverables module.
+- Streamlined the visible file list to the three reviewed downloadable Main Forum files and the user-approved Final Post-event Report PDF.
+- Removed Breakout, commercial, design, operations and other non-essential document entries from the dashboard view; their project progress remains in Workstream Progress.
+- Kept the review exception for the Final Post-event Report narrowly bound to its exact SHA-256 in the download safety allowlist.
+
 ## 1.1.1-web - 2026-07-22
 
 - Added the reviewed Final Main Forum speech script alongside the Chinese and English Final Keynote PDFs.

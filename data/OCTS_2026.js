@@ -7,7 +7,8 @@
   4. 增加模块：复制一条 workstreams 记录并使用新的 workstreamId。
   5. 负责人：修改 workstreams[].owner；页面仅显示姓名，不显示 Owner 字样。
   6. 详情：仅填写 workstreams[].remarks 或 comments；没有内容时保持空字符串。
-  7. Key Documents：link 仅填写 OneDrive 或百度网盘共享链接；没有链接时保持空字符串。
+  7. 文件与交付物：只有通过公开审核的文件才能在 finalDocuments 中填写 repository-relative filePath 并设为 downloadable: true；
+     其他文件仅登记 status，不填写 filePath 或下载链接。
   8. 活动结束后结果：在 event.resultMetrics 中增加或修改大标题栏结果数据。
   9. 展出产品：修改 event.showcasedProducts 数组。
   10. 最终交付文件：将已确认可公开下载的 Final 文件放入 downloads/OCTS_2026/，
@@ -23,7 +24,7 @@ window.EVENT_DATASETS = window.EVENT_DATASETS || {};
 
 window.EVENT_DATASETS.OCTS_2026 = {
   meta: {
-    schemaVersion: "1.5",
+    schemaVersion: "1.6",
     lastUpdated: "2026-07-22",
     updatedBy: "待补充"
   },
@@ -317,23 +318,6 @@ window.EVENT_DATASETS.OCTS_2026 = {
     }
   ],
 
-  documents: [
-    { documentId: "D-01", name: "Final Keynote · CN", status: "Confirmed", link: "", comments: "" },
-    { documentId: "D-02", name: "Final Keynote · EN", status: "Confirmed", link: "", comments: "" },
-    { documentId: "D-03", name: "Speaker Information Collection Form", status: "Needs Update", link: "", comments: "" },
-    { documentId: "D-04", name: "Breakout Deck · KV Cache Offloading", status: "Confirmed", link: "", comments: "" },
-    { documentId: "D-05", name: "Breakout Deck · CXL Memory Pooling", status: "Confirmed", link: "", comments: "" },
-    { documentId: "D-06", name: "Final Quotation", status: "Confirmed", link: "", comments: "" },
-    { documentId: "D-07", name: "Quotation Confirmation", status: "Confirmed", link: "", comments: "" },
-    { documentId: "D-08", name: "Signed Contract", status: "Needs Update", link: "", comments: "" },
-    { documentId: "D-09", name: "Booth Final Design", status: "Confirmed", link: "", comments: "" },
-    { documentId: "D-10", name: "Booth Content Video", status: "Confirmed", link: "", comments: "" },
-    { documentId: "D-11", name: "Operation Manual", status: "Confirmed", link: "", comments: "" },
-    { documentId: "D-12", name: "Event Photos", status: "Needs Update", link: "", comments: "" },
-    { documentId: "D-13", name: "Post-event Report · PDF", status: "Confirmed", link: "", comments: "" },
-    { documentId: "D-14", name: "Post-event Report · DOCX", status: "Confirmed", link: "", comments: "" }
-  ],
-
   finalDocuments: [
     {
       id: "OCTS-DOC-001",
@@ -386,6 +370,24 @@ window.EVENT_DATASETS.OCTS_2026 = {
       descriptionZh: "田成勳主论坛演讲稿正式版本",
       descriptionEn: "Final main forum keynote speech script",
       speaker: "田成勳 / Sunghoon Chun",
+      status: "Available",
+      downloadable: true
+    },
+    {
+      id: "OCTS-DOC-004",
+      nameZh: "OCTS 2026 会后报告最终版",
+      nameEn: "OCTS 2026 Post-event Report · Final",
+      category: "Report",
+      subcategory: "Post-event",
+      version: "Final",
+      finalDate: "2026-07-09",
+      format: "PDF",
+      fileSize: "10.8 MB",
+      fileSizeBytes: 11276065,
+      filePath: "downloads/OCTS_2026/reports/OCTS_2026_Post_Event_Report_Final.pdf",
+      descriptionZh: "OCTS 2026 会后报告正式归档版本。",
+      descriptionEn: "Final archived OCTS 2026 post-event report.",
+      speaker: "",
       status: "Available",
       downloadable: true
     }

@@ -2,6 +2,7 @@
 
 | Version | Date | Primary Deliverable | Lifecycle Status | Purpose |
 |---|---|---|---|---|
+| 1.1.2-web | 2026-07-22 | `index.html` + `data/OCTS_2026.js` + `downloads/OCTS_2026/reports/` | Working | Merges file areas and retains reviewed downloads plus the user-approved Final Report PDF. |
 | 1.1.1-web | 2026-07-22 | `index.html` + `downloads/OCTS_2026/` | Working | Final three-file GitHub Pages download release for OCTS 2026. |
 | 1.1.0-web | 2026-07-22 | `index.html` + `downloads/OCTS_2026/` | Working | Adds reviewed OCTS 2026 Final Deliverables and public download paths. |
 | 1.0.0-web | 2026-07-22 | `index.html` | Working | Static deployment candidate for GitHub and Cloudflare Pages. |

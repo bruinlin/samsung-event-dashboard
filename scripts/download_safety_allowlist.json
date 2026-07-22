@@ -18,6 +18,16 @@
       "sha256": "B8CB1E360FC2A78F689C45374545856F29FB888778328F8CD0CC74F33A27EF9C",
       "allowedFinding": "public-market-size-currency",
       "note": "Currency-like values are cited public market-size figures, not project commercial amounts. Manually reviewed 2026-07-22."
+    },
+    {
+      "path": "downloads/OCTS_2026/reports/OCTS_2026_Post_Event_Report_Final.pdf",
+      "sha256": "AE9BA05315BA52E8C1DA07F31D46621325443A0D6A228C7C6B8333ED26E0A662",
+      "allowedCurrencyFinding": true,
+      "allowedInspectionErrors": [
+        "PDF annotations detected on page 12",
+        "PDF annotations detected on page 13"
+      ],
+      "note": "Approved for public download by the user on 2026-07-22. Exceptions are restricted to this exact reviewed file hash."
     }
   ]
 }

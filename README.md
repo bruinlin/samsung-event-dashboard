@@ -18,17 +18,17 @@ Open `http://localhost:8080/`. Directly opening `index.html` also works because 
 
 - `event_data.js` is the root event registry. Add each new event here and point `dataFile` to its local data file.
 - `data/OCTS_2026.js` contains the OCTS 2026 event details, workstreams, milestones, sessions, result metrics, and document references.
-- `data/OCTS_2026.js` also contains `finalDocuments`, which controls the Final Deliverables list, file metadata, category filters, and download links.
+- `data/OCTS_2026.js` also contains `finalDocuments`, which controls the unified Documents & Deliverables list, file metadata, category filters, download links, and status-only records.
 - Keep the data structure consistent with the existing event file. Use only the supported status values documented at the top of the data file.
 - Update `meta.lastUpdated`, `meta.updatedBy`, and `CHANGELOG.md` with every meaningful revision.
 - Do not put contract values, quotation values, credentials, personal data, or non-public source documents in the repository.
 
-## Add or replace Final Deliverables
+## Maintain Documents & Deliverables
 
 1. Confirm that the source is an approved Final file and is suitable for public or cross-team sharing.
 2. Inspect the file content, properties, comments/notes, contacts, amounts, local paths, private links, and embedded content before copying it.
 3. Put the verified copy in `downloads/<EVENT_ID>/presentations`, `reports`, `photos`, or `other`.
-4. Add or update its record in `data/<EVENT_ID>.js` under `finalDocuments`. Use a repository-relative `filePath` only.
+4. Add or update its record in `data/<EVENT_ID>.js` under `finalDocuments`. Use a repository-relative `filePath` only for an approved public download. For an archived or controlled document, omit `filePath` and set `downloadable: false` so the Dashboard shows its status only. If a reviewed file needs a narrowly scoped scan exception, record its exact SHA-256 and the precise allowed finding in `scripts/download_safety_allowlist.json`; never create a broad exception.
 5. Keep an existing public filename when replacing a file so old links do not break. If the filename changes, update `filePath` at the same time.
 6. Run `scripts/check_download_safety.ps1`, test each local download URL, then commit and push.
 

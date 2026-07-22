@@ -372,23 +372,6 @@
     }).join("");
   }
 
-  function renderDocuments(data) {
-    $("document-list").innerHTML = data.documents.map((item) => {
-      const style = DOCUMENT_STYLE[item.status] || [item.status, "grey"];
-      const action = item.link
-        ? `<a href="${escapeHtml(item.link)}" target="_blank" rel="noopener">${badge(style[0], style[1])}</a>`
-        : badge(style[0], style[1]);
-      return `
-        <div class="document-item">
-          <div>
-            <div class="document-name">${safeText(item.name)}</div>
-            ${item.comments || item.remarks ? `<div class="document-type">${safeText(item.comments || item.remarks, "")}</div>` : ""}
-          </div>
-          <div class="document-action">${action}</div>
-        </div>`;
-    }).join("");
-  }
-
   function finalDocumentHref(item) {
     const path = String(item.filePath || "").trim();
     const isSafeRelativePath = path &&
@@ -399,12 +382,6 @@
     return item.downloadable === true && item.status === "Available" && isSafeRelativePath ? path : "";
   }
 
-  function formatDownloadSize(bytes) {
-    const value = Number(bytes);
-    if (!Number.isFinite(value) || value <= 0) return "0 MB";
-    return `${(value / 1024 / 1024).toFixed(1)} MB`;
-  }
-
   function renderFinalDocuments(data) {
     const documents = Array.isArray(data.finalDocuments) ? data.finalDocuments : [];
     const filtered = state.documentCategory === "all"
@@ -412,15 +389,15 @@
       : documents.filter((item) => item.category === state.documentCategory);
     const presentationCount = documents.filter((item) => item.category === "Presentation").length;
     const reportCount = documents.filter((item) => item.category === "Report").length;
-    const totalBytes = documents.reduce((total, item) => total + (Number(item.fileSizeBytes) || 0), 0);
+    const downloadableCount = documents.filter((item) => finalDocumentHref(item)).length;
 
     $("final-document-filters").innerHTML = FINAL_DOCUMENT_CATEGORIES.map((item) =>
       `<button type="button" class="filter-chip ${item.id === state.documentCategory ? "active" : ""}" data-document-category="${escapeHtml(item.id)}">${safeText(item.label)}</button>`
     ).join("");
 
     $("final-document-stats").innerHTML = [
-      ["Final Files", documents.length],
-      ["Total Download Size", formatDownloadSize(totalBytes)],
+      ["File Records", documents.length],
+      ["Downloads", downloadableCount],
       ["Presentations", presentationCount],
       ["Reports", reportCount]
     ].map(([label, value]) => `
@@ -437,7 +414,7 @@
         : `<div class="final-document-name">${safeText(item.nameZh)}</div>`;
       const action = href
         ? `<a class="download-button" href="${escapeHtml(href)}" download target="_blank" rel="noopener">Download / 下载</a>`
-        : `<span class="download-button unavailable" aria-disabled="true">File unavailable / 文件不可用</span>`;
+        : `<span class="download-button unavailable" aria-disabled="true">Status only / 仅状态</span>`;
       return `
         <article class="final-document-card">
           <div class="final-document-content">
@@ -472,7 +449,6 @@
     renderWorkstreams();
     renderSessions(data);
     renderMilestones(data);
-    renderDocuments(data);
     renderFinalDocuments(data);
     $("footer-event-id").textContent = `${data.event.eventId} · Schema ${data.meta.schemaVersion}`;
   }
