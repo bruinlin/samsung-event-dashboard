@@ -1,5 +1,7 @@
 # Samsung Semiconductor Event Dashboard
 
+Repository: `samsung-event-dashboard`
+
 Framework-free static Event Dashboard for Samsung Semiconductor Marcom. The current sample event is OCTS 2026. All runtime assets are stored in this repository; no server-side application, package installation, CDN, online font, or external API is required.
 
 ## Run locally
