@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.0-web - 2026-07-23
+
+- Marked all 15 OCTS 2026 workstreams and all recorded milestones as Completed; Workstream Completion now evaluates to 100%.
+- Added ODX 2026 to the event selector with confirmed date and theme, and marked unconfirmed event information as pending completion.
+- Added conditional Event Theme / 大会主题 rendering in Event Overview without changing Keynote topic fields.
+
 ## 1.1.2-web - 2026-07-22
 
 - Merged the former Key Documents and Final Deliverables areas into one Documents & Deliverables module.

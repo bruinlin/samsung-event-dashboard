@@ -201,10 +201,12 @@
   function renderOverview(data) {
     const event = data.event;
     const keynote = data.keynote;
+    const theme = [event.themeCN, event.themeEN].filter(Boolean).join(" / ");
     const items = [
       ["Date / 日期", formatDate(event.dateStart)],
       ["Location / 地点", `${event.city} · ${event.venue}`],
       ["Event Type / 类型", event.eventType],
+      ...(theme ? [["Event Theme / 大会主题", theme]] : []),
       ["Main Speaker / 主讲人", keynote.speaker],
       ["Speaker Title / 职务", keynote.title],
       ["English Topic / 英文主题", keynote.topicEN],
