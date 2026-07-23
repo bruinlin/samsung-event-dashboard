@@ -1,11 +1,11 @@
 /*
   ODX 2026 数据维护说明
   ====================
-  1. 仅填写已确认的活动事实；未知字段保持“待补充”或空字符串。
-  2. 修改状态时同步更新 progress、latestUpdate、nextAction、meta.lastUpdated 和 meta.updatedBy。
-  3. Needs Update / Not Applicable 的 progress 使用 null；其他模块使用 0-100。
-  4. 不要推测负责人、截止日期、实际完成日期、讲者、议题或文件。
-  5. Final Documents 仅登记已确认且适合公开下载的文件；没有文件时保持空数组。
+  1. 直接更新 event、keynote、workstreams、milestones 和 sessions 对应字段。
+  2. 所有状态使用既有状态值；完成度使用 0-100。
+  3. 未确认信息使用 "TBD"；未知日期保持空字符串，不要推测。
+  4. 新增或修改工作项时保留 workstreamId、负责人、日期、进度、更新和备注字段。
+  5. finalDocuments 仅登记已确认可公开下载的文件；当前没有文件时保持空数组。
 */
 
 window.EVENT_DATASETS = window.EVENT_DATASETS || {};
@@ -20,29 +20,32 @@ window.EVENT_DATASETS.ODX_2026 = {
   event: {
     eventId: "ODX_2026",
     shortName: "ODX 2026",
-    nameCN: "ODX 2026",
-    nameEN: "ODX 2026",
+    nameCN: "2026开放数据中心大会暨首届算博会",
+    nameEN: "2026 Open Data Center Summit and Computing Power Expo",
     dateStart: "2026-09-02",
     dateEnd: "2026-09-02",
-    themeCN: "开放AI Infra，普惠算力赋能",
-    themeEN: "",
-    city: "待补充",
-    venue: "待补充",
-    eventType: "行业技术大会 / 筹备中",
-    overallStatus: "In Progress",
+    city: "北京",
+    venue: "北京国家会议中心二期",
+    eventType: "行业技术大会",
+    sponsorshipLevel: "钻石赞助/Diamond",
+    participationForms: ["主论坛", "分论坛", "Booth"],
+    boothArea: "36㎡",
+    boothNumber: "TBD",
+    detailedAgenda: "TBD",
+    overallStatus: "Not Started",
     reportStatus: "Not Started",
-    nextMilestone: "补充地点、演讲人及议程信息",
-    showcasedProducts: [],
+    nextMilestone: "TBD",
+    showcasedProducts: "TBD",
     resultMetrics: [],
-    currentSummary: "ODX 2026 计划于 2026 年 9 月 2 日举办，大会主题为“开放AI Infra，普惠算力赋能”。当前已建立活动基础信息，其余场地、演讲人、议程和执行信息待补充。"
+    currentSummary: "2026 ODX 计划于 2026 年 9 月 2 日在北京国家会议中心二期举行。三星将以钻石赞助参与主论坛、分论坛及 Booth；分论坛、展出产品、展位号和详细议程等信息待确认。"
   },
 
   keynote: {
-    speaker: "待补充",
-    title: "待补充",
-    topicEN: "待补充",
-    topicCN: "待补充",
-    status: "Needs Update"
+    speaker: "Jay Hyun",
+    title: "CVP, NAND Product Planning, Samsung Electronics",
+    topicEN: "TBD",
+    topicCN: "TBD",
+    status: "Not Started"
   },
 
   workstreams: [
@@ -50,13 +53,13 @@ window.EVENT_DATASETS.ODX_2026 = {
       workstreamId: "ODX26-WS-01",
       nameCN: "活动基本信息",
       nameEN: "Event Basic Information",
-      status: "In Progress",
-      progress: 50,
-      owner: "待补充",
+      status: "Not Started",
+      progress: 0,
+      owner: "Bruin",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "活动日期及大会主题已录入。",
-      nextAction: "补充城市、具体场地、活动类型及主办方信息。",
+      latestUpdate: "TBD",
+      nextAction: "TBD",
       remarks: ""
     },
     {
@@ -65,11 +68,11 @@ window.EVENT_DATASETS.ODX_2026 = {
       nameEN: "Speaker Confirmation",
       status: "Not Started",
       progress: 0,
-      owner: "待补充",
+      owner: "Bruin & Leo",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "待补充",
-      nextAction: "待补充",
+      latestUpdate: "TBD",
+      nextAction: "TBD",
       remarks: ""
     },
     {
@@ -78,24 +81,24 @@ window.EVENT_DATASETS.ODX_2026 = {
       nameEN: "Main Forum Keynote",
       status: "Not Started",
       progress: 0,
-      owner: "待补充",
+      owner: "Bruin & Leo",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "待补充",
-      nextAction: "待补充",
+      latestUpdate: "TBD",
+      nextAction: "TBD",
       remarks: ""
     },
     {
       workstreamId: "ODX26-WS-04",
       nameCN: "分论坛演讲",
       nameEN: "Breakout Sessions",
-      status: "Needs Update",
-      progress: null,
-      owner: "待补充",
+      status: "Not Started",
+      progress: 0,
+      owner: "Bruin & Leo",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "待补充",
-      nextAction: "待确认是否适用。",
+      latestUpdate: "TBD",
+      nextAction: "TBD",
       remarks: ""
     },
     {
@@ -104,11 +107,11 @@ window.EVENT_DATASETS.ODX_2026 = {
       nameEN: "Quotation",
       status: "Not Started",
       progress: 0,
-      owner: "待补充",
+      owner: "媛媛 & Dennis",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "待补充",
-      nextAction: "待补充",
+      latestUpdate: "TBD",
+      nextAction: "TBD",
       remarks: ""
     },
     {
@@ -117,50 +120,50 @@ window.EVENT_DATASETS.ODX_2026 = {
       nameEN: "Contract",
       status: "Not Started",
       progress: 0,
-      owner: "待补充",
+      owner: "媛媛 & Dennis",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "待补充",
-      nextAction: "待补充",
+      latestUpdate: "TBD",
+      nextAction: "TBD",
       remarks: ""
     },
     {
       workstreamId: "ODX26-WS-07",
       nameCN: "Booth 设计",
       nameEN: "Booth Design",
-      status: "Needs Update",
-      progress: null,
-      owner: "待补充",
+      status: "Not Started",
+      progress: 0,
+      owner: "媛媛 & Dennis",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "待补充",
-      nextAction: "待确认是否适用。",
+      latestUpdate: "TBD",
+      nextAction: "TBD",
       remarks: ""
     },
     {
       workstreamId: "ODX26-WS-08",
       nameCN: "礼品",
       nameEN: "Gifts",
-      status: "Needs Update",
-      progress: null,
-      owner: "待补充",
+      status: "Not Started",
+      progress: 0,
+      owner: "Bruin",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "待补充",
-      nextAction: "待确认是否适用。",
+      latestUpdate: "TBD",
+      nextAction: "TBD",
       remarks: ""
     },
     {
       workstreamId: "ODX26-WS-09",
       nameCN: "产品领奖",
       nameEN: "Product Award",
-      status: "Needs Update",
-      progress: null,
-      owner: "待补充",
+      status: "Not Started",
+      progress: 0,
+      owner: "Bruin & Leo",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "待补充",
-      nextAction: "待确认是否适用。",
+      latestUpdate: "TBD",
+      nextAction: "TBD",
       remarks: ""
     },
     {
@@ -169,11 +172,11 @@ window.EVENT_DATASETS.ODX_2026 = {
       nameEN: "Onsite Operation",
       status: "Not Started",
       progress: 0,
-      owner: "待补充",
+      owner: "Bruin",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "待补充",
-      nextAction: "待补充",
+      latestUpdate: "TBD",
+      nextAction: "TBD",
       remarks: ""
     },
     {
@@ -182,11 +185,11 @@ window.EVENT_DATASETS.ODX_2026 = {
       nameEN: "Social Communication",
       status: "Not Started",
       progress: 0,
-      owner: "待补充",
+      owner: "Seloma",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "待补充",
-      nextAction: "待补充",
+      latestUpdate: "TBD",
+      nextAction: "TBD",
       remarks: ""
     },
     {
@@ -195,11 +198,11 @@ window.EVENT_DATASETS.ODX_2026 = {
       nameEN: "Post-event Report",
       status: "Not Started",
       progress: 0,
-      owner: "待补充",
+      owner: "Christy",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "待补充",
-      nextAction: "待补充",
+      latestUpdate: "TBD",
+      nextAction: "TBD",
       remarks: ""
     },
     {
@@ -208,50 +211,58 @@ window.EVENT_DATASETS.ODX_2026 = {
       nameEN: "Payment / Reimbursement",
       status: "Not Started",
       progress: 0,
-      owner: "待补充",
+      owner: "媛媛 & Dennis",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "待补充",
-      nextAction: "待补充",
+      latestUpdate: "TBD",
+      nextAction: "TBD",
       remarks: ""
     },
     {
       workstreamId: "ODX26-WS-14",
       nameCN: "展品与屏幕内容",
       nameEN: "Exhibit Content & Product Showcase",
-      status: "Needs Update",
-      progress: null,
-      owner: "待补充",
+      status: "Not Started",
+      progress: 0,
+      owner: "媛媛 & Dennis",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "待补充",
-      nextAction: "待确认是否适用。",
+      latestUpdate: "TBD",
+      nextAction: "TBD",
       remarks: ""
     },
     {
       workstreamId: "ODX26-WS-15",
-      nameCN: "PR / 媒体跟进",
+      nameCN: "PR / 媒体跟踪",
       nameEN: "PR & Media Monitoring",
       status: "Not Started",
       progress: 0,
-      owner: "待补充",
+      owner: "Iris & Christy",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "待补充",
-      nextAction: "待补充",
+      latestUpdate: "TBD",
+      nextAction: "TBD",
       remarks: ""
     }
   ],
 
   milestones: [
-    { milestoneId: "M-01", date: "2026-07-23", titleCN: "活动日期及大会主题录入", status: "Confirmed", remarks: "" },
-    { milestoneId: "M-02", date: "2026-09-02", titleCN: "ODX 2026 活动日", status: "Confirmed", remarks: "" },
-    { milestoneId: "M-03", date: "", titleCN: "演讲人确认", status: "Needs Update", remarks: "" },
-    { milestoneId: "M-04", date: "", titleCN: "Keynote 定稿", status: "Needs Update", remarks: "" },
-    { milestoneId: "M-05", date: "", titleCN: "Booth 设计冻结", status: "Needs Update", remarks: "" },
-    { milestoneId: "M-06", date: "", titleCN: "合同签署", status: "Needs Update", remarks: "" }
+    { milestoneId: "M-01", date: "2026-09-02", titleCN: "ODX 2026 活动日", status: "Not Started", remarks: "" }
   ],
 
-  sessions: [],
+  sessions: [
+    {
+      sessionId: "ODX-SESSION-01",
+      type: "Breakout Session",
+      speaker: "TBD",
+      role: "TBD",
+      topicEN: "TBD",
+      topicCN: "TBD",
+      time: "TBD",
+      status: "Not Started",
+      remarks: ""
+    }
+  ],
+
   finalDocuments: []
 };

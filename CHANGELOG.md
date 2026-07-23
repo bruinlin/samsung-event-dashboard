@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.1-web - 2026-07-23
+
+- Updated the independent ODX 2026 event record with confirmed event details, sponsorship level, participation format, Booth area and Main Forum speaker information.
+- Reset all 15 ODX 2026 workstreams to Not Started at 0% while retaining the OCTS owner mapping and leaving dates, completion dates and remarks empty.
+- Added conditional Event Overview fields for sponsorship, participation form, Booth area, Booth number and detailed agenda; these fields appear only when event data supplies them.
+
 ## 1.2.0-web - 2026-07-23
 
 - Marked all 15 OCTS 2026 workstreams and all recorded milestones as Completed; Workstream Completion now evaluates to 100%.
