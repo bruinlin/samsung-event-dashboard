@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.6-web - 2026-07-26
+
+- Moved Documents & Deliverables from the main column to directly below Attention Needed in the side column, without changing document data or download behavior.
+- Condensed side-column document records into a compact list with a single file/download summary, compact category filters, metadata and full-width download actions.
+- Elevated Event Overview with a restrained Samsung blue-grey panel treatment, stronger heading hierarchy and a wider Keynote group while retaining its compact three-group content model.
+
 ## 1.4.5-web - 2026-07-26
 
 - Removed the duplicated top Metric Cards row for Event Status, Workstream Completion, Main Speaker, Location and Report Status.

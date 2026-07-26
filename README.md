@@ -18,6 +18,8 @@ When the URL has no event hash, the Dashboard opens the nearest upcoming event t
 
 Project Calendar opens in `2 Weeks` view for every screen size. It shows the current 14-day period in two week groups and lists the next five filtered, unfinished items under Later Deadlines. Use Previous, Today, and Next to move by 14 days; select `Month` for the full month grid. Calendar filters are collapsed by default and continue to apply to both views.
 
+Documents & Deliverables sits directly below Attention Needed in the side column. Its filters, file records and repository-relative download behavior remain data-driven through `finalDocuments`; only the display is condensed for the narrow column.
+
 ## Update event data
 
 - `event_data.js` is the root event registry. Add each new event here and point `dataFile` to its local data file.

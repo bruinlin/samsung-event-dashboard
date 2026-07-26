@@ -344,8 +344,8 @@
         ${boothParts.length ? `<div class="overview-detail"><span>Booth</span><b>${safeText(boothParts.join(" · "))}</b></div>` : ""}
         ${products ? `<div class="overview-detail"><span>Showcased Products</span><b>${safeText(products)}</b></div>` : ""}
       </article>` : ""
-    ].filter(Boolean).join("");
-    $("overview-grid").innerHTML = `<div class="overview-groups">${groups}</div>`;
+    ].filter(Boolean);
+    $("overview-grid").innerHTML = `<div class="overview-groups overview-count-${groups.length}">${groups.join("")}</div>`;
   }
 
   function renderControls(data) {
@@ -988,24 +988,13 @@
     const filtered = state.documentCategory === "all"
       ? documents
       : documents.filter((item) => item.category === state.documentCategory);
-    const presentationCount = documents.filter((item) => item.category === "Presentation").length;
-    const reportCount = documents.filter((item) => item.category === "Report").length;
     const downloadableCount = documents.filter((item) => finalDocumentHref(item)).length;
 
     $("final-document-filters").innerHTML = FINAL_DOCUMENT_CATEGORIES.map((item) =>
       `<button type="button" class="filter-chip ${item.id === state.documentCategory ? "active" : ""}" data-document-category="${escapeHtml(item.id)}">${safeText(item.label)}</button>`
     ).join("");
 
-    $("final-document-stats").innerHTML = [
-      ["File Records", documents.length],
-      ["Downloads", downloadableCount],
-      ["Presentations", presentationCount],
-      ["Reports", reportCount]
-    ].map(([label, value]) => `
-      <div class="final-stat">
-        <span>${safeText(label)}</span>
-        <b>${safeText(value)}</b>
-      </div>`).join("");
+    $("final-document-stats").innerHTML = `<span>${safeText(documents.length)} Files · ${safeText(downloadableCount)} Downloads</span>`;
 
     $("final-document-empty").hidden = filtered.length !== 0;
     $("final-document-list").innerHTML = filtered.map((item) => {

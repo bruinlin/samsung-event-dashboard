@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <title>Samsung Event Dashboard</title>
-  <link rel="stylesheet" href="assets/style.css?v=1.4.5">
+  <link rel="stylesheet" href="assets/style.css?v=1.4.6">
 </head>
 <body>
   <div class="page-shell">
@@ -46,11 +46,11 @@
 
     <div class="dashboard-grid">
       <main class="main-column">
-        <section class="panel" aria-labelledby="overview-title">
+        <section class="panel overview-panel" aria-labelledby="overview-title">
           <div class="panel-heading">
             <div>
               <h2 id="overview-title">Event Overview</h2>
-              <p>活动基础信息与当前事实摘要</p>
+              <p>活动核心信息</p>
             </div>
           </div>
           <div class="panel-body">
@@ -121,19 +121,6 @@
           <div class="empty-state" id="workstream-empty" hidden>没有匹配的工作模块。</div>
         </section>
 
-        <section class="panel final-deliverables-panel" aria-labelledby="final-deliverables-title">
-          <div class="panel-heading final-deliverables-heading">
-            <div>
-              <h2 id="final-deliverables-title">Documents &amp; Deliverables</h2>
-              <p>文件与交付物 · 已审核文件可下载，其他文件仅展示归档状态</p>
-            </div>
-            <div class="filter-chips no-print" id="final-document-filters" aria-label="最终文件分类筛选"></div>
-          </div>
-          <div class="final-document-stats" id="final-document-stats" aria-label="最终文件统计"></div>
-          <div class="final-document-list" id="final-document-list"></div>
-          <div class="empty-state" id="final-document-empty" hidden>该分类暂时没有文件记录。</div>
-        </section>
-
         <section class="panel" aria-labelledby="sessions-title">
           <div class="panel-heading">
             <div>
@@ -158,6 +145,19 @@
           </div>
         </section>
 
+        <section class="panel final-deliverables-panel side-deliverables-panel" aria-labelledby="final-deliverables-title">
+          <div class="panel-heading final-deliverables-heading">
+            <div>
+              <h2 id="final-deliverables-title">Documents &amp; Deliverables</h2>
+              <p>文件与交付物</p>
+            </div>
+            <div class="filter-chips no-print" id="final-document-filters" aria-label="最终文件分类筛选"></div>
+          </div>
+          <div class="final-document-stats" id="final-document-stats" aria-label="最终文件统计"></div>
+          <div class="final-document-list" id="final-document-list"></div>
+          <div class="empty-state" id="final-document-empty" hidden>该分类暂时没有文件记录。</div>
+        </section>
+
       </aside>
     </div>
 
@@ -170,6 +170,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="event_data.js?v=1.4.4"></script>
-  <script src="assets/app.js?v=1.4.5"></script>
+  <script src="assets/app.js?v=1.4.6"></script>
 </body>
 </html>
