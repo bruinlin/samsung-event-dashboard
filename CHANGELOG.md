@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.4-web - 2026-07-26
+
+- Simplified Event Overview into Event Theme, Participation, Main Forum Keynote, and Booth & Products groups, removing repeated date, location, event type, detailed agenda and current summary display.
+- Added the confirmed ODX Chinese event theme and Main Forum Keynote time. The ODX keynote topic remains the single existing `TBD` value until a confirmed topic is available.
+- Improved responsive Overview density with a compact theme strip, three adaptive desktop groups and a single-column mobile layout.
+
 ## 1.4.3-web - 2026-07-26
 
 - Removed the duplicate ODX 2026 Event Day milestone; the existing event date continues to generate the single Calendar Event Day entry.

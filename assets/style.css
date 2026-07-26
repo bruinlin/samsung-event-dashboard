@@ -293,34 +293,26 @@ select {
 
 .overview-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 11px;
+  gap: 12px;
 }
 
-.overview-item {
-  min-height: 90px;
-  padding: 13px 14px;
-  border: 1px solid #e5edf6;
-  border-radius: 12px;
-  background: var(--blue-50);
-}
-
-.overview-key { margin-bottom: 7px; color: var(--ink-500); font-size: 11px; font-weight: 650; }
-.overview-value { font-size: 14px; font-weight: 650; line-height: 1.5; overflow-wrap: anywhere; }
-
-.summary-block {
-  margin-top: 12px;
-}
-
-.summary-block > div {
-  padding: 15px 16px;
-  border: 1px solid #d7e6f8;
-  border-radius: 12px;
-  background: #eef6ff;
-}
-
-.summary-block h3 { margin: 0 0 6px; color: var(--blue-700); font-size: 11px; }
-.summary-block p { margin: 0; color: var(--ink-700); font-size: 12px; line-height: 1.7; }
+.overview-theme { display: flex; align-items: baseline; gap: 12px; padding: 10px 12px; border: 1px solid #d9e8f8; border-radius: 9px; background: #f4f9ff; }
+.overview-theme span, .overview-group h3, .overview-topic > span, .overview-detail > span { color: var(--ink-500); font-size: 12px; font-weight: 700; }
+.overview-theme b { color: var(--blue-700); font-size: 15px; line-height: 1.45; }
+.overview-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.overview-group { display: grid; align-content: start; gap: 7px; min-width: 0; padding: 12px; border: 1px solid var(--line-soft); border-radius: 10px; background: #fff; }
+.overview-group h3 { margin: 0; color: var(--ink-700); font-size: 13px; line-height: 1.35; }
+.overview-group h3 span { color: var(--ink-500); font-size: 12px; font-weight: 500; }
+.overview-group > b { color: var(--ink-900); font-size: 15px; line-height: 1.4; overflow-wrap: anywhere; }
+.overview-subtitle { color: var(--ink-500); font-size: 12px; line-height: 1.45; overflow-wrap: anywhere; }
+.overview-group time { color: var(--blue-700); font-size: 12px; font-weight: 750; }
+.overview-detail { display: grid; gap: 3px; color: var(--ink-700); font-size: 12px; line-height: 1.45; }
+.overview-detail small { color: var(--ink-500); font-size: 11px; }
+.overview-detail b { color: var(--ink-900); font-size: 14px; font-weight: 650; overflow-wrap: anywhere; }
+.overview-topic { display: grid; gap: 3px; padding-top: 7px; border-top: 1px solid var(--line-soft); }
+.overview-topic strong { color: var(--ink-900); font-size: 14px; line-height: 1.5; font-weight: 650; overflow-wrap: anywhere; }
+.overview-topic-en { display: grid; gap: 2px; color: var(--ink-500); font-size: 11px; line-height: 1.45; }
+.overview-topic-en span { color: var(--ink-500); font-size: 10px; font-weight: 700; }
 
 .filter-chips { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
 
@@ -709,8 +701,6 @@ footer { display: flex; justify-content: space-between; gap: 16px; padding: 4px 
   .toolbar { align-items: stretch; }
   .field-control { flex: 1 1 210px; }
   .button-primary { margin-left: 0; }
-  .overview-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .summary-block { grid-template-columns: 1fr; }
   .workstream-heading { align-items: flex-start; flex-direction: column; }
   .calendar-heading { align-items: flex-start; flex-direction: column; }
   .final-deliverables-heading { align-items: flex-start; flex-direction: column; }
@@ -723,7 +713,8 @@ footer { display: flex; justify-content: space-between; gap: 16px; padding: 4px 
 @media (max-width: 540px) {
   .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .metric-card { min-height: 104px; padding: 14px; }
-  .overview-grid { grid-template-columns: 1fr; }
+  .overview-theme { align-items: flex-start; flex-direction: column; gap: 4px; }
+  .overview-groups { grid-template-columns: 1fr; }
   .panel-heading, .panel-body, .session-grid { padding-left: 15px; padding-right: 15px; }
   .status-count-item { flex: 1 1 130px; }
   .calendar-toolbar { align-items: stretch; padding-left: 15px; padding-right: 15px; }
@@ -822,7 +813,7 @@ footer { display: flex; justify-content: space-between; gap: 16px; padding: 4px 
   .metric-value { font-size: 16px; }
   .dashboard-grid { display: block; }
   .panel { box-shadow: none; break-inside: auto; }
-  .overview-grid { grid-template-columns: repeat(4, 1fr); }
+  .overview-groups { grid-template-columns: repeat(3, 1fr); }
   .session-grid { grid-template-columns: repeat(2, 1fr); }
   .workstream-table { min-width: 0; font-size: 8px; table-layout: fixed; }
   .workstream-table th, .workstream-table td { padding: 6px 5px; font-size: 8px; }

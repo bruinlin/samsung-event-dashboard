@@ -28,8 +28,9 @@ window.EVENT_DATASETS.ODX_2026 = {
     city: "北京",
     venue: "北京国家会议中心二期",
     eventType: "行业技术大会",
-    sponsorshipLevel: "钻石赞助/Diamond",
+    sponsorshipLevel: "Diamond Sponsor / 钻石赞助",
     participationForms: ["主论坛", "分论坛", "Booth"],
+    themeCN: "开放AI Infra，普惠算力赋能",
     boothArea: "36㎡",
     boothNumber: "TBD",
     detailedAgenda: "TBD",
@@ -44,6 +45,7 @@ window.EVENT_DATASETS.ODX_2026 = {
   keynote: {
     speaker: "Jay Hyun",
     title: "CVP, NAND Product Planning, Samsung Electronics",
+    time: "10:30-10:45",
     topicEN: "TBD",
     topicCN: "TBD",
     status: "Not Started"

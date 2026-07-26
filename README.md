@@ -23,6 +23,7 @@ Project Calendar opens in `2 Weeks` view for every screen size. It shows the cur
 - `event_data.js` is the root event registry. Add each new event here and point `dataFile` to its local data file.
 - `data/OCTS_2026.js` contains the OCTS 2026 event details, workstreams, milestones, sessions, result metrics, and document references.
 - `data/ODX_2026.js` contains the independent ODX 2026 record. Update this file for ODX progress; do not copy or overwrite OCTS workstreams.
+- Event Overview groups optional `event.themeCN`, sponsorship and participation fields, `keynote` details, and Booth/product fields. Keep unconfirmed values as `TBD` or empty; do not add an English theme unless it is confirmed.
 - `data/OCTS_2026.js` also contains `finalDocuments`, which controls the unified Documents & Deliverables list, file metadata, category filters, download links, and status-only records.
 - Keep the data structure consistent with the existing event file. Use only the supported status values documented at the top of the data file.
 - Each workstream belongs to one of three categories: `business-commercial`, `event-operations-content`, or `social-pr-reporting`. Add `categoryId`, `categoryNameCN`, and `categoryNameEN` to every new workstream.

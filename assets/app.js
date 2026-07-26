@@ -336,30 +336,40 @@
   function renderOverview(data) {
     const event = data.event;
     const keynote = data.keynote;
-    const theme = [event.themeCN, event.themeEN].filter(Boolean).join(" / ");
-    const items = [
-      ["Date / 日期", formatDate(event.dateStart)],
-      ["Location / 地点", `${event.city} · ${event.venue}`],
-      ["Event Type / 类型", event.eventType],
-      ...(event.sponsorshipLevel ? [["Sponsorship Level / 赞助级别", event.sponsorshipLevel]] : []),
-      ...(event.participationForms ? [["Participation / 参与形式", Array.isArray(event.participationForms) ? event.participationForms.join(" / ") : event.participationForms]] : []),
-      ...(event.boothArea ? [["Booth Area / Booth 面积", event.boothArea]] : []),
-      ...(event.boothNumber ? [["Booth Number / Booth 编号", event.boothNumber]] : []),
-      ...(event.detailedAgenda ? [["Detailed Agenda / 详细议程", event.detailedAgenda]] : []),
-      ...(theme ? [["Event Theme / 大会主题", theme]] : []),
-      ["Main Speaker / 主讲人", keynote.speaker],
-      ["Speaker Title / 职务", keynote.title],
-      ["English Topic / 英文主题", keynote.topicEN],
-      ["Chinese Topic / 中文主题", keynote.topicCN],
-      ["Showcased Products / 展出产品", Array.isArray(event.showcasedProducts) ? event.showcasedProducts.join(" / ") : event.showcasedProducts]
-    ];
-    $("overview-grid").innerHTML = items.map((item) => `
-      <div class="overview-item">
-        <div class="overview-key">${safeText(item[0])}</div>
-        <div class="overview-value">${safeText(item[1])}</div>
-      </div>
-    `).join("");
-    $("current-summary").textContent = event.currentSummary;
+    const theme = event.themeCN || event.themeEN || "";
+    const forms = Array.isArray(event.participationForms)
+      ? event.participationForms.filter(Boolean)
+      : String(event.participationForms || "").split(/[·/]/).map((item) => item.trim()).filter(Boolean);
+    const formTranslations = { "主论坛": "Main Forum", "分论坛": "Breakout Session", Booth: "Booth" };
+    const participationCN = forms.join(" · ");
+    const participationEN = forms.map((item) => formTranslations[item] || item).join(" · ");
+    const sponsorship = String(event.sponsorshipLevel || "").trim();
+    const topicCN = String(keynote.topicCN || "").trim();
+    const topicEN = String(keynote.topicEN || "").trim();
+    const topicENMarkup = topicEN && topicEN !== topicCN ? `<div class="overview-topic-en"><span>English Topic</span>${safeText(topicEN)}</div>` : "";
+    const keynoteTime = String(keynote.time || "").trim().replace(/-/g, "–");
+    const boothParts = [event.boothArea, event.boothNumber ? `Booth No. ${event.boothNumber}` : ""].filter(Boolean);
+    const products = Array.isArray(event.showcasedProducts) ? event.showcasedProducts.filter(Boolean).join(" · ") : String(event.showcasedProducts || "").trim();
+    const groups = [
+      (sponsorship || participationCN) ? `<article class="overview-group participation-group">
+        <h3>Participation <span>/ 参与方式</span></h3>
+        ${sponsorship ? `<b>${safeText(sponsorship)}</b>` : ""}
+        ${participationCN ? `<div class="overview-detail">${safeText(participationEN)}<small>${safeText(participationCN)}</small></div>` : ""}
+      </article>` : "",
+      (keynote.speaker || keynote.title || keynoteTime || topicCN || topicEN) ? `<article class="overview-group keynote-group">
+        <h3>Main Forum Keynote <span>/ 主论坛演讲</span></h3>
+        ${keynote.speaker ? `<b>${safeText(keynote.speaker)}</b>` : ""}
+        ${keynote.title ? `<div class="overview-subtitle">${safeText(keynote.title)}</div>` : ""}
+        ${keynoteTime ? `<time>${safeText(keynoteTime)}</time>` : ""}
+        ${(topicCN || topicEN) ? `<div class="overview-topic"><span>中文主题</span><strong>${safeText(topicCN || topicEN)}</strong>${topicENMarkup}</div>` : ""}
+      </article>` : "",
+      (boothParts.length || products) ? `<article class="overview-group booth-group">
+        <h3>Booth &amp; Products <span>/ 展位与展品</span></h3>
+        ${boothParts.length ? `<div class="overview-detail"><span>Booth</span><b>${safeText(boothParts.join(" · "))}</b></div>` : ""}
+        ${products ? `<div class="overview-detail"><span>Showcased Products</span><b>${safeText(products)}</b></div>` : ""}
+      </article>` : ""
+    ].filter(Boolean).join("");
+    $("overview-grid").innerHTML = `${theme ? `<div class="overview-theme"><span>Event Theme / 大会主题</span><b>${safeText(theme)}</b></div>` : ""}<div class="overview-groups">${groups}</div>`;
   }
 
   function renderControls(data) {
