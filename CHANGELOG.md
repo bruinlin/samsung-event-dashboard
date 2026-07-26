@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.3-web - 2026-07-26
+
+- Removed the duplicate ODX 2026 Event Day milestone; the existing event date continues to generate the single Calendar Event Day entry.
+- Replaced the right-column Key Milestones display with Attention Needed, derived from existing task and stage status, DDL and owner fields. It shows at most one highest-priority concern per workstream and reuses Calendar task-focus behavior.
+- Documented that milestones are reserved for independent cross-task decision points and must not duplicate Event Day, task Final DDLs or stage DDLs.
+
 ## 1.4.2-web - 2026-07-26
 
 - Made the compact Two-Week Agenda the default Calendar view on desktop and mobile, with Previous, Today and Next navigation in 14-day increments.

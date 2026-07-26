@@ -208,9 +208,7 @@ window.EVENT_DATASETS.ODX_2026 = {
     }
   ],
 
-  milestones: [
-    { milestoneId: "M-01", date: "2026-09-02", titleCN: "ODX 2026 活动日", status: "Not Started", remarks: "" }
-  ],
+  milestones: [],
 
   sessions: [
     {

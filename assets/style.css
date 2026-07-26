@@ -676,6 +676,17 @@ a.final-document-name:hover, a.final-document-name:focus-visible { color: var(--
 .timeline-title { margin: 3px 0 6px; color: var(--ink-900); font-size: 13px; font-weight: 720; }
 .timeline-note { margin-top: 6px; color: var(--ink-500); font-size: 11px; line-height: 1.5; }
 
+.attention-list { display: grid; gap: 8px; }
+.attention-item { display: flex; align-items: flex-start; justify-content: space-between; gap: 9px; width: 100%; min-height: 76px; padding: 10px 11px; border: 1px solid var(--line-soft); border-left: 3px solid var(--amber); border-radius: 9px; background: #fffdf7; color: var(--ink-700); cursor: pointer; text-align: left; }
+.attention-item:hover, .attention-item:focus-visible { border-color: #d6a84d; background: #fff9e8; outline: none; }
+.attention-copy { display: grid; gap: 3px; min-width: 0; }
+.attention-copy b { color: var(--ink-900); font-size: 13px; line-height: 1.4; overflow-wrap: anywhere; }
+.attention-copy span { color: var(--ink-700); font-size: 11px; line-height: 1.4; overflow-wrap: anywhere; }
+.attention-copy small { color: var(--ink-500); font-size: 10px; line-height: 1.4; overflow-wrap: anywhere; }
+.attention-item .badge { flex: 0 0 auto; }
+.attention-empty { display: grid; gap: 4px; padding: 14px; border: 1px dashed var(--line); border-radius: 9px; color: var(--ink-500); font-size: 11px; line-height: 1.5; }
+.attention-empty b { color: var(--ink-700); font-size: 12px; }
+
 footer { display: flex; justify-content: space-between; gap: 16px; padding: 4px 2px 18px; color: var(--ink-500); font-size: 11px; }
 
 .toast { position: fixed; right: 24px; bottom: 24px; z-index: 10; padding: 11px 14px; border-radius: 9px; background: var(--navy-900); color: #fff; box-shadow: 0 12px 35px rgba(0,0,0,.18); font-size: 12px; }

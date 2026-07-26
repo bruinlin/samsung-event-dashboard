@@ -92,7 +92,8 @@
     calendarTypes: new Set(CALENDAR_TYPES.map((item) => item.id)),
     calendarSelectedDate: "",
     calendarItems: [],
-    calendarValidationSignature: ""
+    calendarValidationSignature: "",
+    attentionItems: []
   };
 
   const $ = (id) => document.getElementById(id);
@@ -882,6 +883,73 @@
     }
   }
 
+  function attentionReason(status, dueDate) {
+    const today = todayIso();
+    if (status === "Blocked") return { priority: 1, label: "Blocked" };
+    if (isValidDate(dueDate) && dueDate < today) return { priority: 2, label: "Overdue" };
+    if (isValidDate(dueDate) && dueDate === today) return { priority: 3, label: "Due Today" };
+    if (isValidDate(dueDate) && dueDate <= addDays(today, 3)) return { priority: 4, label: "Due Soon" };
+    if (status === "Pending Review") return { priority: 5, label: "Pending Review" };
+    if (!dueDate) return { priority: 6, label: "Missing DDL" };
+    return null;
+  }
+
+  function buildAttentionItems(data) {
+    const attention = [];
+    (data.workstreams || []).forEach((item) => {
+      const candidates = [];
+      stagesFor(item).forEach((stage) => {
+        if (isCompletedStatus(stage.status)) return;
+        const reason = attentionReason(stage.status || "Not Started", stage.dueDate);
+        if (reason) candidates.push({
+          ...reason,
+          id: `attention:${item.workstreamId}:${stage.id}`,
+          workstreamId: item.workstreamId,
+          stageId: stage.id,
+          titleEN: `${item.nameEN} · ${stage.nameEN}`,
+          titleCN: stage.nameCN || stage.nameEN,
+          dueDate: stage.dueDate || "",
+          owner: item.owner || "",
+          status: stage.status || "Not Started"
+        });
+      });
+      const taskStatus = workstreamStatus(item);
+      if (!isCompletedStatus(taskStatus)) {
+        const reason = attentionReason(taskStatus, item.dueDate);
+        if (reason) candidates.push({
+          ...reason,
+          id: `attention:${item.workstreamId}:task`,
+          workstreamId: item.workstreamId,
+          titleEN: item.nameEN,
+          titleCN: item.nameCN,
+          dueDate: item.dueDate || "",
+          owner: item.owner || "",
+          status: taskStatus
+        });
+      }
+      candidates.sort((a, b) => a.priority - b.priority || Number(Boolean(b.stageId)) - Number(Boolean(a.stageId)));
+      if (candidates[0]) attention.push(candidates[0]);
+    });
+    return attention.sort((a, b) => a.priority - b.priority || (a.dueDate || "9999-12-31").localeCompare(b.dueDate || "9999-12-31") || a.titleEN.localeCompare(b.titleEN)).slice(0, 5);
+  }
+
+  function renderAttentionNeeded(data) {
+    const items = buildAttentionItems(data);
+    state.attentionItems = items;
+    $("attention-list").innerHTML = items.length
+      ? items.map((item) => `
+          <button type="button" class="attention-item" data-attention-id="${escapeHtml(item.id)}">
+            <div class="attention-copy">
+              <b>${safeText(item.titleEN)}</b>
+              <span>${safeText(item.titleCN)}</span>
+              <small>${safeText(item.reasonLabel || item.label)} · ${formatDeadline(item.dueDate)}</small>
+              <small>${safeText(item.owner || "Unassigned")} · ${safeText(item.status)}</small>
+            </div>
+            ${statusBadge(item.status)}
+          </button>`).join("")
+      : `<div class="attention-empty"><b>No immediate attention required.</b><span>当前没有需要特别关注的事项。</span></div>`;
+  }
+
   function renderSessions(data) {
     $("sessions-grid").innerHTML = data.sessions.map((session) => `
       <article class="session-card">
@@ -996,7 +1064,7 @@
     renderCalendar(data);
     renderWorkstreams();
     renderSessions(data);
-    renderMilestones(data);
+    renderAttentionNeeded(data);
     renderFinalDocuments(data);
     $("footer-event-id").textContent = `${data.event.eventId} · Schema ${data.meta.schemaVersion}`;
   }
@@ -1057,6 +1125,13 @@
       const moreButton = event.target.closest("button[data-calendar-date]");
       if (moreButton) { state.calendarSelectedDate = moreButton.dataset.calendarDate; renderCalendar(state.data); return; }
       if (event.target.closest("button[data-calendar-day-close]")) { state.calendarSelectedDate = ""; renderCalendar(state.data); }
+    });
+
+    $("attention-list").addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-attention-id]");
+      if (!button) return;
+      const item = state.attentionItems.find((entry) => entry.id === button.dataset.attentionId);
+      if (item) focusCalendarItem(item);
     });
 
     $("calendar-filters-toggle").addEventListener("click", () => { state.calendarFiltersOpen = !state.calendarFiltersOpen; renderCalendar(state.data); });

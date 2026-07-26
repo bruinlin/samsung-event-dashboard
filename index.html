@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <title>Samsung Event Dashboard</title>
-  <link rel="stylesheet" href="assets/style.css?v=1.4.2">
+  <link rel="stylesheet" href="assets/style.css?v=1.4.3">
 </head>
 <body>
   <div class="page-shell">
@@ -153,15 +153,15 @@
       </main>
 
       <aside class="side-column">
-        <section class="panel" aria-labelledby="milestones-title">
+        <section class="panel attention-panel" aria-labelledby="attention-title">
           <div class="panel-heading">
             <div>
-              <h2 id="milestones-title">Key Milestones</h2>
-              <p>已确认日期优先；待补充日期置后</p>
+              <h2 id="attention-title">Attention Needed</h2>
+              <p>需要关注 · 自动根据当前任务、阶段与 DDL 派生</p>
             </div>
           </div>
           <div class="panel-body">
-            <div class="timeline" id="timeline"></div>
+            <div class="attention-list" id="attention-list"></div>
           </div>
         </section>
 
@@ -176,7 +176,7 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-  <script src="event_data.js?v=1.4.1"></script>
-  <script src="assets/app.js?v=1.4.2"></script>
+  <script src="event_data.js?v=1.4.3"></script>
+  <script src="assets/app.js?v=1.4.3"></script>
 </body>
 </html>
