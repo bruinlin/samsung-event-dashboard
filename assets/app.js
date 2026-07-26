@@ -58,6 +58,19 @@
     { id: "Other", label: "Other / 其他" }
   ];
 
+  const CALENDAR_CATEGORIES = [
+    { id: "all", label: "All Categories" },
+    { id: "business-commercial", label: "Business & Commercial" },
+    { id: "event-operations-content", label: "Event Operations & Content" },
+    { id: "social-pr-reporting", label: "Social, PR & Reporting" }
+  ];
+
+  const CALENDAR_TYPES = [
+    { id: "task", label: "Task DDL" },
+    { id: "stage", label: "Stage DDL" },
+    { id: "milestone", label: "Milestone" }
+  ];
+
   const state = {
     data: null,
     eventId: "",
@@ -66,7 +79,17 @@
     owner: "all",
     hideCompleted: false,
     documentCategory: "all",
-    collapsedCategories: new Set()
+    collapsedCategories: new Set(),
+    calendarView: "month",
+    calendarMonth: null,
+    calendarCategory: "all",
+    calendarOwner: "all",
+    calendarActiveOnly: true,
+    calendarIncludeCompleted: false,
+    calendarTypes: new Set(CALENDAR_TYPES.map((item) => item.id)),
+    calendarSelectedDate: "",
+    calendarItems: [],
+    calendarValidationSignature: ""
   };
 
   const $ = (id) => document.getElementById(id);
@@ -85,6 +108,41 @@
     const parts = String(value).split("-");
     if (parts.length !== 3) return escapeHtml(value);
     return `${parts[0]}.${parts[1]}.${parts[2]}`;
+  }
+
+  function isValidDate(value) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value || ""))) return false;
+    const [year, month, day] = String(value).split("-").map(Number);
+    const date = new Date(year, month - 1, day);
+    return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+  }
+
+  function formatDeadline(value) {
+    if (!value) return "Missing DDL";
+    return isValidDate(value) ? formatDate(value) : "Invalid DDL";
+  }
+
+  function dateFromIso(value) {
+    const [year, month, day] = String(value).split("-").map(Number);
+    return new Date(year, month - 1, day);
+  }
+
+  function isoFromDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  function todayIso() {
+    const now = new Date();
+    return isoFromDate(new Date(now.getFullYear(), now.getMonth(), now.getDate()));
+  }
+
+  function addDays(isoDate, days) {
+    const date = dateFromIso(isoDate);
+    date.setDate(date.getDate() + days);
+    return isoFromDate(date);
   }
 
   function badge(label, className) {
@@ -138,6 +196,16 @@
     state.hideCompleted = false;
     state.documentCategory = "all";
     state.collapsedCategories = new Set();
+    state.calendarView = window.innerWidth <= 540 ? "agenda" : "month";
+    state.calendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    state.calendarCategory = "all";
+    state.calendarOwner = "all";
+    state.calendarActiveOnly = true;
+    state.calendarIncludeCompleted = false;
+    state.calendarTypes = new Set(CALENDAR_TYPES.map((item) => item.id));
+    state.calendarSelectedDate = "";
+    state.calendarItems = [];
+    state.calendarValidationSignature = "";
     window.location.hash = eventId;
     renderDashboard();
   }
@@ -146,11 +214,19 @@
     return Array.isArray(item.stages) && item.stages.length ? item.stages : [];
   }
 
+  function currentStageFor(item) {
+    const stages = stagesFor(item);
+    if (!stages.length) return null;
+    const configured = stages.find((stage) => stage.id === item.currentStageId);
+    if (configured) return configured;
+    return stages.find((stage) => stage.status !== "Completed") || stages[stages.length - 1];
+  }
+
   function workstreamStatus(item) {
     const stages = stagesFor(item);
     if (!stages.length) return item.status;
     if (stages.some((stage) => stage.status === "Blocked")) return "Blocked";
-    const currentStage = stages.find((stage) => stage.id === item.currentStageId);
+    const currentStage = currentStageFor(item);
     if (currentStage?.status === "Pending Review" || stages.some((stage) => stage.status === "Pending Review")) return "Pending Review";
     const completed = stages.filter((stage) => stage.status === "Completed").length;
     if (completed === stages.length) return "Completed";
@@ -361,7 +437,7 @@
     return `
       <div class="stage-tracker" aria-label="${safeText(item.nameCN)} 阶段进度">
         ${stages.map((stage) => {
-          const isCurrent = stage.id === item.currentStageId;
+          const isCurrent = stage.id === currentStageFor(item)?.id;
           const stageStatus = stage.status || "Not Started";
           const symbol = stageStatus === "Completed" ? "✓" : isCurrent ? "●" : "○";
           return `<div class="stage-item ${escapeHtml(stageStatus.toLowerCase().replaceAll(" ", "-"))} ${isCurrent ? "current" : ""}">
@@ -369,8 +445,12 @@
             <div class="stage-copy">
               <b>${safeText(stage.nameEN)}</b>
               <span>${safeText(stage.nameCN)}</span>
+              <div class="stage-meta">
+                <span>Status: <b>${safeText(stageStatus)}</b></span>
+                <span>DDL: <b>${formatDeadline(stage.dueDate)}</b></span>
+                ${stage.completedDate ? `<span>Completed: <b>${formatDate(stage.completedDate)}</b></span>` : stageStatus === "Completed" ? `<span>Completed: <b>Missing Date</b></span>` : ""}
+              </div>
             </div>
-            ${stage.completedDate ? `<time>${formatDate(stage.completedDate)}</time>` : ""}
           </div>`;
         }).join("")}
       </div>`;
@@ -381,9 +461,16 @@
     const detail = String(item.remarks ?? item.comments ?? "").trim();
     const stages = stagesFor(item);
     const hasExpandableContent = detail || stages.length;
-    const currentStage = stages.find((stage) => stage.id === item.currentStageId);
+    const currentStage = currentStageFor(item);
+    const completedStages = stages.filter((stage) => stage.status === "Completed").length;
     const currentStageMarkup = currentStage
-      ? `<div class="current-stage"><span>Current Stage</span><b>${safeText(currentStage.nameEN)}</b></div>`
+      ? `<div class="current-stage">
+          <span>Current Stage</span><b>${safeText(currentStage.nameEN)} / ${safeText(currentStage.nameCN)}</b>
+          <span>Stage Status</span><b>${safeText(currentStage.status || "Not Started")}</b>
+          <span>Stage DDL</span><b>${formatDeadline(currentStage.dueDate)}</b>
+          <span>Progress</span><b>${completedStages} / ${stages.length} completed · ${workstreamProgress(item)}%</b>
+          <span>Final DDL</span><b>${formatDeadline(item.dueDate)}</b>
+        </div>`
       : "";
     const detailButton = hasExpandableContent
       ? `<button class="detail-button" type="button" data-detail-id="${id}" aria-expanded="false" aria-label="展开 ${safeText(item.nameCN)} ${stages.length ? "阶段" : "详情"}">＋</button>`
@@ -399,7 +486,7 @@
         </tr>`
       : "";
     return `
-      <tr class="data-row">
+        <tr class="data-row" id="workstream-${id}" data-workstream-id="${id}">
         <td data-label="Task">
           <div class="workstream-name">${safeText(item.nameCN)}</div>
           <div class="workstream-en">${safeText(item.nameEN)}</div>
@@ -407,9 +494,9 @@
         </td>
         <td data-label="Status">${statusBadge(workstreamStatus(item))}${currentStageMarkup}</td>
         <td data-label="Progress">${progressCell(item)}</td>
-        <td data-label="Owner / Due Date">
+        <td data-label="Owner / Final DDL">
           ${item.owner ? `<div class="date-stack"><span>${safeText(item.owner)}</span></div>` : ""}
-          ${item.dueDate ? `<div class="date-stack" style="margin-top:7px"><b>截止</b><span>${formatDate(item.dueDate)}</span></div>` : ""}
+          <div class="date-stack" style="margin-top:7px"><b>Final DDL / 最终截止</b><span>${formatDeadline(item.dueDate)}</span></div>
         </td>
         <td data-label="Latest Update">${safeText(item.latestUpdate)}</td>
         <td data-label="Next Action">${safeText(item.nextAction)}</td>
@@ -446,6 +533,283 @@
     }).join("");
   }
 
+  function calendarItemId(item) {
+    return [item.type, item.date, item.eventId, item.workstreamId || item.milestoneId || "event", item.stageId || ""].join(":");
+  }
+
+  function isCompletedStatus(status) {
+    return status === "Completed" || status === "Not Applicable";
+  }
+
+  function validateDeadlines(data) {
+    const issues = [];
+    const missing = [];
+    let completedWithoutDate = 0;
+    (data.workstreams || []).forEach((item) => {
+      const status = workstreamStatus(item);
+      if (item.dueDate && !isValidDate(item.dueDate)) issues.push(`${item.workstreamId}: Task Final DDL is invalid`);
+      if (!item.dueDate && !isCompletedStatus(status)) missing.push({ type: "task", categoryId: categoryFor(item).id, owner: item.owner || "", workstreamId: item.workstreamId });
+      const stages = stagesFor(item);
+      let previousStageDate = "";
+      let lastStageDate = "";
+      stages.forEach((stage) => {
+        if (stage.dueDate && !isValidDate(stage.dueDate)) issues.push(`${item.workstreamId}/${stage.id}: Stage DDL is invalid`);
+        if (isValidDate(stage.dueDate)) {
+          if (previousStageDate && stage.dueDate < previousStageDate) issues.push(`${item.workstreamId}: Stage DDL sequence is out of order`);
+          previousStageDate = stage.dueDate;
+          lastStageDate = stage.dueDate;
+        }
+        if (!stage.dueDate && stage.status !== "Completed") missing.push({ type: "stage", categoryId: categoryFor(item).id, owner: item.owner || "", workstreamId: item.workstreamId, stageId: stage.id });
+        if (stage.status === "Completed" && !stage.completedDate) completedWithoutDate += 1;
+      });
+      if (isValidDate(item.dueDate) && lastStageDate && item.dueDate < lastStageDate) issues.push(`${item.workstreamId}: Task Final DDL is earlier than its last Stage DDL`);
+    });
+    return { issues, missing, completedWithoutDate };
+  }
+
+  function buildCalendarItems(data) {
+    const items = [];
+    const event = data.event || {};
+    const start = isValidDate(event.dateStart) ? event.dateStart : "";
+    const end = isValidDate(event.dateEnd) ? event.dateEnd : start;
+    if (start) {
+      for (let date = start; date <= end; date = addDays(date, 1)) {
+        items.push({
+          type: "event",
+          date,
+          eventId: event.eventId,
+          status: event.overallStatus || "Not Started",
+          titleEN: `${event.shortName} · Event Day`,
+          titleCN: event.nameCN || event.shortName,
+          owner: "",
+          categoryId: "",
+          categoryNameEN: ""
+        });
+      }
+    }
+    (data.milestones || []).forEach((milestone) => {
+      if (!isValidDate(milestone.date)) return;
+      items.push({
+        type: "milestone",
+        date: milestone.date,
+        eventId: event.eventId,
+        milestoneId: milestone.milestoneId,
+        status: milestone.status || "Not Started",
+        titleEN: "Milestone",
+        titleCN: milestone.titleCN || "Milestone",
+        owner: "",
+        categoryId: "",
+        categoryNameEN: ""
+      });
+    });
+    (data.workstreams || []).forEach((item) => {
+      const category = categoryFor(item);
+      const status = workstreamStatus(item);
+      if (isValidDate(item.dueDate)) {
+        items.push({
+          type: "task",
+          date: item.dueDate,
+          eventId: event.eventId,
+          workstreamId: item.workstreamId,
+          status,
+          titleEN: `${item.nameEN} · Final DDL`,
+          titleCN: `${item.nameCN} · 最终截止`,
+          taskNameEN: item.nameEN,
+          owner: item.owner || "",
+          categoryId: category.id,
+          categoryNameEN: category.nameEN
+        });
+      }
+      stagesFor(item).forEach((stage) => {
+        if (!isValidDate(stage.dueDate)) return;
+        items.push({
+          type: "stage",
+          date: stage.dueDate,
+          eventId: event.eventId,
+          workstreamId: item.workstreamId,
+          stageId: stage.id,
+          status: stage.status || "Not Started",
+          titleEN: `${item.nameEN} · ${stage.nameEN}`,
+          titleCN: stage.nameCN || stage.nameEN,
+          taskNameEN: item.nameEN,
+          owner: item.owner || "",
+          categoryId: category.id,
+          categoryNameEN: category.nameEN
+        });
+      });
+    });
+    return items.map((item) => ({ ...item, id: calendarItemId(item) }));
+  }
+
+  function calendarBaseFilter(items) {
+    return items.filter((item) => {
+      if (item.type !== "event" && !state.calendarTypes.has(item.type)) return false;
+      if (state.calendarCategory !== "all" && item.categoryId && item.categoryId !== state.calendarCategory) return false;
+      if (state.calendarOwner !== "all" && item.owner && item.owner !== state.calendarOwner) return false;
+      return true;
+    });
+  }
+
+  function calendarVisibleItems() {
+    return calendarBaseFilter(state.calendarItems).filter((item) => {
+      if (!state.calendarIncludeCompleted && isCompletedStatus(item.status)) return false;
+      if (state.calendarActiveOnly && item.status === "Not Applicable") return false;
+      return true;
+    });
+  }
+
+  function calendarMissingItems() {
+    const missing = state.calendarValidation?.missing || [];
+    return missing.filter((item) => {
+      if (!state.calendarTypes.has(item.type)) return false;
+      if (state.calendarCategory !== "all" && item.categoryId !== state.calendarCategory) return false;
+      if (state.calendarOwner !== "all" && item.owner !== state.calendarOwner) return false;
+      const workstream = state.data.workstreams.find((entry) => entry.workstreamId === item.workstreamId);
+      return state.calendarIncludeCompleted || !isCompletedStatus(workstreamStatus(workstream));
+    });
+  }
+
+  function calendarItemLabel(item, compact = false) {
+    const typeLabel = item.type === "task" ? "Task Final DDL" : item.type === "stage" ? "Stage DDL" : item.type === "milestone" ? "Milestone" : "Event Day";
+    if (compact) return `<b>${safeText(item.titleEN)}</b>`;
+    return `
+      <div class="calendar-item-copy">
+        <b>${safeText(item.titleEN)}</b>
+        <span>${safeText(item.titleCN)}</span>
+        <small>${safeText(typeLabel)}${item.categoryNameEN ? ` · ${safeText(item.categoryNameEN)}` : ""}${item.owner ? ` · ${safeText(item.owner)}` : ""}</small>
+      </div>
+      ${statusBadge(item.status)}`;
+  }
+
+  function calendarItemButton(item, compact = false) {
+    return `<button type="button" class="calendar-item ${escapeHtml(item.type)} ${compact ? "compact" : ""}" data-calendar-item-id="${escapeHtml(item.id)}">${calendarItemLabel(item, compact)}</button>`;
+  }
+
+  function renderCalendarControls(data) {
+    $("calendar-category-filters").innerHTML = CALENDAR_CATEGORIES.map((item) =>
+      `<button type="button" class="filter-chip ${item.id === state.calendarCategory ? "active" : ""}" data-calendar-category="${escapeHtml(item.id)}">${safeText(item.label)}</button>`
+    ).join("");
+    const owners = [...new Set((data.workstreams || []).map((item) => item.owner).filter(Boolean))].sort((a, b) => a.localeCompare(b, "zh-CN"));
+    $("calendar-owner-select").innerHTML = `<option value="all">All Owners</option>` + owners.map((owner) =>
+      `<option value="${escapeHtml(owner)}" ${owner === state.calendarOwner ? "selected" : ""}>${safeText(owner)}</option>`
+    ).join("");
+    $("calendar-active-only").checked = state.calendarActiveOnly;
+    $("calendar-include-completed").checked = state.calendarIncludeCompleted;
+    $("calendar-type-filters").innerHTML = CALENDAR_TYPES.map((item) =>
+      `<button type="button" class="filter-chip ${state.calendarTypes.has(item.id) ? "active" : ""}" data-calendar-type="${escapeHtml(item.id)}">${safeText(item.label)}</button>`
+    ).join("");
+    $("calendar-content").dataset.view = state.calendarView;
+    $("project-calendar").querySelectorAll("button[data-calendar-view]").forEach((button) => {
+      button.classList.toggle("active", button.dataset.calendarView === state.calendarView);
+    });
+  }
+
+  function renderCalendarStats(scopedItems) {
+    const today = todayIso();
+    const nextWeek = addDays(today, 7);
+    const activeItems = scopedItems.filter((item) => !isCompletedStatus(item.status));
+    const overdue = activeItems.filter((item) => item.date < today).length;
+    const dueToday = activeItems.filter((item) => item.date === today).length;
+    const nextSeven = activeItems.filter((item) => item.date > today && item.date <= nextWeek).length;
+    const missing = calendarMissingItems().length;
+    $("calendar-stats").innerHTML = [
+      ["Overdue", overdue, "red"],
+      ["Due Today", dueToday, "blue"],
+      ["Next 7 Days", nextSeven, "blue"],
+      ["Missing DDL", missing, "grey"]
+    ].map(([label, value, className]) => `<div class="calendar-stat ${className}"><span>${label}</span><b>${value}</b></div>`).join("");
+  }
+
+  function renderMonthView(items) {
+    const month = state.calendarMonth || new Date();
+    const year = month.getFullYear();
+    const monthIndex = month.getMonth();
+    const first = new Date(year, monthIndex, 1);
+    const gridStart = new Date(year, monthIndex, 1 - first.getDay());
+    const days = Array.from({ length: 42 }, (_, index) => {
+      const day = new Date(gridStart.getFullYear(), gridStart.getMonth(), gridStart.getDate() + index);
+      const date = isoFromDate(day);
+      const dayItems = items.filter((item) => item.date === date);
+      const visibleItems = dayItems.slice(0, 3);
+      const isCurrentMonth = day.getMonth() === monthIndex;
+      const isToday = date === todayIso();
+      return `<article class="calendar-day ${isCurrentMonth ? "" : "other-month"} ${isToday ? "today" : ""} ${dayItems.some((item) => !isCompletedStatus(item.status) && item.date < todayIso()) ? "overdue" : ""}">
+        <div class="calendar-day-number">${day.getDate()}</div>
+        <div class="calendar-day-items">${visibleItems.map((item) => calendarItemButton(item, true)).join("")}</div>
+        ${dayItems.length > 3 ? `<button type="button" class="calendar-more" data-calendar-date="${date}">+ ${dayItems.length - 3} more</button>` : ""}
+      </article>`;
+    }).join("");
+    $("calendar-month-label").textContent = `${year}.${String(monthIndex + 1).padStart(2, "0")}`;
+    return `<div class="calendar-month"><div class="calendar-weekdays"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div><div class="calendar-days">${days}</div></div>`;
+  }
+
+  function renderAgendaView(items) {
+    const today = todayIso();
+    const until = addDays(today, 13);
+    const upcoming = items.filter((item) => item.date >= today && item.date <= until).sort((a, b) => a.date.localeCompare(b.date) || a.titleEN.localeCompare(b.titleEN));
+    return `<div class="calendar-agenda">
+      <div class="calendar-agenda-title">Upcoming · ${formatDate(today)} — ${formatDate(until)}</div>
+      ${upcoming.length ? upcoming.map((item) => `<article class="calendar-agenda-item"><time>${formatDate(item.date)}</time>${calendarItemButton(item)}</article>`).join("") : `<div class="empty-state">未来 14 天没有已填写 DDL 的事项。</div>`}
+    </div>`;
+  }
+
+  function renderCalendarDayDetail(items) {
+    const date = state.calendarSelectedDate;
+    const panel = $("calendar-day-detail");
+    if (!date) { panel.hidden = true; panel.innerHTML = ""; return; }
+    const dayItems = items.filter((item) => item.date === date);
+    panel.hidden = false;
+    panel.innerHTML = `<div class="calendar-day-detail-heading"><b>${formatDate(date)}</b><button type="button" class="detail-button" data-calendar-day-close aria-label="关闭当天事项">−</button></div>${dayItems.map((item) => calendarItemButton(item)).join("") || `<div class="empty-state">当天没有符合筛选条件的事项。</div>`}`;
+  }
+
+  function renderCalendar(data) {
+    state.calendarValidation = validateDeadlines(data);
+    state.calendarItems = buildCalendarItems(data);
+    const signature = JSON.stringify({ issues: state.calendarValidation.issues, completedWithoutDate: state.calendarValidation.completedWithoutDate });
+    if (signature !== state.calendarValidationSignature && (state.calendarValidation.issues.length || state.calendarValidation.completedWithoutDate)) {
+      console.warn("Calendar deadline validation:", state.calendarValidation);
+    }
+    state.calendarValidationSignature = signature;
+    renderCalendarControls(data);
+    const scopedItems = calendarBaseFilter(state.calendarItems);
+    const visibleItems = calendarVisibleItems();
+    renderCalendarStats(scopedItems);
+    const reminder = state.calendarValidation;
+    $("calendar-validation").hidden = reminder.issues.length === 0 && reminder.completedWithoutDate === 0;
+    $("calendar-validation").textContent = [
+      reminder.issues.length ? `${reminder.issues.length} 个DDL数据校验提醒` : "",
+      reminder.completedWithoutDate ? `${reminder.completedWithoutDate} 个已完成阶段未记录实际完成日期` : ""
+    ].filter(Boolean).join(" · ");
+    $("calendar-content").innerHTML = state.calendarView === "agenda" ? renderAgendaView(visibleItems) : renderMonthView(visibleItems);
+    renderCalendarDayDetail(visibleItems);
+  }
+
+  function focusCalendarItem(item) {
+    if (item.workstreamId) {
+      const workstream = state.data.workstreams.find((entry) => entry.workstreamId === item.workstreamId);
+      if (!workstream) return;
+      state.collapsedCategories.delete(categoryFor(workstream).id);
+      renderWorkstreams();
+      window.requestAnimationFrame(() => {
+        const target = document.querySelector(`[data-workstream-id="${CSS.escape(item.workstreamId)}"]`);
+        if (!target) return;
+        if (item.stageId) {
+          const detail = document.querySelector(`[data-detail-row="${CSS.escape(item.workstreamId)}"]`);
+          const button = document.querySelector(`button[data-detail-id="${CSS.escape(item.workstreamId)}"]`);
+          if (detail?.hidden) { detail.hidden = false; button?.setAttribute("aria-expanded", "true"); if (button) button.textContent = "−"; }
+        }
+        target.classList.add("calendar-target");
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+        window.setTimeout(() => target.classList.remove("calendar-target"), 2200);
+      });
+    } else if (item.milestoneId) {
+      const target = document.querySelector(`[data-milestone-id="${CSS.escape(item.milestoneId)}"]`);
+      target?.scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      document.querySelector(".hero")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
   function renderSessions(data) {
     $("sessions-grid").innerHTML = data.sessions.map((session) => `
       <article class="session-card">
@@ -473,7 +837,7 @@
     $("timeline").innerHTML = milestones.map((item) => {
       const dotClass = item.status === "Needs Update" ? "grey" : "";
       return `
-        <div class="timeline-item">
+        <div class="timeline-item" data-milestone-id="${escapeHtml(item.milestoneId || "")}">
           <span class="timeline-dot ${dotClass}"></span>
           <div class="timeline-date">${formatDate(item.date)}</div>
           <div class="timeline-title">${safeText(item.titleCN)}</div>
@@ -557,6 +921,7 @@
     renderOverview(data);
     renderControls(data);
     renderStatusCounts(data);
+    renderCalendar(data);
     renderWorkstreams();
     renderSessions(data);
     renderMilestones(data);
@@ -592,6 +957,37 @@
       $("quick-filters").querySelectorAll("button").forEach((item) => item.classList.toggle("active", item === button));
       renderWorkstreams();
     });
+
+    $("project-calendar").addEventListener("click", (event) => {
+      const viewButton = event.target.closest("button[data-calendar-view]");
+      if (viewButton) { state.calendarView = viewButton.dataset.calendarView; renderCalendar(state.data); return; }
+      const categoryButton = event.target.closest("button[data-calendar-category]");
+      if (categoryButton) { state.calendarCategory = categoryButton.dataset.calendarCategory; state.calendarSelectedDate = ""; renderCalendar(state.data); return; }
+      const typeButton = event.target.closest("button[data-calendar-type]");
+      if (typeButton) {
+        const type = typeButton.dataset.calendarType;
+        if (state.calendarTypes.has(type)) state.calendarTypes.delete(type); else state.calendarTypes.add(type);
+        state.calendarSelectedDate = "";
+        renderCalendar(state.data);
+        return;
+      }
+      const itemButton = event.target.closest("button[data-calendar-item-id]");
+      if (itemButton) {
+        const item = state.calendarItems.find((entry) => entry.id === itemButton.dataset.calendarItemId);
+        if (item) focusCalendarItem(item);
+        return;
+      }
+      const moreButton = event.target.closest("button[data-calendar-date]");
+      if (moreButton) { state.calendarSelectedDate = moreButton.dataset.calendarDate; renderCalendar(state.data); return; }
+      if (event.target.closest("button[data-calendar-day-close]")) { state.calendarSelectedDate = ""; renderCalendar(state.data); }
+    });
+
+    $("calendar-prev").addEventListener("click", () => { state.calendarMonth = new Date(state.calendarMonth.getFullYear(), state.calendarMonth.getMonth() - 1, 1); renderCalendar(state.data); });
+    $("calendar-next").addEventListener("click", () => { state.calendarMonth = new Date(state.calendarMonth.getFullYear(), state.calendarMonth.getMonth() + 1, 1); renderCalendar(state.data); });
+    $("calendar-today").addEventListener("click", () => { const now = new Date(); state.calendarMonth = new Date(now.getFullYear(), now.getMonth(), 1); state.calendarSelectedDate = todayIso(); renderCalendar(state.data); });
+    $("calendar-owner-select").addEventListener("change", (event) => { state.calendarOwner = event.target.value; state.calendarSelectedDate = ""; renderCalendar(state.data); });
+    $("calendar-active-only").addEventListener("change", (event) => { state.calendarActiveOnly = event.target.checked; renderCalendar(state.data); });
+    $("calendar-include-completed").addEventListener("change", (event) => { state.calendarIncludeCompleted = event.target.checked; renderCalendar(state.data); });
 
     $("final-document-filters").addEventListener("click", (event) => {
       const button = event.target.closest("button[data-document-category]");

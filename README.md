@@ -23,8 +23,42 @@ Open `http://localhost:8080/`. Directly opening `index.html` also works because 
 - Keep the data structure consistent with the existing event file. Use only the supported status values documented at the top of the data file.
 - Each workstream belongs to one of three categories: `business-commercial`, `event-operations-content`, or `social-pr-reporting`. Add `categoryId`, `categoryNameCN`, and `categoryNameEN` to every new workstream.
 - Use `stages` and `currentStageId` only for tasks that have meaningful multi-step tracking. Stage status values are `Not Started`, `In Progress`, `Pending Review`, `Completed`, and `Blocked`; the dashboard calculates task status and progress from completed stages. Simple tasks keep their existing `status` and `progress` fields.
+- `workstreams[].dueDate` is the task Final DDL. Each `stages[]` entry may have its own `dueDate` for the planned stage DDL; `completedDate` is only the actual completion date. Leave an unconfirmed DDL as an empty string so the dashboard can show `Missing DDL` rather than an invented date.
 - Update `meta.lastUpdated`, `meta.updatedBy`, and `CHANGELOG.md` with every meaningful revision.
 - Do not put contract values, quotation values, credentials, personal data, or non-public source documents in the repository.
+
+## Update task stages and DDL
+
+The Dashboard is read-only. Update `data/<EVENT_ID>.js` directly, or ask Codex to make the same controlled data-file change. Do not try to edit the browser page: changes there are not saved.
+
+Start the Initial Draft:
+
+```js
+{
+  id: "initial-draft",
+  status: "In Progress",
+  dueDate: "2026-08-05",
+  completedDate: ""
+}
+
+currentStageId: "initial-draft"
+```
+
+Complete it and move to First Washing:
+
+```js
+// Initial Draft
+status: "Completed"
+completedDate: "2026-08-05"
+
+// First Washing
+status: "In Progress"
+dueDate: "2026-08-12"
+
+currentStageId: "first-washing"
+```
+
+After a task has `stages`, do not manually set a conflicting task `status` or `progress`: the Dashboard calculates both from the stage records. Calendar entries are generated from task Final DDLs, stage DDLs, milestones, and event dates; do not add a separate calendar data array.
 
 ## Maintain Documents & Deliverables
 

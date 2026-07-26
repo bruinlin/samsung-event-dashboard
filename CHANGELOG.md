@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.0-web - 2026-07-26
+
+- Added Project Calendar with derived Month View and Upcoming 14 Days view. Calendar entries are generated only from event dates, milestones, task Final DDLs and stage DDLs.
+- Added Calendar category, owner, active/completed and item-type filters, deadline reminder statistics, daily overflow details and task/stage navigation from calendar entries.
+- Standardized `workstreams[].dueDate` as Final DDL and added optional `stages[].dueDate` fields. Blank dates remain blank and display as Missing DDL; no historical or future dates were inferred.
+- Expanded stage-task summaries with Current Stage, Stage Status, Stage DDL, stage progress and Final DDL. Stage trackers now show status, DDL and actual completion date separately.
+- Added DDL validation for date format, stage order and task-versus-final-stage deadlines, plus visible reminders for completed stages that lack actual completion dates.
+
 ## 1.3.0-web - 2026-07-26
 
 - Grouped Workstream Progress into Business & Commercial, Event Operations & Content, and Social, PR & Reporting, with compact per-category completion summaries and collapse controls.

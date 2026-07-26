@@ -18,6 +18,8 @@
      Needs Update, Not Applicable。
   12. 阶段追踪：仅复杂任务添加 stages 和 currentStageId。阶段状态仅可使用
       Not Started, In Progress, Pending Review, Completed, Blocked；页面会自动计算该任务的状态和进度。
+  13. DDL：workstreams[].dueDate 是任务 Final DDL；stages[].dueDate 是阶段计划 DDL。
+      未确认日期保留空字符串，页面显示 Missing DDL；completedDate 仅记录实际完成日期，不能替代 dueDate。
 
   Dashboard 不再维护或展示风险、信息来源及信息确认程度字段。
 */
@@ -26,7 +28,7 @@ window.EVENT_DATASETS = window.EVENT_DATASETS || {};
 
 window.EVENT_DATASETS.OCTS_2026 = {
   meta: {
-    schemaVersion: "1.7",
+    schemaVersion: "1.8",
     lastUpdated: "2026-07-23",
     updatedBy: "Bruin"
   },
@@ -101,11 +103,11 @@ window.EVENT_DATASETS.OCTS_2026 = {
       categoryNameCN: "活动执行与内容交付",
       categoryNameEN: "Event Operations & Content",
       stages: [
-        { id: "initial-draft", nameCN: "初稿", nameEN: "Initial Draft", status: "Completed", completedDate: "" },
-        { id: "first-washing", nameCN: "第一次 Washing", nameEN: "First Washing", status: "Completed", completedDate: "" },
-        { id: "internal-review", nameCN: "复审", nameEN: "Internal Review", status: "Completed", completedDate: "" },
-        { id: "second-revision", nameCN: "第二次修改", nameEN: "Second Revision", status: "Completed", completedDate: "" },
-        { id: "final-approval", nameCN: "最终确认", nameEN: "Final Approval", status: "Completed", completedDate: "" }
+        { id: "initial-draft", nameCN: "初稿", nameEN: "Initial Draft", status: "Completed", dueDate: "", completedDate: "" },
+        { id: "first-washing", nameCN: "第一次 Washing", nameEN: "First Washing", status: "Completed", dueDate: "", completedDate: "" },
+        { id: "internal-review", nameCN: "复审", nameEN: "Internal Review", status: "Completed", dueDate: "", completedDate: "" },
+        { id: "second-revision", nameCN: "第二次修改", nameEN: "Second Revision", status: "Completed", dueDate: "", completedDate: "" },
+        { id: "final-approval", nameCN: "最终确认", nameEN: "Final Approval", status: "Completed", dueDate: "", completedDate: "" }
       ],
       currentStageId: "final-approval",
       status: "Completed",
@@ -173,11 +175,11 @@ window.EVENT_DATASETS.OCTS_2026 = {
       categoryNameCN: "活动执行与内容交付",
       categoryNameEN: "Event Operations & Content",
       stages: [
-        { id: "brief", nameCN: "需求简报", nameEN: "Brief", status: "Completed", completedDate: "" },
-        { id: "initial-design", nameCN: "初版设计", nameEN: "Initial Design", status: "Completed", completedDate: "" },
-        { id: "review-revision", nameCN: "审核与修改", nameEN: "Review & Revision", status: "Completed", completedDate: "" },
-        { id: "final-artwork", nameCN: "最终画稿", nameEN: "Final Artwork", status: "Completed", completedDate: "" },
-        { id: "onsite-completion", nameCN: "现场完成", nameEN: "Onsite Completion", status: "Completed", completedDate: "" }
+        { id: "brief", nameCN: "需求简报", nameEN: "Brief", status: "Completed", dueDate: "", completedDate: "" },
+        { id: "initial-design", nameCN: "初版设计", nameEN: "Initial Design", status: "Completed", dueDate: "", completedDate: "" },
+        { id: "review-revision", nameCN: "审核与修改", nameEN: "Review & Revision", status: "Completed", dueDate: "", completedDate: "" },
+        { id: "final-artwork", nameCN: "最终画稿", nameEN: "Final Artwork", status: "Completed", dueDate: "", completedDate: "" },
+        { id: "onsite-completion", nameCN: "现场完成", nameEN: "Onsite Completion", status: "Completed", dueDate: "", completedDate: "" }
       ],
       currentStageId: "onsite-completion",
       status: "Completed",
@@ -245,10 +247,10 @@ window.EVENT_DATASETS.OCTS_2026 = {
       categoryNameCN: "传播、公关与报告",
       categoryNameEN: "Social, PR & Reporting",
       stages: [
-        { id: "draft", nameCN: "初稿", nameEN: "Draft", status: "Completed", completedDate: "" },
-        { id: "review", nameCN: "审核", nameEN: "Review", status: "Completed", completedDate: "" },
-        { id: "published", nameCN: "发布", nameEN: "Published", status: "Completed", completedDate: "" },
-        { id: "performance-review", nameCN: "效果复盘", nameEN: "Performance Review", status: "Completed", completedDate: "" }
+        { id: "draft", nameCN: "初稿", nameEN: "Draft", status: "Completed", dueDate: "", completedDate: "" },
+        { id: "review", nameCN: "审核", nameEN: "Review", status: "Completed", dueDate: "", completedDate: "" },
+        { id: "published", nameCN: "发布", nameEN: "Published", status: "Completed", dueDate: "", completedDate: "" },
+        { id: "performance-review", nameCN: "效果复盘", nameEN: "Performance Review", status: "Completed", dueDate: "", completedDate: "" }
       ],
       currentStageId: "performance-review",
       status: "Completed",
@@ -268,10 +270,10 @@ window.EVENT_DATASETS.OCTS_2026 = {
       categoryNameCN: "传播、公关与报告",
       categoryNameEN: "Social, PR & Reporting",
       stages: [
-        { id: "data-collection", nameCN: "资料收集", nameEN: "Data Collection", status: "Completed", completedDate: "" },
-        { id: "drafting", nameCN: "报告初稿", nameEN: "Drafting", status: "Completed", completedDate: "" },
-        { id: "review", nameCN: "审核", nameEN: "Review", status: "Completed", completedDate: "" },
-        { id: "final-report", nameCN: "最终报告", nameEN: "Final Report", status: "Completed", completedDate: "" }
+        { id: "data-collection", nameCN: "资料收集", nameEN: "Data Collection", status: "Completed", dueDate: "", completedDate: "" },
+        { id: "drafting", nameCN: "报告初稿", nameEN: "Drafting", status: "Completed", dueDate: "", completedDate: "" },
+        { id: "review", nameCN: "审核", nameEN: "Review", status: "Completed", dueDate: "", completedDate: "" },
+        { id: "final-report", nameCN: "最终报告", nameEN: "Final Report", status: "Completed", dueDate: "", completedDate: "" }
       ],
       currentStageId: "final-report",
       status: "Completed",

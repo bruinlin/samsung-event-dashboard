@@ -5,14 +5,15 @@
   2. 普通任务使用 status 和 progress（0-100）；有 stages 的任务会由页面自动计算状态和进度。
   3. 未确认信息使用 "TBD"；未知日期保持空字符串，不要推测。
   4. 新增工作项时填写 categoryId、categoryNameCN、categoryNameEN；仅复杂任务配置 stages 和 currentStageId。
-  5. finalDocuments 仅登记已确认可公开下载的文件；当前没有文件时保持空数组。
+  5. workstreams[].dueDate 是任务 Final DDL；stages[].dueDate 是阶段计划 DDL。未知日期保持空字符串，不要用 completedDate 代替 dueDate。
+  6. finalDocuments 仅登记已确认可公开下载的文件；当前没有文件时保持空数组。
 */
 
 window.EVENT_DATASETS = window.EVENT_DATASETS || {};
 
 window.EVENT_DATASETS.ODX_2026 = {
   meta: {
-    schemaVersion: "1.7",
+    schemaVersion: "1.8",
     lastUpdated: "2026-07-23",
     updatedBy: "Bruin"
   },
@@ -91,11 +92,11 @@ window.EVENT_DATASETS.ODX_2026 = {
       status: "Not Started",
       progress: 0,
       stages: [
-        { id: "initial-draft", nameCN: "初稿", nameEN: "Initial Draft", status: "Not Started", completedDate: "" },
-        { id: "first-washing", nameCN: "第一次 Washing", nameEN: "First Washing", status: "Not Started", completedDate: "" },
-        { id: "internal-review", nameCN: "复审", nameEN: "Internal Review", status: "Not Started", completedDate: "" },
-        { id: "second-revision", nameCN: "第二次修改", nameEN: "Second Revision", status: "Not Started", completedDate: "" },
-        { id: "final-approval", nameCN: "最终确认", nameEN: "Final Approval", status: "Not Started", completedDate: "" }
+        { id: "initial-draft", nameCN: "初稿", nameEN: "Initial Draft", status: "Not Started", dueDate: "", completedDate: "" },
+        { id: "first-washing", nameCN: "第一次 Washing", nameEN: "First Washing", status: "Not Started", dueDate: "", completedDate: "" },
+        { id: "internal-review", nameCN: "复审", nameEN: "Internal Review", status: "Not Started", dueDate: "", completedDate: "" },
+        { id: "second-revision", nameCN: "第二次修改", nameEN: "Second Revision", status: "Not Started", dueDate: "", completedDate: "" },
+        { id: "final-approval", nameCN: "最终确认", nameEN: "Final Approval", status: "Not Started", dueDate: "", completedDate: "" }
       ],
       currentStageId: "initial-draft",
       owner: "Bruin & Leo",
