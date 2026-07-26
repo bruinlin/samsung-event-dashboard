@@ -14,7 +14,7 @@ window.EVENT_DATASETS = window.EVENT_DATASETS || {};
 window.EVENT_DATASETS.ODX_2026 = {
   meta: {
     schemaVersion: "1.8",
-    lastUpdated: "2026-07-23",
+    lastUpdated: "2026-07-26",
     updatedBy: "Bruin"
   },
 
@@ -60,10 +60,10 @@ window.EVENT_DATASETS.ODX_2026 = {
       status: "In Progress",
       progress: 50,
       owner: "Bruin",
-      dueDate: "",
+      dueDate: "2026-08-21",
       actualCompletionDate: "",
       latestUpdate: "TBD",
-      nextAction: "TBD",
+      nextAction: "Complete and confirm the detailed agenda by August 21.",
       remarks: ""
     },
     {
@@ -76,8 +76,8 @@ window.EVENT_DATASETS.ODX_2026 = {
       status: "Completed",
       progress: 100,
       owner: "Bruin & Leo",
-      dueDate: "",
-      actualCompletionDate: "",
+      dueDate: "2026-07-22",
+      actualCompletionDate: "2026-07-22",
       latestUpdate: "Jay Hyun, CVP, NAND Product Planning, Samsung Electronics",
       nextAction: "/",
       remarks: ""
@@ -92,15 +92,15 @@ window.EVENT_DATASETS.ODX_2026 = {
       status: "Not Started",
       progress: 0,
       stages: [
-        { id: "initial-draft", nameCN: "初稿", nameEN: "Initial Draft", status: "Not Started", dueDate: "", completedDate: "" },
-        { id: "first-washing", nameCN: "第一次 Washing", nameEN: "First Washing", status: "Not Started", dueDate: "", completedDate: "" },
-        { id: "internal-review", nameCN: "复审", nameEN: "Internal Review", status: "Not Started", dueDate: "", completedDate: "" },
+        { id: "initial-draft", nameCN: "初稿", nameEN: "Initial Draft", status: "Not Started", dueDate: "2026-08-10", completedDate: "" },
+        { id: "first-washing", nameCN: "第一次 Washing", nameEN: "First Washing", status: "Not Started", dueDate: "2026-08-14", completedDate: "" },
+        { id: "internal-review", nameCN: "复审", nameEN: "Internal Review", status: "Not Started", dueDate: "2026-08-19", completedDate: "" },
         { id: "second-revision", nameCN: "第二次修改", nameEN: "Second Revision", status: "Not Started", dueDate: "", completedDate: "" },
-        { id: "final-approval", nameCN: "最终确认", nameEN: "Final Approval", status: "Not Started", dueDate: "", completedDate: "" }
+        { id: "final-approval", nameCN: "最终确认", nameEN: "Final Approval", status: "Not Started", dueDate: "2026-08-26", completedDate: "" }
       ],
       currentStageId: "initial-draft",
       owner: "Bruin & Leo",
-      dueDate: "",
+      dueDate: "2026-08-26",
       actualCompletionDate: "",
       latestUpdate: "TBD",
       nextAction: "TBD",
@@ -116,7 +116,7 @@ window.EVENT_DATASETS.ODX_2026 = {
       status: "In Progress",
       progress: 30,
       owner: "媛媛 & Dennis",
-      dueDate: "",
+      dueDate: "2026-08-07",
       actualCompletionDate: "",
       latestUpdate: "TBD",
       nextAction: "TBD",
@@ -132,7 +132,7 @@ window.EVENT_DATASETS.ODX_2026 = {
       status: "In Progress",
       progress: 60,
       owner: "媛媛 & Dennis",
-      dueDate: "",
+      dueDate: "2026-09-02",
       actualCompletionDate: "",
       latestUpdate: "TBD",
       nextAction: "TBD",
@@ -148,7 +148,7 @@ window.EVENT_DATASETS.ODX_2026 = {
       status: "In Progress",
       progress: 30,
       owner: "媛媛 & Dennis",
-      dueDate: "",
+      dueDate: "2026-08-07",
       actualCompletionDate: "",
       latestUpdate: "TBD",
       nextAction: "TBD",
@@ -163,6 +163,10 @@ window.EVENT_DATASETS.ODX_2026 = {
       categoryNameEN: "Social, PR & Reporting",
       status: "Not Started",
       progress: 0,
+      stages: [
+        { id: "planning-draft", nameCN: "计划初稿", nameEN: "Planning Draft", status: "Not Started", dueDate: "2026-08-20", completedDate: "" }
+      ],
+      currentStageId: "planning-draft",
       owner: "Seloma",
       dueDate: "",
       actualCompletionDate: "",

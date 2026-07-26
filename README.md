@@ -14,6 +14,8 @@ python -m http.server 8080
 
 Open `http://localhost:8080/`. Directly opening `index.html` also works because event data is provided by JavaScript files rather than fetched JSON.
 
+When the URL has no event hash, the Dashboard opens the nearest upcoming event that is not `Completed`; if none remain, it opens the newest completed event. A valid event hash such as `#OCTS_2026` or `#ODX_2026` always takes priority. The Calendar initially opens the month containing the nearest uncompleted task or stage DDL; it falls back to the event month, then the current month.
+
 ## Update event data
 
 - `event_data.js` is the root event registry. Add each new event here and point `dataFile` to its local data file.
@@ -77,7 +79,7 @@ GitHub Pages is the acceptance target for Final-file downloads. The current Clou
 
 1. Copy the event data file that is closest to the new event. Use `data/ODX_2026.js` as the minimal upcoming-event pattern; do not copy completed historical workstreams from OCTS unless they are actually needed.
 2. Change its event ID and replace the data with verified information.
-3. Register the new event in `event_data.js` with a relative `dataFile` path.
+3. Register the new event in `event_data.js` with a relative `dataFile` path, `dateStart`, and `overallStatus` so default activity selection can work without relying on list order.
 4. Open the dashboard, switch events, test all filters, and update `CHANGELOG.md`.
 
 ## Publish updates to GitHub

@@ -197,7 +197,7 @@
     state.documentCategory = "all";
     state.collapsedCategories = new Set();
     state.calendarView = window.innerWidth <= 540 ? "agenda" : "month";
-    state.calendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    state.calendarMonth = defaultCalendarMonth(data);
     state.calendarCategory = "all";
     state.calendarOwner = "all";
     state.calendarActiveOnly = true;
@@ -212,6 +212,32 @@
 
   function stagesFor(item) {
     return Array.isArray(item.stages) && item.stages.length ? item.stages : [];
+  }
+
+  function defaultCalendarMonth(data) {
+    const deadlines = [];
+    (data.workstreams || []).forEach((item) => {
+      if (isCompletedStatus(workstreamStatus(item))) return;
+      if (isValidDate(item.dueDate)) deadlines.push(item.dueDate);
+      stagesFor(item).forEach((stage) => {
+        if (stage.status !== "Completed" && isValidDate(stage.dueDate)) deadlines.push(stage.dueDate);
+      });
+    });
+    const fallback = isValidDate(data.event?.dateStart) ? data.event.dateStart : todayIso();
+    const selected = deadlines.sort((a, b) => a.localeCompare(b))[0] || fallback;
+    const date = dateFromIso(selected);
+    return new Date(date.getFullYear(), date.getMonth(), 1);
+  }
+
+  function defaultEventId(events) {
+    const dated = events.filter((event) => isValidDate(event.dateStart));
+    const incomplete = dated.filter((event) => event.overallStatus !== "Completed");
+    const today = todayIso();
+    const upcoming = incomplete.filter((event) => event.dateStart >= today).sort((a, b) => a.dateStart.localeCompare(b.dateStart));
+    if (upcoming.length) return upcoming[0].eventId;
+    if (incomplete.length) return [...incomplete].sort((a, b) => b.dateStart.localeCompare(a.dateStart))[0].eventId;
+    if (dated.length) return [...dated].sort((a, b) => b.dateStart.localeCompare(a.dateStart))[0].eventId;
+    return events[0]?.eventId || "";
   }
 
   function currentStageFor(item) {
@@ -1025,7 +1051,7 @@
     }
     bindEvents();
     const hashId = window.location.hash.replace(/^#/, "");
-    const initial = registry.events.some((item) => item.eventId === hashId) ? hashId : registry.defaultEventId;
+    const initial = registry.events.some((item) => item.eventId === hashId) ? hashId : defaultEventId(registry.events);
     try { await loadEvent(initial); }
     catch (error) {
       console.error(error);

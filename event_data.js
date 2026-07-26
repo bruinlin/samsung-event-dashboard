@@ -10,18 +10,21 @@
 */
 
 window.EVENT_INDEX = {
-  defaultEventId: "OCTS_2026",
   events: [
     {
       eventId: "OCTS_2026",
       label: "OCTS 2026",
+      dateStart: "2026-07-09",
+      overallStatus: "Completed",
       dataFile: "data/OCTS_2026.js?v=1.4.0",
       dataKey: "OCTS_2026"
     },
     {
       eventId: "ODX_2026",
       label: "ODX 2026",
-      dataFile: "data/ODX_2026.js?v=1.4.0",
+      dateStart: "2026-09-02",
+      overallStatus: "In Progress",
+      dataFile: "data/ODX_2026.js?v=1.4.1",
       dataKey: "ODX_2026"
     }
   ]

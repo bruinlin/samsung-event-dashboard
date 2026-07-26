@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.1-web - 2026-07-26
+
+- Added confirmed ODX 2026 task and stage DDLs, including completed Speaker Confirmation and the Social Communication planning-draft stage. Unconfirmed Keynote second revision, PR / Media, Onsite Operation and Social task-final DDLs remain blank.
+- Changed no-hash activity selection to use registered event dates and overall status: the nearest upcoming non-completed activity opens by default, while valid activity hashes remain authoritative.
+- Changed the Calendar initial month to the nearest uncompleted task or stage DDL, with event-date and current-month fallbacks.
+- Refreshed the changed runtime resource version parameters to `1.4.1`.
+
 ## 1.4.0-web - 2026-07-26
 
 - Added Project Calendar with derived Month View and Upcoming 14 Days view. Calendar entries are generated only from event dates, milestones, task Final DDLs and stage DDLs.
