@@ -18,8 +18,11 @@ Open `http://localhost:8080/`. Directly opening `index.html` also works because 
 
 - `event_data.js` is the root event registry. Add each new event here and point `dataFile` to its local data file.
 - `data/OCTS_2026.js` contains the OCTS 2026 event details, workstreams, milestones, sessions, result metrics, and document references.
+- `data/ODX_2026.js` contains the independent ODX 2026 record. Update this file for ODX progress; do not copy or overwrite OCTS workstreams.
 - `data/OCTS_2026.js` also contains `finalDocuments`, which controls the unified Documents & Deliverables list, file metadata, category filters, download links, and status-only records.
 - Keep the data structure consistent with the existing event file. Use only the supported status values documented at the top of the data file.
+- Each workstream belongs to one of three categories: `business-commercial`, `event-operations-content`, or `social-pr-reporting`. Add `categoryId`, `categoryNameCN`, and `categoryNameEN` to every new workstream.
+- Use `stages` and `currentStageId` only for tasks that have meaningful multi-step tracking. Stage status values are `Not Started`, `In Progress`, `Pending Review`, `Completed`, and `Blocked`; the dashboard calculates task status and progress from completed stages. Simple tasks keep their existing `status` and `progress` fields.
 - Update `meta.lastUpdated`, `meta.updatedBy`, and `CHANGELOG.md` with every meaningful revision.
 - Do not put contract values, quotation values, credentials, personal data, or non-public source documents in the repository.
 
@@ -38,7 +41,7 @@ GitHub Pages is the acceptance target for Final-file downloads. The current Clou
 
 ## Add another event
 
-1. Copy `data/OCTS_2026.js` to a new file such as `data/NEW_EVENT_2026.js`.
+1. Copy the event data file that is closest to the new event. Use `data/ODX_2026.js` as the minimal upcoming-event pattern; do not copy completed historical workstreams from OCTS unless they are actually needed.
 2. Change its event ID and replace the data with verified information.
 3. Register the new event in `event_data.js` with a relative `dataFile` path.
 4. Open the dashboard, switch events, test all filters, and update `CHANGELOG.md`.

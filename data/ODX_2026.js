@@ -2,9 +2,9 @@
   ODX 2026 数据维护说明
   ====================
   1. 直接更新 event、keynote、workstreams、milestones 和 sessions 对应字段。
-  2. 所有状态使用既有状态值；完成度使用 0-100。
+  2. 普通任务使用 status 和 progress（0-100）；有 stages 的任务会由页面自动计算状态和进度。
   3. 未确认信息使用 "TBD"；未知日期保持空字符串，不要推测。
-  4. 新增或修改工作项时保留 workstreamId、负责人、日期、进度、更新和备注字段。
+  4. 新增工作项时填写 categoryId、categoryNameCN、categoryNameEN；仅复杂任务配置 stages 和 currentStageId。
   5. finalDocuments 仅登记已确认可公开下载的文件；当前没有文件时保持空数组。
 */
 
@@ -12,7 +12,7 @@ window.EVENT_DATASETS = window.EVENT_DATASETS || {};
 
 window.EVENT_DATASETS.ODX_2026 = {
   meta: {
-    schemaVersion: "1.6",
+    schemaVersion: "1.7",
     lastUpdated: "2026-07-23",
     updatedBy: "Bruin"
   },
@@ -32,7 +32,7 @@ window.EVENT_DATASETS.ODX_2026 = {
     boothArea: "36㎡",
     boothNumber: "TBD",
     detailedAgenda: "TBD",
-    overallStatus: "Not Started",
+    overallStatus: "In Progress",
     reportStatus: "Not Started",
     nextMilestone: "TBD",
     showcasedProducts: "TBD",
@@ -53,7 +53,10 @@ window.EVENT_DATASETS.ODX_2026 = {
       workstreamId: "ODX26-WS-01",
       nameCN: "活动基本信息",
       nameEN: "Event Basic Information",
-      status: "Progressing",
+      categoryId: "event-operations-content",
+      categoryNameCN: "活动执行与内容交付",
+      categoryNameEN: "Event Operations & Content",
+      status: "In Progress",
       progress: 50,
       owner: "Bruin",
       dueDate: "",
@@ -66,12 +69,15 @@ window.EVENT_DATASETS.ODX_2026 = {
       workstreamId: "ODX26-WS-02",
       nameCN: "Speaker / 演讲人确认",
       nameEN: "Speaker Confirmation",
+      categoryId: "event-operations-content",
+      categoryNameCN: "活动执行与内容交付",
+      categoryNameEN: "Event Operations & Content",
       status: "Completed",
       progress: 100,
       owner: "Bruin & Leo",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "Jay Hyun, CVP,NAND Product Planning, Samsung Electronics",
+      latestUpdate: "Jay Hyun, CVP, NAND Product Planning, Samsung Electronics",
       nextAction: "/",
       remarks: ""
     },
@@ -79,8 +85,19 @@ window.EVENT_DATASETS.ODX_2026 = {
       workstreamId: "ODX26-WS-03",
       nameCN: "Keynote / KN",
       nameEN: "Main Forum Keynote",
+      categoryId: "event-operations-content",
+      categoryNameCN: "活动执行与内容交付",
+      categoryNameEN: "Event Operations & Content",
       status: "Not Started",
       progress: 0,
+      stages: [
+        { id: "initial-draft", nameCN: "初稿", nameEN: "Initial Draft", status: "Not Started", completedDate: "" },
+        { id: "first-washing", nameCN: "第一次 Washing", nameEN: "First Washing", status: "Not Started", completedDate: "" },
+        { id: "internal-review", nameCN: "复审", nameEN: "Internal Review", status: "Not Started", completedDate: "" },
+        { id: "second-revision", nameCN: "第二次修改", nameEN: "Second Revision", status: "Not Started", completedDate: "" },
+        { id: "final-approval", nameCN: "最终确认", nameEN: "Final Approval", status: "Not Started", completedDate: "" }
+      ],
+      currentStageId: "initial-draft",
       owner: "Bruin & Leo",
       dueDate: "",
       actualCompletionDate: "",
@@ -90,22 +107,12 @@ window.EVENT_DATASETS.ODX_2026 = {
     },
     {
       workstreamId: "ODX26-WS-04",
-      nameCN: "分论坛演讲",
-      nameEN: "Breakout Sessions",
-      status: "Not Started",
-      progress: 0,
-      owner: "Bruin & Leo",
-      dueDate: "",
-      actualCompletionDate: "",
-      latestUpdate: "TBD",
-      nextAction: "TBD",
-      remarks: ""
-    },
-    {
-      workstreamId: "ODX26-WS-05",
       nameCN: "报价",
       nameEN: "Quotation",
-      status: "Progressing",
+      categoryId: "business-commercial",
+      categoryNameCN: "商务与商业管理",
+      categoryNameEN: "Business & Commercial",
+      status: "In Progress",
       progress: 30,
       owner: "媛媛 & Dennis",
       dueDate: "",
@@ -115,10 +122,13 @@ window.EVENT_DATASETS.ODX_2026 = {
       remarks: ""
     },
     {
-      workstreamId: "ODX26-WS-06",
+      workstreamId: "ODX26-WS-05",
       nameCN: "合同",
       nameEN: "Contract",
-      status: "Progressing",
+      categoryId: "business-commercial",
+      categoryNameCN: "商务与商业管理",
+      categoryNameEN: "Business & Commercial",
+      status: "In Progress",
       progress: 60,
       owner: "媛媛 & Dennis",
       dueDate: "",
@@ -128,10 +138,13 @@ window.EVENT_DATASETS.ODX_2026 = {
       remarks: ""
     },
     {
-      workstreamId: "ODX26-WS-07",
-      nameCN: "Booth 设计",
-      nameEN: "Booth Design",
-      status: "Progressing",
+      workstreamId: "ODX26-WS-06",
+      nameCN: "活动物料 / Booth 设计",
+      nameEN: "Event Materials / Booth Design",
+      categoryId: "event-operations-content",
+      categoryNameCN: "活动执行与内容交付",
+      categoryNameEN: "Event Operations & Content",
+      status: "In Progress",
       progress: 30,
       owner: "媛媛 & Dennis",
       dueDate: "",
@@ -141,48 +154,12 @@ window.EVENT_DATASETS.ODX_2026 = {
       remarks: ""
     },
     {
-      workstreamId: "ODX26-WS-08",
-      nameCN: "礼品",
-      nameEN: "Gifts",
-      status: "Not Started",
-      progress: 0,
-      owner: "Bruin",
-      dueDate: "",
-      actualCompletionDate: "",
-      latestUpdate: "TBD",
-      nextAction: "TBD",
-      remarks: ""
-    },
-    {
-      workstreamId: "ODX26-WS-09",
-      nameCN: "产品领奖",
-      nameEN: "Product Award",
-      status: "Not Started",
-      progress: 0,
-      owner: "Bruin & Leo",
-      dueDate: "",
-      actualCompletionDate: "",
-      latestUpdate: "TBD",
-      nextAction: "TBD",
-      remarks: ""
-    },
-    {
-      workstreamId: "ODX26-WS-10",
-      nameCN: "现场执行",
-      nameEN: "Onsite Operation",
-      status: "Not Started",
-      progress: 0,
-      owner: "Bruin",
-      dueDate: "",
-      actualCompletionDate: "",
-      latestUpdate: "TBD",
-      nextAction: "TBD",
-      remarks: ""
-    },
-    {
-      workstreamId: "ODX26-WS-11",
+      workstreamId: "ODX26-WS-07",
       nameCN: "社媒传播",
       nameEN: "Social Communication",
+      categoryId: "social-pr-reporting",
+      categoryNameCN: "传播、公关与报告",
+      categoryNameEN: "Social, PR & Reporting",
       status: "Not Started",
       progress: 0,
       owner: "Seloma",
@@ -193,51 +170,31 @@ window.EVENT_DATASETS.ODX_2026 = {
       remarks: ""
     },
     {
-      workstreamId: "ODX26-WS-12",
-      nameCN: "会后报告",
-      nameEN: "Post-event Report",
-      status: "Not Started",
-      progress: 0,
-      owner: "Christy",
-      dueDate: "",
-      actualCompletionDate: "",
-      latestUpdate: "TBD",
-      nextAction: "TBD",
-      remarks: ""
-    },
-    {
-      workstreamId: "ODX26-WS-13",
-      nameCN: "付款或报销",
-      nameEN: "Payment / Reimbursement",
-      status: "Not Started",
-      progress: 0,
-      owner: "媛媛 & Dennis",
-      dueDate: "",
-      actualCompletionDate: "",
-      latestUpdate: "TBD",
-      nextAction: "TBD",
-      remarks: ""
-    },
-    {
-      workstreamId: "ODX26-WS-14",
-      nameCN: "展品与屏幕内容",
-      nameEN: "Exhibit Content & Product Showcase",
-      status: "Not Started",
-      progress: 0,
-      owner: "媛媛 & Dennis",
-      dueDate: "",
-      actualCompletionDate: "",
-      latestUpdate: "TBD",
-      nextAction: "TBD",
-      remarks: ""
-    },
-    {
-      workstreamId: "ODX26-WS-15",
-      nameCN: "PR / 媒体跟踪",
-      nameEN: "PR & Media Monitoring",
+      workstreamId: "ODX26-WS-08",
+      nameCN: "PR / 媒体",
+      nameEN: "PR & Media",
+      categoryId: "social-pr-reporting",
+      categoryNameCN: "传播、公关与报告",
+      categoryNameEN: "Social, PR & Reporting",
       status: "Not Started",
       progress: 0,
       owner: "Iris & Christy",
+      dueDate: "",
+      actualCompletionDate: "",
+      latestUpdate: "TBD",
+      nextAction: "TBD",
+      remarks: ""
+    },
+    {
+      workstreamId: "ODX26-WS-09",
+      nameCN: "现场执行",
+      nameEN: "Onsite Operation",
+      categoryId: "event-operations-content",
+      categoryNameCN: "活动执行与内容交付",
+      categoryNameEN: "Event Operations & Content",
+      status: "Not Started",
+      progress: 0,
+      owner: "Bruin",
       dueDate: "",
       actualCompletionDate: "",
       latestUpdate: "TBD",

@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.0-web - 2026-07-26
+
+- Grouped Workstream Progress into Business & Commercial, Event Operations & Content, and Social, PR & Reporting, with compact per-category completion summaries and collapse controls.
+- Added optional stage tracking. Tasks with `stages` now calculate their visible status and progress from the stage records; simple tasks continue to use their existing status and progress fields.
+- Added five-stage Keynote tracking and selective completed-stage records for OCTS Keynote, Booth Design, Social Communication, and Post-event Report; all OCTS workstreams remain Completed at 100%.
+- Restructured ODX around currently managed tasks only, normalized its invalid `Progressing` values to `In Progress`, and retained existing known progress values without adding unverified dates or milestones.
+- Reworked the Workstream module for 390px screens so task entries become compact cards without horizontal page overflow. Documents & Deliverables logic and downloads are unchanged.
+
 ## 1.2.1-web - 2026-07-23
 
 - Updated the independent ODX 2026 event record with confirmed event details, sponsorship level, participation format, Booth area and Main Forum speaker information.

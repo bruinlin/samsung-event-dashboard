@@ -3,7 +3,7 @@
 
   const VALID_STATUSES = [
     "Not Started", "In Progress", "Internal Review", "HQ Review",
-    "Pending Approval", "Confirmed", "In Production", "Completed",
+    "Pending Approval", "Pending Review", "Confirmed", "In Production", "Completed",
     "Blocked", "Needs Update", "Not Applicable"
   ];
 
@@ -13,6 +13,7 @@
     "Internal Review": ["Internal Review", "purple"],
     "HQ Review": ["HQ Review", "purple"],
     "Pending Approval": ["Pending Approval", "amber"],
+    "Pending Review": ["Pending Review", "amber"],
     "Confirmed": ["Confirmed", "blue"],
     "In Production": ["In Production", "blue"],
     "Completed": ["Completed", "green"],
@@ -27,6 +28,7 @@
     "Internal Review": "内部审核",
     "HQ Review": "总部审核",
     "Pending Approval": "待批准",
+    "Pending Review": "待复审",
     "Confirmed": "已确认",
     "In Production": "制作中",
     "Completed": "已完成",
@@ -63,7 +65,8 @@
     status: "all",
     owner: "all",
     hideCompleted: false,
-    documentCategory: "all"
+    documentCategory: "all",
+    collapsedCategories: new Set()
   };
 
   const $ = (id) => document.getElementById(id);
@@ -134,21 +137,44 @@
     state.owner = "all";
     state.hideCompleted = false;
     state.documentCategory = "all";
+    state.collapsedCategories = new Set();
     window.location.hash = eventId;
     renderDashboard();
   }
 
+  function stagesFor(item) {
+    return Array.isArray(item.stages) && item.stages.length ? item.stages : [];
+  }
+
+  function workstreamStatus(item) {
+    const stages = stagesFor(item);
+    if (!stages.length) return item.status;
+    if (stages.some((stage) => stage.status === "Blocked")) return "Blocked";
+    const currentStage = stages.find((stage) => stage.id === item.currentStageId);
+    if (currentStage?.status === "Pending Review" || stages.some((stage) => stage.status === "Pending Review")) return "Pending Review";
+    const completed = stages.filter((stage) => stage.status === "Completed").length;
+    if (completed === stages.length) return "Completed";
+    if (completed === 0 && stages.every((stage) => stage.status === "Not Started")) return "Not Started";
+    return "In Progress";
+  }
+
+  function workstreamProgress(item) {
+    const stages = stagesFor(item);
+    if (!stages.length) return item.progress;
+    return Math.round((stages.filter((stage) => stage.status === "Completed").length / stages.length) * 100);
+  }
+
   function assessedWorkstreams(workstreams) {
     return workstreams.filter((item) =>
-      item.status !== "Not Applicable" &&
-      item.status !== "Needs Update"
+      workstreamStatus(item) !== "Not Applicable" &&
+      workstreamStatus(item) !== "Needs Update"
     );
   }
 
   function metrics(data) {
     const workstreams = data.workstreams || [];
     const assessed = assessedWorkstreams(workstreams);
-    const completed = assessed.filter((item) => item.status === "Completed").length;
+    const completed = assessed.filter((item) => workstreamStatus(item) === "Completed").length;
     const workstreamCompletion = assessed.length ? Math.round((completed / assessed.length) * 100) : 0;
 
     return { assessed: assessed.length, completed, workstreamCompletion };
@@ -233,7 +259,7 @@
       `<option value="${escapeHtml(item.eventId)}" ${item.eventId === state.eventId ? "selected" : ""}>${safeText(item.label)}</option>`
     ).join("");
 
-    const usedStatuses = VALID_STATUSES.filter((status) => data.workstreams.some((item) => item.status === status));
+    const usedStatuses = VALID_STATUSES.filter((status) => data.workstreams.some((item) => workstreamStatus(item) === status));
     $("status-select").innerHTML = `<option value="all">全部状态</option>` + usedStatuses.map((status) =>
       `<option value="${escapeHtml(status)}">${escapeHtml(status)}</option>`
     ).join("");
@@ -251,7 +277,8 @@
 
   function renderStatusCounts(data) {
     const counts = (data.workstreams || []).reduce((result, item) => {
-      const status = VALID_STATUSES.includes(item.status) ? item.status : "Needs Update";
+      const derivedStatus = workstreamStatus(item);
+      const status = VALID_STATUSES.includes(derivedStatus) ? derivedStatus : "Needs Update";
       result[status] = (result[status] || 0) + 1;
       return result;
     }, {});
@@ -276,69 +303,146 @@
 
   function matchesQuickFilter(item) {
     if (state.quickFilter === "all") return true;
-    if (state.quickFilter === "completed") return item.status === "Completed";
+    const status = workstreamStatus(item);
+    if (state.quickFilter === "completed") return status === "Completed";
     if (state.quickFilter === "in_progress") {
-      return !["Completed", "Needs Update", "Not Applicable"].includes(item.status);
+      return !["Completed", "Needs Update", "Not Applicable"].includes(status);
     }
-    if (state.quickFilter === "needs_update") return item.status === "Needs Update";
-    if (state.quickFilter === "confirmed") return item.status === "Confirmed";
+    if (state.quickFilter === "needs_update") return status === "Needs Update";
+    if (state.quickFilter === "confirmed") return status === "Confirmed";
     return true;
   }
 
   function filteredWorkstreams() {
     return state.data.workstreams.filter((item) => {
       if (!matchesQuickFilter(item)) return false;
-      if (state.status !== "all" && item.status !== state.status) return false;
+      if (state.status !== "all" && workstreamStatus(item) !== state.status) return false;
       if (state.owner !== "all" && (item.owner || "待补充") !== state.owner) return false;
-      if (state.hideCompleted && item.status === "Completed") return false;
+      if (state.hideCompleted && workstreamStatus(item) === "Completed") return false;
       return true;
     });
   }
 
   function progressCell(item) {
-    if (item.progress === null || item.progress === undefined || item.status === "Needs Update" || item.status === "Not Applicable") {
+    const status = workstreamStatus(item);
+    const progress = workstreamProgress(item);
+    if (progress === null || progress === undefined || status === "Needs Update" || status === "Not Applicable") {
       return `<span class="progress-value">—</span><div class="muted">不计入 0%</div>`;
     }
-    const value = Math.max(0, Math.min(100, Number(item.progress)));
+    const value = Math.max(0, Math.min(100, Number(progress)));
     return `<span class="progress-value">${value}%</span><div class="progress-track"><span style="width:${value}%"></span></div>`;
+  }
+
+  function categoryFor(item) {
+    return {
+      id: item.categoryId || "uncategorized",
+      nameCN: item.categoryNameCN || "未分类",
+      nameEN: item.categoryNameEN || "Uncategorized"
+    };
+  }
+
+  function categorySummary(items) {
+    const assessed = assessedWorkstreams(items);
+    const completed = assessed.filter((item) => workstreamStatus(item) === "Completed").length;
+    const completion = assessed.length ? Math.round((completed / assessed.length) * 100) : 0;
+    const statuses = items.map(workstreamStatus);
+    let status = "In Progress";
+    if (statuses.length && statuses.every((value) => value === "Completed")) status = "Completed";
+    else if (statuses.includes("Blocked")) status = "Blocked";
+    else if (statuses.includes("Pending Review")) status = "Pending Review";
+    else if (statuses.length && statuses.every((value) => value === "Not Started")) status = "Not Started";
+    else if (statuses.length && statuses.every((value) => ["Needs Update", "Not Applicable"].includes(value))) status = "Needs Update";
+    return { completed, total: items.length, completion, status };
+  }
+
+  function stageTracker(item) {
+    const stages = stagesFor(item);
+    if (!stages.length) return "";
+    return `
+      <div class="stage-tracker" aria-label="${safeText(item.nameCN)} 阶段进度">
+        ${stages.map((stage) => {
+          const isCurrent = stage.id === item.currentStageId;
+          const stageStatus = stage.status || "Not Started";
+          const symbol = stageStatus === "Completed" ? "✓" : isCurrent ? "●" : "○";
+          return `<div class="stage-item ${escapeHtml(stageStatus.toLowerCase().replaceAll(" ", "-"))} ${isCurrent ? "current" : ""}">
+            <span class="stage-symbol" aria-hidden="true">${symbol}</span>
+            <div class="stage-copy">
+              <b>${safeText(stage.nameEN)}</b>
+              <span>${safeText(stage.nameCN)}</span>
+            </div>
+            ${stage.completedDate ? `<time>${formatDate(stage.completedDate)}</time>` : ""}
+          </div>`;
+        }).join("")}
+      </div>`;
+  }
+
+  function workstreamRows(item) {
+    const id = escapeHtml(item.workstreamId);
+    const detail = String(item.remarks ?? item.comments ?? "").trim();
+    const stages = stagesFor(item);
+    const hasExpandableContent = detail || stages.length;
+    const currentStage = stages.find((stage) => stage.id === item.currentStageId);
+    const currentStageMarkup = currentStage
+      ? `<div class="current-stage"><span>Current Stage</span><b>${safeText(currentStage.nameEN)}</b></div>`
+      : "";
+    const detailButton = hasExpandableContent
+      ? `<button class="detail-button" type="button" data-detail-id="${id}" aria-expanded="false" aria-label="展开 ${safeText(item.nameCN)} ${stages.length ? "阶段" : "详情"}">＋</button>`
+      : "";
+    const detailRow = hasExpandableContent
+      ? `<tr class="detail-row" data-detail-row="${id}" hidden>
+          <td colspan="7">
+            <div class="detail-panel">
+              ${stageTracker(item)}
+              ${detail ? `<div class="detail-item"><div class="detail-label">Remarks / Comments</div><div class="detail-value">${escapeHtml(detail)}</div></div>` : ""}
+            </div>
+          </td>
+        </tr>`
+      : "";
+    return `
+      <tr class="data-row">
+        <td data-label="Task">
+          <div class="workstream-name">${safeText(item.nameCN)}</div>
+          <div class="workstream-en">${safeText(item.nameEN)}</div>
+          <div class="workstream-id">${id}</div>
+        </td>
+        <td data-label="Status">${statusBadge(workstreamStatus(item))}${currentStageMarkup}</td>
+        <td data-label="Progress">${progressCell(item)}</td>
+        <td data-label="Owner / Due Date">
+          ${item.owner ? `<div class="date-stack"><span>${safeText(item.owner)}</span></div>` : ""}
+          ${item.dueDate ? `<div class="date-stack" style="margin-top:7px"><b>截止</b><span>${formatDate(item.dueDate)}</span></div>` : ""}
+        </td>
+        <td data-label="Latest Update">${safeText(item.latestUpdate)}</td>
+        <td data-label="Next Action">${safeText(item.nextAction)}</td>
+        <td class="no-print" data-label="Details">${detailButton}</td>
+      </tr>
+      ${detailRow}`;
   }
 
   function renderWorkstreams() {
     const rows = filteredWorkstreams();
+    const groups = new Map();
+    rows.forEach((item) => {
+      const category = categoryFor(item);
+      if (!groups.has(category.id)) groups.set(category.id, { category, items: [] });
+      groups.get(category.id).items.push(item);
+    });
     $("workstream-empty").hidden = rows.length !== 0;
-    $("workstream-body").innerHTML = rows.map((item) => {
-      const id = escapeHtml(item.workstreamId);
-      const detail = String(item.remarks ?? item.comments ?? "").trim();
-      const detailButton = detail
-        ? `<button class="detail-button" type="button" data-detail-id="${id}" aria-expanded="false" aria-label="查看 ${safeText(item.nameCN)} 详情">＋</button>`
-        : "";
-      const detailRow = detail
-        ? `<tr class="detail-row" data-detail-row="${id}" hidden>
-            <td colspan="7">
-              <div class="detail-panel">
-                <div class="detail-item"><div class="detail-label">Remarks / Comments</div><div class="detail-value">${escapeHtml(detail)}</div></div>
-              </div>
-            </td>
-          </tr>`
-        : "";
+    $("workstream-body").innerHTML = [...groups.values()].map(({ category, items }) => {
+      const allCategoryItems = state.data.workstreams.filter((item) => categoryFor(item).id === category.id);
+      const summary = categorySummary(allCategoryItems);
+      const collapsed = state.collapsedCategories.has(category.id);
       return `
-        <tr class="data-row">
-          <td>
-            <div class="workstream-name">${safeText(item.nameCN)}</div>
-            <div class="workstream-en">${safeText(item.nameEN)}</div>
-            <div class="workstream-id">${id}</div>
+        <tr class="category-row ${collapsed ? "is-collapsed" : ""}">
+          <td colspan="7">
+            <button class="category-toggle" type="button" data-category-id="${escapeHtml(category.id)}" aria-expanded="${String(!collapsed)}">
+              <span class="category-toggle-icon" aria-hidden="true">${collapsed ? "＋" : "−"}</span>
+              <span class="category-name"><b>${safeText(category.nameCN)}</b><small>${safeText(category.nameEN)}</small></span>
+              <span class="category-summary"><b>${summary.completion}%</b><small>${summary.completed}/${summary.total} completed</small></span>
+              ${statusBadge(summary.status)}
+            </button>
           </td>
-          <td>${statusBadge(item.status)}</td>
-          <td>${progressCell(item)}</td>
-          <td>
-            <div class="date-stack"><span>${safeText(item.owner)}</span></div>
-            <div class="date-stack" style="margin-top:7px"><b>截止</b><span>${formatDate(item.dueDate)}</span></div>
-          </td>
-          <td>${safeText(item.latestUpdate)}</td>
-          <td>${safeText(item.nextAction)}</td>
-          <td class="no-print">${detailButton}</td>
         </tr>
-        ${detailRow}`;
+        ${collapsed ? "" : items.map(workstreamRows).join("")}`;
     }).join("");
   }
 
@@ -497,6 +601,14 @@
     });
 
     $("workstream-body").addEventListener("click", (event) => {
+      const categoryButton = event.target.closest("button[data-category-id]");
+      if (categoryButton) {
+        const categoryId = categoryButton.dataset.categoryId;
+        if (state.collapsedCategories.has(categoryId)) state.collapsedCategories.delete(categoryId);
+        else state.collapsedCategories.add(categoryId);
+        renderWorkstreams();
+        return;
+      }
       const button = event.target.closest("button[data-detail-id]");
       if (!button) return;
       const row = document.querySelector(`[data-detail-row="${CSS.escape(button.dataset.detailId)}"]`);

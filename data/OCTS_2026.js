@@ -4,7 +4,7 @@
   1. 修改状态：更新 workstreams[].status。
   2. 修改进度：progress 使用 0-100；Needs Update / Not Applicable 填写 null，页面显示“—”。
   3. 更新日期：修改 meta.lastUpdated（YYYY-MM-DD）及 meta.updatedBy。
-  4. 增加模块：复制一条 workstreams 记录并使用新的 workstreamId。
+  4. 增加模块：复制一条 workstreams 记录并使用新的 workstreamId、categoryId、categoryNameCN 和 categoryNameEN。
   5. 负责人：修改 workstreams[].owner；页面仅显示姓名，不显示 Owner 字样。
   6. 详情：仅填写 workstreams[].remarks 或 comments；没有内容时保持空字符串。
   7. 文件与交付物：只有通过公开审核的文件才能在 finalDocuments 中填写 repository-relative filePath 并设为 downloadable: true；
@@ -16,6 +16,8 @@
   11. 有效状态：Not Started, In Progress, Internal Review, HQ Review,
      Pending Approval, Confirmed, In Production, Completed, Blocked,
      Needs Update, Not Applicable。
+  12. 阶段追踪：仅复杂任务添加 stages 和 currentStageId。阶段状态仅可使用
+      Not Started, In Progress, Pending Review, Completed, Blocked；页面会自动计算该任务的状态和进度。
 
   Dashboard 不再维护或展示风险、信息来源及信息确认程度字段。
 */
@@ -24,7 +26,7 @@ window.EVENT_DATASETS = window.EVENT_DATASETS || {};
 
 window.EVENT_DATASETS.OCTS_2026 = {
   meta: {
-    schemaVersion: "1.6",
+    schemaVersion: "1.7",
     lastUpdated: "2026-07-23",
     updatedBy: "Bruin"
   },
@@ -63,6 +65,9 @@ window.EVENT_DATASETS.OCTS_2026 = {
       workstreamId: "OCTS26-WS-01",
       nameCN: "活动基本信息",
       nameEN: "Event Basic Information",
+      categoryId: "event-operations-content",
+      categoryNameCN: "活动执行与内容交付",
+      categoryNameEN: "Event Operations & Content",
       status: "Completed",
       progress: 100,
       owner: "Bruin",
@@ -76,6 +81,9 @@ window.EVENT_DATASETS.OCTS_2026 = {
       workstreamId: "OCTS26-WS-02",
       nameCN: "Speaker / 演讲人确认",
       nameEN: "Speaker Confirmation",
+      categoryId: "event-operations-content",
+      categoryNameCN: "活动执行与内容交付",
+      categoryNameEN: "Event Operations & Content",
       status: "Completed",
       progress: 100,
       owner: "Bruin & Leo",
@@ -89,6 +97,17 @@ window.EVENT_DATASETS.OCTS_2026 = {
       workstreamId: "OCTS26-WS-03",
       nameCN: "Keynote / KN",
       nameEN: "Main Forum Keynote",
+      categoryId: "event-operations-content",
+      categoryNameCN: "活动执行与内容交付",
+      categoryNameEN: "Event Operations & Content",
+      stages: [
+        { id: "initial-draft", nameCN: "初稿", nameEN: "Initial Draft", status: "Completed", completedDate: "" },
+        { id: "first-washing", nameCN: "第一次 Washing", nameEN: "First Washing", status: "Completed", completedDate: "" },
+        { id: "internal-review", nameCN: "复审", nameEN: "Internal Review", status: "Completed", completedDate: "" },
+        { id: "second-revision", nameCN: "第二次修改", nameEN: "Second Revision", status: "Completed", completedDate: "" },
+        { id: "final-approval", nameCN: "最终确认", nameEN: "Final Approval", status: "Completed", completedDate: "" }
+      ],
+      currentStageId: "final-approval",
       status: "Completed",
       progress: 100,
       owner: "Bruin & Leo",
@@ -102,6 +121,9 @@ window.EVENT_DATASETS.OCTS_2026 = {
       workstreamId: "OCTS26-WS-04",
       nameCN: "分论坛演讲",
       nameEN: "Breakout Sessions",
+      categoryId: "event-operations-content",
+      categoryNameCN: "活动执行与内容交付",
+      categoryNameEN: "Event Operations & Content",
       status: "Completed",
       progress: 100,
       owner: "Bruin & Leo",
@@ -115,6 +137,9 @@ window.EVENT_DATASETS.OCTS_2026 = {
       workstreamId: "OCTS26-WS-05",
       nameCN: "报价",
       nameEN: "Quotation",
+      categoryId: "business-commercial",
+      categoryNameCN: "商务与商业管理",
+      categoryNameEN: "Business & Commercial",
       status: "Completed",
       progress: 100,
       owner: "媛媛 & Dennis",
@@ -128,6 +153,9 @@ window.EVENT_DATASETS.OCTS_2026 = {
       workstreamId: "OCTS26-WS-06",
       nameCN: "合同",
       nameEN: "Contract",
+      categoryId: "business-commercial",
+      categoryNameCN: "商务与商业管理",
+      categoryNameEN: "Business & Commercial",
       status: "Completed",
       progress: 100,
       owner: "媛媛 & Dennis",
@@ -141,6 +169,17 @@ window.EVENT_DATASETS.OCTS_2026 = {
       workstreamId: "OCTS26-WS-07",
       nameCN: "Booth 设计",
       nameEN: "Booth Design",
+      categoryId: "event-operations-content",
+      categoryNameCN: "活动执行与内容交付",
+      categoryNameEN: "Event Operations & Content",
+      stages: [
+        { id: "brief", nameCN: "需求简报", nameEN: "Brief", status: "Completed", completedDate: "" },
+        { id: "initial-design", nameCN: "初版设计", nameEN: "Initial Design", status: "Completed", completedDate: "" },
+        { id: "review-revision", nameCN: "审核与修改", nameEN: "Review & Revision", status: "Completed", completedDate: "" },
+        { id: "final-artwork", nameCN: "最终画稿", nameEN: "Final Artwork", status: "Completed", completedDate: "" },
+        { id: "onsite-completion", nameCN: "现场完成", nameEN: "Onsite Completion", status: "Completed", completedDate: "" }
+      ],
+      currentStageId: "onsite-completion",
       status: "Completed",
       progress: 100,
       owner: "媛媛 & Dennis",
@@ -154,6 +193,9 @@ window.EVENT_DATASETS.OCTS_2026 = {
       workstreamId: "OCTS26-WS-08",
       nameCN: "礼品",
       nameEN: "Gifts",
+      categoryId: "event-operations-content",
+      categoryNameCN: "活动执行与内容交付",
+      categoryNameEN: "Event Operations & Content",
       status: "Completed",
       progress: 100,
       owner: "Bruin",
@@ -167,6 +209,9 @@ window.EVENT_DATASETS.OCTS_2026 = {
       workstreamId: "OCTS26-WS-09",
       nameCN: "产品领奖",
       nameEN: "Product Award",
+      categoryId: "event-operations-content",
+      categoryNameCN: "活动执行与内容交付",
+      categoryNameEN: "Event Operations & Content",
       status: "Completed",
       progress: 100,
       owner: "Bruin & Leo",
@@ -180,6 +225,9 @@ window.EVENT_DATASETS.OCTS_2026 = {
       workstreamId: "OCTS26-WS-10",
       nameCN: "现场执行",
       nameEN: "Onsite Operation",
+      categoryId: "event-operations-content",
+      categoryNameCN: "活动执行与内容交付",
+      categoryNameEN: "Event Operations & Content",
       status: "Completed",
       progress: 100,
       owner: "Bruin",
@@ -193,6 +241,16 @@ window.EVENT_DATASETS.OCTS_2026 = {
       workstreamId: "OCTS26-WS-11",
       nameCN: "社媒传播",
       nameEN: "Social Communication",
+      categoryId: "social-pr-reporting",
+      categoryNameCN: "传播、公关与报告",
+      categoryNameEN: "Social, PR & Reporting",
+      stages: [
+        { id: "draft", nameCN: "初稿", nameEN: "Draft", status: "Completed", completedDate: "" },
+        { id: "review", nameCN: "审核", nameEN: "Review", status: "Completed", completedDate: "" },
+        { id: "published", nameCN: "发布", nameEN: "Published", status: "Completed", completedDate: "" },
+        { id: "performance-review", nameCN: "效果复盘", nameEN: "Performance Review", status: "Completed", completedDate: "" }
+      ],
+      currentStageId: "performance-review",
       status: "Completed",
       progress: 100,
       owner: "Seloma",
@@ -206,6 +264,16 @@ window.EVENT_DATASETS.OCTS_2026 = {
       workstreamId: "OCTS26-WS-12",
       nameCN: "会后报告",
       nameEN: "Post-event Report",
+      categoryId: "social-pr-reporting",
+      categoryNameCN: "传播、公关与报告",
+      categoryNameEN: "Social, PR & Reporting",
+      stages: [
+        { id: "data-collection", nameCN: "资料收集", nameEN: "Data Collection", status: "Completed", completedDate: "" },
+        { id: "drafting", nameCN: "报告初稿", nameEN: "Drafting", status: "Completed", completedDate: "" },
+        { id: "review", nameCN: "审核", nameEN: "Review", status: "Completed", completedDate: "" },
+        { id: "final-report", nameCN: "最终报告", nameEN: "Final Report", status: "Completed", completedDate: "" }
+      ],
+      currentStageId: "final-report",
       status: "Completed",
       progress: 100,
       owner: "Christy",
@@ -219,6 +287,9 @@ window.EVENT_DATASETS.OCTS_2026 = {
       workstreamId: "OCTS26-WS-13",
       nameCN: "付款或报销",
       nameEN: "Payment / Reimbursement",
+      categoryId: "business-commercial",
+      categoryNameCN: "商务与商业管理",
+      categoryNameEN: "Business & Commercial",
       status: "Completed",
       progress: 100,
       owner: "媛媛 & Dennis",
@@ -232,6 +303,9 @@ window.EVENT_DATASETS.OCTS_2026 = {
       workstreamId: "OCTS26-WS-14",
       nameCN: "展品与屏幕内容",
       nameEN: "Exhibit Content & Product Showcase",
+      categoryId: "event-operations-content",
+      categoryNameCN: "活动执行与内容交付",
+      categoryNameEN: "Event Operations & Content",
       status: "Completed",
       progress: 100,
       owner: "媛媛 & Dennis",
@@ -245,6 +319,9 @@ window.EVENT_DATASETS.OCTS_2026 = {
       workstreamId: "OCTS26-WS-15",
       nameCN: "PR / 媒体跟踪",
       nameEN: "PR & Media Monitoring",
+      categoryId: "social-pr-reporting",
+      categoryNameCN: "传播、公关与报告",
+      categoryNameEN: "Social, PR & Reporting",
       status: "Completed",
       progress: 100,
       owner: "Iris & Christy",
