@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.2-web - 2026-07-26
+
+- Made the compact Two-Week Agenda the default Calendar view on desktop and mobile, with Previous, Today and Next navigation in 14-day increments.
+- Added two vertical week groups that omit empty dates, a filtered Later Deadlines list with five-item default and Show All / Show Less control, and a collapsed Calendar filter panel.
+- Kept Month View as an on-demand full-month overview while reducing day-card height, limiting cards to two items and increasing compact item text size.
+- Condensed Calendar reminder statistics and increased agenda item text and touch-target sizing without changing event data, DDLs, document delivery logic or task linkage.
+
 ## 1.4.1-web - 2026-07-26
 
 - Added confirmed ODX 2026 task and stage DDLs, including completed Speaker Confirmation and the Social Communication planning-draft stage. Unconfirmed Keynote second revision, PR / Media, Onsite Operation and Social task-final DDLs remain blank.

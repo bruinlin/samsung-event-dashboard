@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <title>Samsung Event Dashboard</title>
-  <link rel="stylesheet" href="assets/style.css?v=1.4.0">
+  <link rel="stylesheet" href="assets/style.css?v=1.4.2">
 </head>
 <body>
   <div class="page-shell">
@@ -71,23 +71,28 @@
               <h2 id="calendar-title">Project Calendar</h2>
               <p>项目日历 · 自动读取活动日、任务 Final DDL、阶段 DDL 与关键节点</p>
             </div>
-            <div class="calendar-view-toggle no-print" aria-label="日历视图">
-              <button type="button" class="filter-chip active" data-calendar-view="month">Month View</button>
-              <button type="button" class="filter-chip" data-calendar-view="agenda">Upcoming</button>
-            </div>
           </div>
           <div class="calendar-toolbar no-print">
-            <div class="calendar-nav">
-              <button type="button" class="button" id="calendar-prev" aria-label="上一个月">←</button>
-              <button type="button" class="button" id="calendar-today">Today</button>
-              <button type="button" class="button" id="calendar-next" aria-label="下一个月">→</button>
-              <b id="calendar-month-label"></b>
+            <div class="calendar-primary-row">
+              <div class="calendar-nav">
+                <button type="button" class="button" id="calendar-prev" aria-label="Previous period">←</button>
+                <button type="button" class="button" id="calendar-today">Today</button>
+                <button type="button" class="button" id="calendar-next" aria-label="Next period">→</button>
+                <b id="calendar-month-label"></b>
+              </div>
+              <div class="calendar-view-toggle" aria-label="Calendar view">
+                <button type="button" class="filter-chip active" data-calendar-view="fortnight">2 Weeks</button>
+                <button type="button" class="filter-chip" data-calendar-view="month">Month</button>
+              </div>
+              <button type="button" class="button calendar-filters-toggle" id="calendar-filters-toggle" aria-expanded="false" aria-controls="calendar-filter-panel">Filters / 筛选</button>
             </div>
-            <div class="calendar-filter-group" id="calendar-category-filters" aria-label="按类别筛选"></div>
-            <label class="calendar-select"><span>Owner</span><select id="calendar-owner-select" aria-label="按负责人筛选日历"></select></label>
-            <label class="check-control"><input type="checkbox" id="calendar-active-only" checked><span>Active Only</span></label>
-            <label class="check-control"><input type="checkbox" id="calendar-include-completed"><span>Include Completed</span></label>
-            <div class="calendar-filter-group" id="calendar-type-filters" aria-label="按日历类型筛选"></div>
+            <div class="calendar-filter-panel" id="calendar-filter-panel" hidden>
+              <div class="calendar-filter-group" id="calendar-category-filters" aria-label="按类别筛选"></div>
+              <label class="calendar-select"><span>Owner</span><select id="calendar-owner-select" aria-label="按负责人筛选日历"></select></label>
+              <label class="check-control"><input type="checkbox" id="calendar-active-only" checked><span>Active Only</span></label>
+              <label class="check-control"><input type="checkbox" id="calendar-include-completed"><span>Include Completed</span></label>
+              <div class="calendar-filter-group" id="calendar-type-filters" aria-label="按日历类型筛选"></div>
+            </div>
           </div>
           <div class="calendar-stats" id="calendar-stats" aria-label="DDL 提醒统计"></div>
           <div class="calendar-validation" id="calendar-validation" hidden></div>
@@ -172,6 +177,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="event_data.js?v=1.4.1"></script>
-  <script src="assets/app.js?v=1.4.1"></script>
+  <script src="assets/app.js?v=1.4.2"></script>
 </body>
 </html>

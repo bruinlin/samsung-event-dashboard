@@ -16,6 +16,8 @@ Open `http://localhost:8080/`. Directly opening `index.html` also works because 
 
 When the URL has no event hash, the Dashboard opens the nearest upcoming event that is not `Completed`; if none remain, it opens the newest completed event. A valid event hash such as `#OCTS_2026` or `#ODX_2026` always takes priority. The Calendar initially opens the month containing the nearest uncompleted task or stage DDL; it falls back to the event month, then the current month.
 
+Project Calendar opens in `2 Weeks` view for every screen size. It shows the current 14-day period in two week groups and lists the next five filtered, unfinished items under Later Deadlines. Use Previous, Today, and Next to move by 14 days; select `Month` for the full month grid. Calendar filters are collapsed by default and continue to apply to both views.
+
 ## Update event data
 
 - `event_data.js` is the root event registry. Add each new event here and point `dataFile` to its local data file.

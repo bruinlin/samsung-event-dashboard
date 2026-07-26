@@ -80,8 +80,11 @@
     hideCompleted: false,
     documentCategory: "all",
     collapsedCategories: new Set(),
-    calendarView: "month",
+    calendarView: "fortnight",
     calendarMonth: null,
+    calendarFortnightStart: "",
+    calendarFiltersOpen: false,
+    calendarLaterExpanded: false,
     calendarCategory: "all",
     calendarOwner: "all",
     calendarActiveOnly: true,
@@ -196,8 +199,11 @@
     state.hideCompleted = false;
     state.documentCategory = "all";
     state.collapsedCategories = new Set();
-    state.calendarView = window.innerWidth <= 540 ? "agenda" : "month";
+    state.calendarView = "fortnight";
     state.calendarMonth = defaultCalendarMonth(data);
+    state.calendarFortnightStart = todayIso();
+    state.calendarFiltersOpen = false;
+    state.calendarLaterExpanded = false;
     state.calendarCategory = "all";
     state.calendarOwner = "all";
     state.calendarActiveOnly = true;
@@ -724,6 +730,8 @@
     $("calendar-type-filters").innerHTML = CALENDAR_TYPES.map((item) =>
       `<button type="button" class="filter-chip ${state.calendarTypes.has(item.id) ? "active" : ""}" data-calendar-type="${escapeHtml(item.id)}">${safeText(item.label)}</button>`
     ).join("");
+    $("calendar-filter-panel").hidden = !state.calendarFiltersOpen;
+    $("calendar-filters-toggle").setAttribute("aria-expanded", String(state.calendarFiltersOpen));
     $("calendar-content").dataset.view = state.calendarView;
     $("project-calendar").querySelectorAll("button[data-calendar-view]").forEach((button) => {
       button.classList.toggle("active", button.dataset.calendarView === state.calendarView);
@@ -756,26 +764,64 @@
       const day = new Date(gridStart.getFullYear(), gridStart.getMonth(), gridStart.getDate() + index);
       const date = isoFromDate(day);
       const dayItems = items.filter((item) => item.date === date);
-      const visibleItems = dayItems.slice(0, 3);
+      const visibleItems = dayItems.slice(0, 2);
       const isCurrentMonth = day.getMonth() === monthIndex;
       const isToday = date === todayIso();
       return `<article class="calendar-day ${isCurrentMonth ? "" : "other-month"} ${isToday ? "today" : ""} ${dayItems.some((item) => !isCompletedStatus(item.status) && item.date < todayIso()) ? "overdue" : ""}">
         <div class="calendar-day-number">${day.getDate()}</div>
         <div class="calendar-day-items">${visibleItems.map((item) => calendarItemButton(item, true)).join("")}</div>
-        ${dayItems.length > 3 ? `<button type="button" class="calendar-more" data-calendar-date="${date}">+ ${dayItems.length - 3} more</button>` : ""}
+        ${dayItems.length > 2 ? `<button type="button" class="calendar-more" data-calendar-date="${date}">+ ${dayItems.length - 2} more</button>` : ""}
       </article>`;
     }).join("");
     $("calendar-month-label").textContent = `${year}.${String(monthIndex + 1).padStart(2, "0")}`;
     return `<div class="calendar-month"><div class="calendar-weekdays"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div><div class="calendar-days">${days}</div></div>`;
   }
 
-  function renderAgendaView(items) {
-    const today = todayIso();
-    const until = addDays(today, 13);
-    const upcoming = items.filter((item) => item.date >= today && item.date <= until).sort((a, b) => a.date.localeCompare(b.date) || a.titleEN.localeCompare(b.titleEN));
-    return `<div class="calendar-agenda">
-      <div class="calendar-agenda-title">Upcoming · ${formatDate(today)} — ${formatDate(until)}</div>
-      ${upcoming.length ? upcoming.map((item) => `<article class="calendar-agenda-item"><time>${formatDate(item.date)}</time>${calendarItemButton(item)}</article>`).join("") : `<div class="empty-state">未来 14 天没有已填写 DDL 的事项。</div>`}
+  function renderFortnightWeek(items, start, weekNumber) {
+    const end = addDays(start, 6);
+    const dayItems = items.filter((item) => item.date >= start && item.date <= end).sort((a, b) => a.date.localeCompare(b.date) || a.titleEN.localeCompare(b.titleEN));
+    const grouped = new Map();
+    dayItems.forEach((item) => {
+      if (!grouped.has(item.date)) grouped.set(item.date, []);
+      grouped.get(item.date).push(item);
+    });
+    const rows = [...grouped.entries()].map(([date, entries]) => `
+      <article class="calendar-fortnight-day">
+        <time>${formatDate(date)}</time>
+        <div class="calendar-fortnight-items">${entries.map((item) => calendarItemButton(item)).join("")}</div>
+      </article>`).join("");
+    return `<section class="calendar-week-group">
+      <h3>Week ${weekNumber}</h3>
+      ${rows || `<p class="calendar-empty-week">No scheduled DDLs / 暂无已填写DDL</p>`}
+    </section>`;
+  }
+
+  function renderLaterDeadlines(items, until) {
+    const later = items
+      .filter((item) => item.date > until && !isCompletedStatus(item.status))
+      .sort((a, b) => a.date.localeCompare(b.date) || a.titleEN.localeCompare(b.titleEN));
+    const shown = state.calendarLaterExpanded ? later : later.slice(0, 5);
+    const toggle = later.length > 5
+      ? `<button type="button" class="calendar-later-toggle" data-calendar-later-toggle>${state.calendarLaterExpanded ? "Show Less / 收起" : "Show All / 展开全部"}</button>`
+      : "";
+    return `<section class="calendar-later-deadlines">
+      <div class="calendar-later-heading"><h3>Later Deadlines</h3><span>后续截止事项</span></div>
+      ${shown.length ? `<div class="calendar-later-list">${shown.map((item) => `<article class="calendar-later-item"><time>${formatDate(item.date)}</time>${calendarItemButton(item)}</article>`).join("")}</div>` : `<p class="calendar-empty-week">No later scheduled DDLs / 暂无后续已填写DDL</p>`}
+      ${toggle}
+    </section>`;
+  }
+
+  function renderFortnightView(items) {
+    const start = state.calendarFortnightStart || todayIso();
+    const secondWeek = addDays(start, 7);
+    const until = addDays(start, 13);
+    $("calendar-month-label").textContent = `${formatDate(start)} — ${formatDate(until)}`;
+    return `<div class="calendar-fortnight">
+      <div class="calendar-fortnight-weeks">
+        ${renderFortnightWeek(items, start, 1)}
+        ${renderFortnightWeek(items, secondWeek, 2)}
+      </div>
+      ${renderLaterDeadlines(items, until)}
     </div>`;
   }
 
@@ -806,7 +852,7 @@
       reminder.issues.length ? `${reminder.issues.length} 个DDL数据校验提醒` : "",
       reminder.completedWithoutDate ? `${reminder.completedWithoutDate} 个已完成阶段未记录实际完成日期` : ""
     ].filter(Boolean).join(" · ");
-    $("calendar-content").innerHTML = state.calendarView === "agenda" ? renderAgendaView(visibleItems) : renderMonthView(visibleItems);
+    $("calendar-content").innerHTML = state.calendarView === "month" ? renderMonthView(visibleItems) : renderFortnightView(visibleItems);
     renderCalendarDayDetail(visibleItems);
   }
 
@@ -987,6 +1033,11 @@
     $("project-calendar").addEventListener("click", (event) => {
       const viewButton = event.target.closest("button[data-calendar-view]");
       if (viewButton) { state.calendarView = viewButton.dataset.calendarView; renderCalendar(state.data); return; }
+      if (event.target.closest("button[data-calendar-later-toggle]")) {
+        state.calendarLaterExpanded = !state.calendarLaterExpanded;
+        renderCalendar(state.data);
+        return;
+      }
       const categoryButton = event.target.closest("button[data-calendar-category]");
       if (categoryButton) { state.calendarCategory = categoryButton.dataset.calendarCategory; state.calendarSelectedDate = ""; renderCalendar(state.data); return; }
       const typeButton = event.target.closest("button[data-calendar-type]");
@@ -1008,9 +1059,24 @@
       if (event.target.closest("button[data-calendar-day-close]")) { state.calendarSelectedDate = ""; renderCalendar(state.data); }
     });
 
-    $("calendar-prev").addEventListener("click", () => { state.calendarMonth = new Date(state.calendarMonth.getFullYear(), state.calendarMonth.getMonth() - 1, 1); renderCalendar(state.data); });
-    $("calendar-next").addEventListener("click", () => { state.calendarMonth = new Date(state.calendarMonth.getFullYear(), state.calendarMonth.getMonth() + 1, 1); renderCalendar(state.data); });
-    $("calendar-today").addEventListener("click", () => { const now = new Date(); state.calendarMonth = new Date(now.getFullYear(), now.getMonth(), 1); state.calendarSelectedDate = todayIso(); renderCalendar(state.data); });
+    $("calendar-filters-toggle").addEventListener("click", () => { state.calendarFiltersOpen = !state.calendarFiltersOpen; renderCalendar(state.data); });
+    $("calendar-prev").addEventListener("click", () => {
+      if (state.calendarView === "month") state.calendarMonth = new Date(state.calendarMonth.getFullYear(), state.calendarMonth.getMonth() - 1, 1);
+      else state.calendarFortnightStart = addDays(state.calendarFortnightStart || todayIso(), -14);
+      renderCalendar(state.data);
+    });
+    $("calendar-next").addEventListener("click", () => {
+      if (state.calendarView === "month") state.calendarMonth = new Date(state.calendarMonth.getFullYear(), state.calendarMonth.getMonth() + 1, 1);
+      else state.calendarFortnightStart = addDays(state.calendarFortnightStart || todayIso(), 14);
+      renderCalendar(state.data);
+    });
+    $("calendar-today").addEventListener("click", () => {
+      const now = new Date();
+      state.calendarMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      state.calendarFortnightStart = todayIso();
+      state.calendarSelectedDate = "";
+      renderCalendar(state.data);
+    });
     $("calendar-owner-select").addEventListener("change", (event) => { state.calendarOwner = event.target.value; state.calendarSelectedDate = ""; renderCalendar(state.data); });
     $("calendar-active-only").addEventListener("change", (event) => { state.calendarActiveOnly = event.target.checked; renderCalendar(state.data); });
     $("calendar-include-completed").addEventListener("change", (event) => { state.calendarIncludeCompleted = event.target.checked; renderCalendar(state.data); });
