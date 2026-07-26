@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <title>Samsung Event Dashboard</title>
-  <link rel="stylesheet" href="assets/style.css?v=1.4.4">
+  <link rel="stylesheet" href="assets/style.css?v=1.4.5">
 </head>
 <body>
   <div class="page-shell">
@@ -14,6 +14,7 @@
         <div class="eyebrow">SAMSUNG SEMICONDUCTOR · EVENT DASHBOARD</div>
         <h1 id="event-title">Samsung Event Dashboard</h1>
         <p class="hero-subtitle" id="event-subtitle">正在载入活动数据…</p>
+        <div class="hero-theme" id="hero-theme" hidden></div>
         <div class="hero-meta" id="hero-meta"></div>
         <div class="hero-results" id="hero-results" aria-label="活动结果数据" hidden></div>
       </div>
@@ -42,8 +43,6 @@
       </label>
       <button class="button button-primary" id="print-button" type="button">打印页面</button>
     </section>
-
-    <section class="metric-grid" id="metric-grid" aria-label="活动总览指标"></section>
 
     <div class="dashboard-grid">
       <main class="main-column">
@@ -171,6 +170,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="event_data.js?v=1.4.4"></script>
-  <script src="assets/app.js?v=1.4.4"></script>
+  <script src="assets/app.js?v=1.4.5"></script>
 </body>
 </html>

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.5-web - 2026-07-26
+
+- Removed the duplicated top Metric Cards row for Event Status, Workstream Completion, Main Speaker, Location and Report Status.
+- Moved the optional event theme into the Hero primary information, where it updates or hides with the selected event.
+- Kept Event Overview focused on Participation, Main Forum Keynote, and Booth & Products only.
+
 ## 1.4.4-web - 2026-07-26
 
 - Simplified Event Overview into Event Theme, Participation, Main Forum Keynote, and Booth & Products groups, removing repeated date, location, event type, detailed agenda and current summary display.

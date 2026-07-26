@@ -280,20 +280,15 @@
     );
   }
 
-  function metrics(data) {
-    const workstreams = data.workstreams || [];
-    const assessed = assessedWorkstreams(workstreams);
-    const completed = assessed.filter((item) => workstreamStatus(item) === "Completed").length;
-    const workstreamCompletion = assessed.length ? Math.round((completed / assessed.length) * 100) : 0;
-
-    return { assessed: assessed.length, completed, workstreamCompletion };
-  }
-
   function renderHero(data) {
     const event = data.event;
     document.title = `${event.shortName} · Samsung Event Dashboard`;
     $("event-title").textContent = event.nameCN;
     $("event-subtitle").textContent = `${event.nameEN} · ${event.eventId}`;
+    const themeCN = String(event.themeCN || "").trim();
+    const themeEN = String(event.themeEN || "").trim();
+    $("hero-theme").hidden = !themeCN && !themeEN;
+    $("hero-theme").innerHTML = `${themeCN ? `<b>${safeText(themeCN)}</b>` : ""}${themeEN ? `<small>${safeText(themeEN)}</small>` : ""}`;
     $("hero-meta").innerHTML = [
       `<span>日期 <b>${formatDate(event.dateStart)}</b></span>`,
       `<span>地点 <b>${safeText(event.city)} · ${safeText(event.venue)}</b></span>`,
@@ -315,28 +310,9 @@
     `).join("");
   }
 
-  function renderMetrics(data) {
-    const m = metrics(data);
-    const cards = [
-      ["Event Status", STATUS_STYLE[data.event.overallStatus]?.[0] || data.event.overallStatus, "活动执行状态"],
-      ["Workstream Completion", `${m.workstreamCompletion}%`, `${m.completed}/${m.assessed} 个可评估模块完成`],
-      ["Main Speaker", data.keynote.speaker.split("/")[0].trim(), "Main Forum"],
-      ["Location", data.event.city, data.event.venue],
-      ["Report Status", data.event.reportStatus, data.event.nextMilestone]
-    ];
-    $("metric-grid").innerHTML = cards.map((card) => `
-      <article class="metric-card">
-        <div class="metric-label">${safeText(card[0])}</div>
-        <div class="metric-value">${safeText(card[1])}</div>
-        <div class="metric-note">${safeText(card[2])}</div>
-      </article>
-    `).join("");
-  }
-
   function renderOverview(data) {
     const event = data.event;
     const keynote = data.keynote;
-    const theme = event.themeCN || event.themeEN || "";
     const forms = Array.isArray(event.participationForms)
       ? event.participationForms.filter(Boolean)
       : String(event.participationForms || "").split(/[·/]/).map((item) => item.trim()).filter(Boolean);
@@ -369,7 +345,7 @@
         ${products ? `<div class="overview-detail"><span>Showcased Products</span><b>${safeText(products)}</b></div>` : ""}
       </article>` : ""
     ].filter(Boolean).join("");
-    $("overview-grid").innerHTML = `${theme ? `<div class="overview-theme"><span>Event Theme / 大会主题</span><b>${safeText(theme)}</b></div>` : ""}<div class="overview-groups">${groups}</div>`;
+    $("overview-grid").innerHTML = `<div class="overview-groups">${groups}</div>`;
   }
 
   function renderControls(data) {
@@ -1067,7 +1043,6 @@
   function renderDashboard() {
     const data = state.data;
     renderHero(data);
-    renderMetrics(data);
     renderOverview(data);
     renderControls(data);
     renderStatusCounts(data);
