@@ -2,7 +2,7 @@
 
 Repository: `samsung-event-dashboard`
 
-Framework-free static Event Dashboard for Samsung Semiconductor Marcom. The current sample event is OCTS 2026. All runtime assets are stored in this repository; no server-side application, package installation, CDN, online font, or external API is required.
+Framework-free static Event Dashboard for Samsung Semiconductor Marcom. The event selector currently includes OCTS 2026, ODX 2026 and ICCAD 2026. All runtime assets are stored in this repository; no server-side application, package installation, CDN, online font, or external API is required.
 
 ## Run locally
 
@@ -14,7 +14,7 @@ python -m http.server 8080
 
 Open `http://localhost:8080/`. Directly opening `index.html` also works because event data is provided by JavaScript files rather than fetched JSON.
 
-When the URL has no event hash, the Dashboard opens the nearest upcoming event that is not `Completed`; if none remain, it opens the newest completed event. A valid event hash such as `#OCTS_2026` or `#ODX_2026` always takes priority. The Calendar initially opens the month containing the nearest uncompleted task or stage DDL; it falls back to the event month, then the current month.
+When the URL has no event hash, the Dashboard opens the nearest upcoming event that is not `Completed`; if none remain, it opens the newest completed event. A valid event hash such as `#OCTS_2026`, `#ODX_2026` or `#ICCAD_2026` always takes priority. For deadline-enabled events, the Calendar initially opens the month containing the nearest uncompleted task or stage DDL; it falls back to the event month, then the current month.
 
 Project Calendar opens in `2 Weeks` view for every screen size. It shows the current 14-day period in two week groups and lists the next five filtered, unfinished items under Later Deadlines. Use Previous, Today, and Next to move by 14 days; select `Month` for the full month grid. Calendar filters are collapsed by default and continue to apply to both views.
 
@@ -25,7 +25,8 @@ Documents & Deliverables sits directly below Attention Needed in the side column
 - `event_data.js` is the root event registry. Add each new event here and point `dataFile` to its local data file.
 - `data/OCTS_2026.js` contains the OCTS 2026 event details, workstreams, milestones, sessions, result metrics, and document references.
 - `data/ODX_2026.js` contains the independent ODX 2026 record. Update this file for ODX progress; do not copy or overwrite OCTS workstreams.
-- Hero displays optional `event.themeCN` and `event.themeEN` below the event name. Event Overview groups sponsorship and participation fields, `keynote` details, and Booth/product fields. Keep unconfirmed values as `TBD` or empty; do not add an English theme unless it is confirmed.
+- `data/ICCAD_2026.js` contains the independent ICCAD 2026 event. It uses the same Calendar, workstream, session, Attention Needed and final-document schema as ODX and OCTS; leave unconfirmed task and stage DDLs as empty strings and do not invent dates.
+- Hero displays optional `event.themeCN` and `event.themeEN` below the event name. When `event.dateEnd` differs from `dateStart`, Hero displays the confirmed event date range. Event Overview groups sponsorship and participation fields, `keynote` details, and Booth/product fields; add optional `keynote.date` only when the specific presentation date is confirmed. Keep unconfirmed values as `TBD` or empty; do not add an English theme unless it is confirmed.
 - `data/OCTS_2026.js` also contains `finalDocuments`, which controls the unified Documents & Deliverables list, file metadata, category filters, download links, and status-only records.
 - Keep the data structure consistent with the existing event file. Use only the supported status values documented at the top of the data file.
 - Each workstream belongs to one of three categories: `business-commercial`, `event-operations-content`, or `social-pr-reporting`. Add `categoryId`, `categoryNameCN`, and `categoryNameEN` to every new workstream.

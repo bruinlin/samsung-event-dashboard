@@ -16,7 +16,7 @@ window.EVENT_INDEX = {
       label: "OCTS 2026",
       dateStart: "2026-07-09",
       overallStatus: "Completed",
-      dataFile: "data/OCTS_2026.js?v=1.4.0",
+      dataFile: "data/OCTS_2026.js?v=1.5.1",
       dataKey: "OCTS_2026"
     },
     {
@@ -24,8 +24,16 @@ window.EVENT_INDEX = {
       label: "ODX 2026",
       dateStart: "2026-09-02",
       overallStatus: "In Progress",
-      dataFile: "data/ODX_2026.js?v=1.4.4",
+      dataFile: "data/ODX_2026.js?v=1.5.2",
       dataKey: "ODX_2026"
+    },
+    {
+      eventId: "ICCAD_2026",
+      label: "ICCAD 2026",
+      dateStart: "2026-11-19",
+      overallStatus: "In Progress",
+      dataFile: "data/ICCAD_2026.js?v=1.5.2",
+      dataKey: "ICCAD_2026"
     }
   ]
 };

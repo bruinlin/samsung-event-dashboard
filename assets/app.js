@@ -163,6 +163,19 @@
     return escapeHtml(clean || fallback);
   }
 
+  function eventCountdown(dateStart) {
+    if (!isValidDate(dateStart)) return "TBD";
+    const days = Math.round((dateFromIso(dateStart) - dateFromIso(todayIso())) / 86400000);
+    if (days > 0) return `${days} days / ${days} 天`;
+    if (days === 0) return "Event Day / 活动日";
+    return `Event started ${Math.abs(days)} days ago / 活动已开始 ${Math.abs(days)} 天`;
+  }
+
+  function safeExternalHref(value) {
+    const href = String(value || "").trim();
+    return /^https:\/\//i.test(href) ? href : "";
+  }
+
   function showToast(message) {
     const toast = $("toast");
     toast.textContent = message;
@@ -280,20 +293,35 @@
     );
   }
 
+  function participationSummary(event) {
+    const forms = Array.isArray(event.participationForms)
+      ? event.participationForms.filter(Boolean)
+      : String(event.participationForms || "").split(/[·/]/).map((item) => item.trim()).filter(Boolean);
+    return [String(event.sponsorshipLevel || "").trim(), forms.join(" · ")].filter(Boolean).join(" · ");
+  }
+
   function renderHero(data) {
     const event = data.event;
+    const eventDate = isValidDate(event.dateEnd) && event.dateEnd !== event.dateStart
+      ? `${event.dateStart} – ${event.dateEnd}`
+      : (isValidDate(event.dateStart) ? event.dateStart : formatDate(event.dateStart));
     document.title = `${event.shortName} · Samsung Event Dashboard`;
     $("event-title").textContent = event.nameCN;
     $("event-subtitle").textContent = `${event.nameEN} · ${event.eventId}`;
     const themeCN = String(event.themeCN || "").trim();
     const themeEN = String(event.themeEN || "").trim();
+    const website = safeExternalHref(event.officialWebsite);
+    const participation = event.showParticipationInHero ? participationSummary(event) : "";
     $("hero-theme").hidden = !themeCN && !themeEN;
     $("hero-theme").innerHTML = `${themeCN ? `<b>${safeText(themeCN)}</b>` : ""}${themeEN ? `<small>${safeText(themeEN)}</small>` : ""}`;
     $("hero-meta").innerHTML = [
-      `<span>日期 <b>${formatDate(event.dateStart)}</b></span>`,
+      `<span>日期 <b>${eventDate}</b></span>`,
       `<span>地点 <b>${safeText(event.city)} · ${safeText(event.venue)}</b></span>`,
-      `<span>类型 <b>${safeText(event.eventType)}</b></span>`
-    ].join("");
+      event.eventType ? `<span>类型 <b>${safeText(event.eventType)}</b></span>` : "",
+      participation ? `<span class="hero-participation"><span class="hero-meta-label">Participation / 参与方式</span><b>${safeText(participation)}</b></span>` : "",
+      event.showEventCountdown ? `<span>Event Countdown <b>${safeText(eventCountdown(event.dateStart))}</b></span>` : "",
+      website ? `<span><a href="${escapeHtml(website)}" target="_blank" rel="noopener noreferrer">Official Website / 官方网站</a></span>` : ""
+    ].filter(Boolean).join("");
     $("hero-status").innerHTML = statusBadge(event.overallStatus);
     $("hero-updated").innerHTML = `Last updated <b>${formatDate(data.meta.lastUpdated)}</b><br>Updated by <b>${safeText(data.meta.updatedBy)}</b>`;
 
@@ -312,31 +340,32 @@
 
   function renderOverview(data) {
     const event = data.event;
-    const keynote = data.keynote;
-    const forms = Array.isArray(event.participationForms)
-      ? event.participationForms.filter(Boolean)
-      : String(event.participationForms || "").split(/[·/]/).map((item) => item.trim()).filter(Boolean);
-    const formTranslations = { "主论坛": "Main Forum", "分论坛": "Breakout Session", Booth: "Booth" };
-    const participationCN = forms.join(" · ");
-    const participationEN = forms.map((item) => formTranslations[item] || item).join(" · ");
-    const sponsorship = String(event.sponsorshipLevel || "").trim();
+    const keynote = data.keynote || {};
     const topicCN = String(keynote.topicCN || "").trim();
     const topicEN = String(keynote.topicEN || "").trim();
-    const topicENMarkup = topicEN && topicEN !== topicCN ? `<div class="overview-topic-en"><span>English Topic</span>${safeText(topicEN)}</div>` : "";
+    const topicENMarkup = topicEN && (topicEN !== topicCN || keynote.showFieldLabels) ? `<div class="overview-topic-en"><span>English Topic</span>${safeText(topicEN)}</div>` : "";
+    const keynoteDate = isValidDate(keynote.date) ? keynote.date : "";
     const keynoteTime = String(keynote.time || "").trim().replace(/-/g, "–");
+    const keynoteSchedule = [keynoteDate, keynoteTime].filter(Boolean).join(" · ");
     const boothParts = [event.boothArea, event.boothNumber ? `Booth No. ${event.boothNumber}` : ""].filter(Boolean);
     const products = Array.isArray(event.showcasedProducts) ? event.showcasedProducts.filter(Boolean).join(" · ") : String(event.showcasedProducts || "").trim();
+    const presentationLabelEN = String(keynote.labelEN || "Main Forum Keynote").trim();
+    const presentationLabelCN = String(keynote.labelCN || "主论坛演讲").trim();
+    const presenterMarkup = keynote.showFieldLabels
+      ? `<span><small>Presenter</small><b>${safeText(keynote.speaker)}</b></span>`
+      : (keynote.speaker ? `<b>${safeText(keynote.speaker)}</b>` : "");
+    const titleMarkup = keynote.showFieldLabels
+      ? `<span><small>Title / Department</small><b>${safeText(keynote.title)}</b></span>`
+      : (keynote.title ? `<span>${safeText(keynote.title)}</span>` : "");
+    const scheduleMarkup = keynoteSchedule
+      ? (keynote.showFieldLabels ? `<span><small>Presentation Time</small><b>${safeText(keynoteSchedule)}</b></span>` : `<time>${safeText(keynoteSchedule)}</time>`)
+      : "";
+    const statusMarkup = keynote.showStatus ? `<span><small>Status</small>${statusBadge(keynote.status)}</span>` : "";
     const groups = [
-      (sponsorship || participationCN) ? `<article class="overview-group participation-group">
-        <h3>Participation <span>/ 参与方式</span></h3>
-        ${sponsorship ? `<b>${safeText(sponsorship)}</b>` : ""}
-        ${participationCN ? `<div class="overview-detail">${safeText(participationEN)}<small>${safeText(participationCN)}</small></div>` : ""}
-      </article>` : "",
-      (keynote.speaker || keynote.title || keynoteTime || topicCN || topicEN) ? `<article class="overview-group keynote-group">
-        <h3>Main Forum Keynote <span>/ 主论坛演讲</span></h3>
-        ${keynote.speaker ? `<b>${safeText(keynote.speaker)}</b>` : ""}
-        ${keynote.title ? `<div class="overview-subtitle">${safeText(keynote.title)}</div>` : ""}
-        ${keynoteTime ? `<time>${safeText(keynoteTime)}</time>` : ""}
+      (keynote.speaker || keynote.title || keynoteSchedule || topicCN || topicEN || keynote.showStatus) ? `<article class="overview-group keynote-group">
+        <h3>${safeText(presentationLabelEN)} <span>/ ${safeText(presentationLabelCN)}</span></h3>
+        ${(presenterMarkup || titleMarkup) ? `<div class="presentation-profile">${presenterMarkup}${titleMarkup}</div>` : ""}
+        ${(scheduleMarkup || statusMarkup) ? `<div class="presentation-meta">${scheduleMarkup}${statusMarkup}</div>` : ""}
         ${(topicCN || topicEN) ? `<div class="overview-topic"><span>中文主题</span><strong>${safeText(topicCN || topicEN)}</strong>${topicENMarkup}</div>` : ""}
       </article>` : "",
       (boothParts.length || products) ? `<article class="overview-group booth-group">
@@ -937,7 +966,7 @@
   }
 
   function renderSessions(data) {
-    $("sessions-grid").innerHTML = data.sessions.map((session) => `
+    $("sessions-grid").innerHTML = (data.sessions || []).map((session) => `
       <article class="session-card">
         <div class="session-top">
           <div>
@@ -1031,6 +1060,15 @@
 
   function renderDashboard() {
     const data = state.data;
+    $("project-calendar").hidden = false;
+    $("workstream-title").textContent = "Workstream Progress";
+    $("workstream-column-label").textContent = "工作模块";
+    $("owner-column-label").textContent = "负责人 / Final DDL";
+    $("update-column-label").textContent = "最新进展";
+    $("sessions-title").textContent = "Sessions & Speakers";
+    $("sessions-subtitle").textContent = "主论坛、分论坛与领奖环节";
+    $("sessions-section").hidden = false;
+    document.querySelector(".attention-panel .panel-heading p").textContent = "需要关注 · 自动根据当前任务、阶段与 DDL 派生";
     renderHero(data);
     renderOverview(data);
     renderControls(data);

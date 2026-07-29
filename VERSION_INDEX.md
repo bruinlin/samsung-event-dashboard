@@ -2,6 +2,9 @@
 
 | Version | Date | Primary Deliverable | Lifecycle Status | Purpose |
 |---|---|---|---|---|
+| 1.5.2-web | 2026-07-29 | `index.html` + `assets/` + `data/ODX_2026.js` + `data/ICCAD_2026.js` | Working | Moves ODX and ICCAD Participation into the Hero metadata and condenses the shared presentation Overview card. |
+| 1.5.1-web | 2026-07-29 | `index.html` + `assets/` + `data/ICCAD_2026.js` | Working | Corrects ICCAD to the shared ODX/OCTS page structure, restores Calendar and DDL support, and adds optional official-website Hero links. |
+| 1.5.0-web | 2026-07-29 | `index.html` + `assets/` + `event_data.js` + `data/ICCAD_2026.js` | Working | Adds the independent ICCAD 2026 dashboard, ICCAD-only no-DDL process mode, and responsive module cards pending user review. |
 | 1.1.2-web | 2026-07-22 | `index.html` + `data/OCTS_2026.js` + `downloads/OCTS_2026/reports/` | Working | Merges file areas and retains reviewed downloads plus the user-approved Final Report PDF. |
 | 1.1.1-web | 2026-07-22 | `index.html` + `downloads/OCTS_2026/` | Working | Final three-file GitHub Pages download release for OCTS 2026. |
 | 1.1.0-web | 2026-07-22 | `index.html` + `downloads/OCTS_2026/` | Working | Adds reviewed OCTS 2026 Final Deliverables and public download paths. |

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <title>Samsung Event Dashboard</title>
-  <link rel="stylesheet" href="assets/style.css?v=1.4.6">
+  <link rel="stylesheet" href="assets/style.css?v=1.5.2">
 </head>
 <body>
   <div class="page-shell">
@@ -106,11 +106,11 @@
             <table class="workstream-table">
               <thead>
                 <tr>
-                  <th class="col-workstream">工作模块</th>
+                  <th class="col-workstream" id="workstream-column-label">工作模块</th>
                   <th class="col-status">状态</th>
                   <th class="col-progress">进度</th>
-                  <th class="col-owner">负责人 / Final DDL</th>
-                  <th class="col-update">最新进展</th>
+                  <th class="col-owner" id="owner-column-label">负责人 / Final DDL</th>
+                  <th class="col-update" id="update-column-label">最新进展</th>
                   <th class="col-action">下一步</th>
                   <th class="col-detail no-print">详情</th>
                 </tr>
@@ -121,11 +121,11 @@
           <div class="empty-state" id="workstream-empty" hidden>没有匹配的工作模块。</div>
         </section>
 
-        <section class="panel" aria-labelledby="sessions-title">
+        <section class="panel" id="sessions-section" aria-labelledby="sessions-title">
           <div class="panel-heading">
             <div>
               <h2 id="sessions-title">Sessions &amp; Speakers</h2>
-              <p>主论坛、分论坛与领奖环节</p>
+              <p id="sessions-subtitle">主论坛、分论坛与领奖环节</p>
             </div>
           </div>
           <div class="session-grid" id="sessions-grid"></div>
@@ -169,7 +169,7 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-  <script src="event_data.js?v=1.4.4"></script>
-  <script src="assets/app.js?v=1.4.6"></script>
+  <script src="event_data.js?v=1.5.2"></script>
+  <script src="assets/app.js?v=1.5.2"></script>
 </body>
 </html>

@@ -1,5 +1,33 @@
 # Changelog
 
+## 1.5.2-web - 2026-07-29
+
+- Moved confirmed Participation information from the ODX and ICCAD Event Overview cards into their Hero metadata rows, using the same inline treatment as OCTS Hero metadata.
+- Condensed the shared Booth Presentation / Main Forum Keynote card into compact presenter, schedule, status and topic rows, and rebalanced the two-card Overview layout. OCTS participation content and event facts remain unchanged.
+- This is a local Working revision pending user review; no commit, push or deployment was performed.
+
+## 1.5.1-web - 2026-07-29
+
+- Corrected ICCAD 2026 to use the same six-section ODX/OCTS dashboard structure: Event Overview, Project Calendar, Workstream Progress, Sessions & Speakers, Attention Needed, and Documents & Deliverables.
+- Replaced the ICCAD-specific overview, process table and operational module cards with the standard three-card Overview, shared Calendar and 12 practical ODX-style workstreams. Unconfirmed Final DDL and stage DDL fields are intentionally empty rather than removed.
+- Configured the shared Overview renderer to allow an event-specific presentation label. ICCAD now displays Booth Presentation / 展台演讲 while ODX and OCTS retain Main Forum Keynote / 主论坛演讲.
+- Added optional Hero website links for ICCAD, ODX and OCTS. No existing event facts, workstreams, dates, speakers, booth information, statuses or results were changed.
+- This is a local Working revision pending user review; no commit, push or deployment was performed.
+
+## 1.5.0-web - 2026-07-29
+
+- Added ICCAD 2026 as an independent selectable event dataset with confirmed Sponsor + Booth participation, 56 sqm booth, booth location C009-010 / C019-020 / C029-030, Keynote marked Not Applicable, and Booth Presentation marked Under Discussion.
+- Added an ICCAD project-process view with nine workstreams and 69 initial tasks using Owner, Status, Progress, Dependency, Next Action, Risk, Notes and File Link fields; all unconfirmed values remain `TBD`.
+- Added ICCAD-specific overview and operational module cards for participation, booth, Booth Presentation, demos, engagement, budget/procurement, onsite operation and post-event results without changing the homepage layout.
+- Disabled Project Calendar, task/stage DDLs, overdue states and deadline-derived attention only for ICCAD; existing ODX and OCTS calendar and DDL behavior remains enabled.
+- Verified ICCAD desktop and mobile responsive layouts, event switching and filters, and confirmed no browser console errors. This remains a local Working version pending user review; no commit, push or deployment was performed.
+
+## 1.4.7-web - 2026-07-29
+
+- Updated ODX 2026 to the confirmed September 2–4 event date range and recorded the Main Forum Keynote date as September 3, while retaining its confirmed 10:30–10:45 time.
+- Updated the supplied ODX task and stage DDLs and added concise date-grouped ODX timeline milestones for the specified gift, agenda, product, PR and report checkpoints.
+- Hero now displays confirmed multi-day event ranges, and Event Overview displays an optional confirmed keynote date alongside its time.
+
 ## 1.4.6-web - 2026-07-26
 
 - Moved Documents & Deliverables from the main column to directly below Attention Needed in the side column, without changing document data or download behavior.

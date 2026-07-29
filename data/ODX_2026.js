@@ -14,7 +14,7 @@ window.EVENT_DATASETS = window.EVENT_DATASETS || {};
 window.EVENT_DATASETS.ODX_2026 = {
   meta: {
     schemaVersion: "1.8",
-    lastUpdated: "2026-07-26",
+    lastUpdated: "2026-07-29",
     updatedBy: "Bruin"
   },
 
@@ -24,12 +24,13 @@ window.EVENT_DATASETS.ODX_2026 = {
     nameCN: "2026开放数据中心大会暨首届算博会",
     nameEN: "2026 Open Data Center Summit and Computing Power Expo",
     dateStart: "2026-09-02",
-    dateEnd: "2026-09-02",
+    dateEnd: "2026-09-04",
     city: "北京",
     venue: "北京国家会议中心二期",
     eventType: "行业技术大会",
     sponsorshipLevel: "Diamond Sponsor / 钻石赞助",
     participationForms: ["主论坛", "分论坛", "Booth"],
+    showParticipationInHero: true,
     themeCN: "开放AI Infra，普惠算力赋能",
     boothArea: "36㎡",
     boothNumber: "TBD",
@@ -39,12 +40,14 @@ window.EVENT_DATASETS.ODX_2026 = {
     nextMilestone: "TBD",
     showcasedProducts: "TBD",
     resultMetrics: [],
-    currentSummary: "2026 ODX 计划于 2026 年 9 月 2 日在北京国家会议中心二期举行。三星将以钻石赞助参与主论坛、分论坛及 Booth；分论坛、展出产品、展位号和详细议程等信息待确认。"
+    officialWebsite: "https://www.odx.top/",
+    currentSummary: "2026 ODX 计划于 2026 年 9 月 2 日至 4 日在北京国家会议中心二期举行。三星将以钻石赞助参与主论坛、分论坛及 Booth；分论坛、展出产品、展位号和详细议程等信息待确认。"
   },
 
   keynote: {
     speaker: "Jay Hyun",
     title: "CVP, NAND Product Planning, Samsung Electronics",
+    date: "2026-09-03",
     time: "10:30-10:45",
     topicEN: "TBD",
     topicCN: "TBD",
@@ -62,7 +65,7 @@ window.EVENT_DATASETS.ODX_2026 = {
       status: "In Progress",
       progress: 50,
       owner: "Bruin",
-      dueDate: "2026-08-21",
+      dueDate: "2026-08-10",
       actualCompletionDate: "",
       latestUpdate: "TBD",
       nextAction: "Complete and confirm the detailed agenda by August 21.",
@@ -97,7 +100,7 @@ window.EVENT_DATASETS.ODX_2026 = {
         { id: "initial-draft", nameCN: "初稿", nameEN: "Initial Draft", status: "Not Started", dueDate: "2026-08-10", completedDate: "" },
         { id: "first-washing", nameCN: "第一次 Washing", nameEN: "First Washing", status: "Not Started", dueDate: "2026-08-14", completedDate: "" },
         { id: "internal-review", nameCN: "复审", nameEN: "Internal Review", status: "Not Started", dueDate: "2026-08-19", completedDate: "" },
-        { id: "second-revision", nameCN: "第二次修改", nameEN: "Second Revision", status: "Not Started", dueDate: "", completedDate: "" },
+        { id: "second-revision", nameCN: "第二次修改", nameEN: "Second Revision", status: "Not Started", dueDate: "2026-08-24", completedDate: "" },
         { id: "final-approval", nameCN: "最终确认", nameEN: "Final Approval", status: "Not Started", dueDate: "2026-08-26", completedDate: "" }
       ],
       currentStageId: "initial-draft",
@@ -118,7 +121,7 @@ window.EVENT_DATASETS.ODX_2026 = {
       status: "In Progress",
       progress: 30,
       owner: "媛媛 & Dennis",
-      dueDate: "2026-08-07",
+      dueDate: "2026-08-10",
       actualCompletionDate: "",
       latestUpdate: "TBD",
       nextAction: "TBD",
@@ -134,7 +137,7 @@ window.EVENT_DATASETS.ODX_2026 = {
       status: "In Progress",
       progress: 60,
       owner: "媛媛 & Dennis",
-      dueDate: "2026-09-02",
+      dueDate: "2026-09-20",
       actualCompletionDate: "",
       latestUpdate: "TBD",
       nextAction: "TBD",
@@ -150,7 +153,7 @@ window.EVENT_DATASETS.ODX_2026 = {
       status: "In Progress",
       progress: 30,
       owner: "媛媛 & Dennis",
-      dueDate: "2026-08-07",
+      dueDate: "2026-08-14",
       actualCompletionDate: "",
       latestUpdate: "TBD",
       nextAction: "TBD",
@@ -166,7 +169,7 @@ window.EVENT_DATASETS.ODX_2026 = {
       status: "Not Started",
       progress: 0,
       stages: [
-        { id: "planning-draft", nameCN: "计划初稿", nameEN: "Planning Draft", status: "Not Started", dueDate: "2026-08-20", completedDate: "" }
+        { id: "planning-draft", nameCN: "计划初稿", nameEN: "Planning Draft", status: "Not Started", dueDate: "2026-08-19", completedDate: "" }
       ],
       currentStageId: "planning-draft",
       owner: "Seloma",
@@ -186,7 +189,7 @@ window.EVENT_DATASETS.ODX_2026 = {
       status: "Not Started",
       progress: 0,
       owner: "Iris & Christy",
-      dueDate: "",
+      dueDate: "2026-09-02",
       actualCompletionDate: "",
       latestUpdate: "TBD",
       nextAction: "TBD",
@@ -210,7 +213,19 @@ window.EVENT_DATASETS.ODX_2026 = {
     }
   ],
 
-  milestones: [],
+  milestones: [
+    { milestoneId: "ODX26-M-01", date: "2026-08-06", titleCN: "礼品方案确认", titleEN: "Gift Proposal Confirmation", status: "Not Started", remarks: "" },
+    { milestoneId: "ODX26-M-02", date: "2026-08-10", titleCN: "活动基本信息、报价与 Keynote 初稿", titleEN: "Event Information, Quotation & Keynote Initial Draft", status: "Not Started", remarks: "" },
+    { milestoneId: "ODX26-M-03", date: "2026-08-14", titleCN: "Booth 设计、产品信息与资产、Keynote 第一次 Washing", titleEN: "Booth, Product Assets & Keynote First Washing", status: "Not Started", remarks: "" },
+    { milestoneId: "ODX26-M-04", date: "2026-08-19", titleCN: "Keynote 内部审核与社媒发布计划", titleEN: "Keynote Internal Review & Social Posting Plan", status: "Not Started", remarks: "" },
+    { milestoneId: "ODX26-M-05", date: "2026-08-24", titleCN: "Keynote 第二次修改", titleEN: "Keynote Second Revision", status: "Not Started", remarks: "" },
+    { milestoneId: "ODX26-M-06", date: "2026-08-25", titleCN: "活动议程与人员明细收集", titleEN: "Event Agenda & Personnel Details Collection", status: "Not Started", remarks: "" },
+    { milestoneId: "ODX26-M-07", date: "2026-08-26", titleCN: "Keynote 最终确认", titleEN: "Keynote Final Approval", status: "Not Started", remarks: "" },
+    { milestoneId: "ODX26-M-08", date: "2026-08-31", titleCN: "会后报告初稿", titleEN: "Report Draft", status: "Not Started", remarks: "" },
+    { milestoneId: "ODX26-M-09", date: "2026-09-02", titleCN: "PR 文章", titleEN: "PR Article", status: "Not Started", remarks: "" },
+    { milestoneId: "ODX26-M-10", date: "2026-09-03", titleCN: "主论坛演讲与会后报告定稿", titleEN: "Main Forum Keynote & Report Final", status: "Not Started", remarks: "" },
+    { milestoneId: "ODX26-M-11", date: "2026-09-20", titleCN: "合同", titleEN: "Contract", status: "Not Started", remarks: "" }
+  ],
 
   sessions: [
     {

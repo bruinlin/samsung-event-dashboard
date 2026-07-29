@@ -47,6 +47,7 @@ window.EVENT_DATASETS.OCTS_2026 = {
     reportStatus: "Completed",
     nextMilestone: "All workstreams completed",
     showcasedProducts: ["PM1763", "BM1773", "SOCAMM2"],
+    officialWebsite: "https://ocpasia.org/",
     resultMetrics: [
       { label: "Booth Visitors / 展位访问", value: "460–500", note: "Estimated visitors" },
       { label: "New Followers / 新增粉丝", value: "+213", note: "Xiaohongshu · Event day" }
