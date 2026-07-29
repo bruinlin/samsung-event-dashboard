@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6.0-web - 2026-07-29
+
+- Added optional Supabase invite-only email OTP with Guest, Viewer, Editor and Admin access states while keeping public static viewing available when Supabase is missing or unavailable.
+- Added field-level Workstream and Stage overlays, activity membership, RLS-enforced updates, version conflict protection, update metadata, Change History and authenticated Realtime refresh without replacing complete event JSON payloads.
+- Added in-page Status, DDL and Owner editing for authorized members. Parent task Status and Progress remain derived from Stage records.
+- Replaced direct document actions with authenticated Private Storage signed-URL requests and documented the four existing OCTS PDFs that remain public until migration is verified.
+- Added idempotent database/seed SQL, safe configuration templates, OTP/Redirect/Storage setup instructions, hash navigation synchronization and local collaboration checks.
+
 ## 1.5.2-web - 2026-07-29
 
 - Moved confirmed Participation information from the ODX and ICCAD Event Overview cards into their Hero metadata rows, using the same inline treatment as OCTS Hero metadata.

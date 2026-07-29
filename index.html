@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <title>Samsung Event Dashboard</title>
-  <link rel="stylesheet" href="assets/style.css?v=1.5.2">
+  <link rel="stylesheet" href="assets/style.css?v=1.6.0">
 </head>
 <body>
   <div class="page-shell">
@@ -41,6 +41,11 @@
         <input type="checkbox" id="hide-completed">
         <span>隐藏已完成</span>
       </label>
+      <div class="collaboration-controls" aria-label="登录与协作状态">
+        <span class="collaboration-mode" id="collaboration-mode">Local data · Read only</span>
+        <span class="auth-state" id="auth-state" data-role="guest">Guest</span>
+        <button class="button" id="auth-button" type="button" data-auth-action="sign-in">Sign in</button>
+      </div>
       <button class="button button-primary" id="print-button" type="button">打印页面</button>
     </section>
 
@@ -112,7 +117,7 @@
                   <th class="col-owner" id="owner-column-label">负责人 / Final DDL</th>
                   <th class="col-update" id="update-column-label">最新进展</th>
                   <th class="col-action">下一步</th>
-                  <th class="col-detail no-print">详情</th>
+                  <th class="col-detail no-print">操作</th>
                 </tr>
               </thead>
               <tbody id="workstream-body"></tbody>
@@ -167,9 +172,64 @@
     </footer>
   </div>
 
+  <dialog class="modal-dialog auth-dialog" id="auth-dialog" aria-labelledby="auth-dialog-title">
+    <div class="modal-heading">
+      <div>
+        <h2 id="auth-dialog-title">Member Sign in / 成员登录</h2>
+        <p>邀请制邮箱 OTP。登录不会影响公开查看。</p>
+      </div>
+      <button class="modal-close" id="auth-close" type="button" aria-label="Close">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="auth-email-step">
+        <form id="auth-email-form">
+          <label class="modal-field"><span>Email / 邮箱</span><input id="auth-email" type="email" autocomplete="email" required></label>
+          <button class="button button-primary modal-submit" id="auth-send-otp" type="submit">Send OTP / 获取验证码</button>
+        </form>
+      </div>
+      <div id="auth-otp-step" hidden>
+        <p class="modal-copy">验证码已发送至 <b id="auth-otp-email"></b></p>
+        <form id="auth-otp-form">
+          <label class="modal-field"><span>One-time code / 验证码</span><input id="auth-otp" inputmode="numeric" autocomplete="one-time-code" minlength="6" maxlength="8" required></label>
+          <div class="modal-actions">
+            <button class="button" id="auth-back" type="button">Back / 返回</button>
+            <button class="button button-primary" id="auth-verify-otp" type="submit">Verify / 登录</button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-error" id="auth-error" role="alert"></div>
+    </div>
+  </dialog>
+
+  <dialog class="modal-dialog edit-dialog" id="edit-dialog" aria-labelledby="edit-dialog-title">
+    <form id="edit-form">
+      <div class="modal-heading">
+        <div>
+          <h2 id="edit-dialog-title">Edit Workstream / 编辑任务</h2>
+          <p id="edit-entity-name"></p>
+        </div>
+      </div>
+      <div class="modal-body modal-form-grid">
+        <label class="modal-field"><span>Status</span><select id="edit-status"></select></label>
+        <p class="modal-field-note" id="edit-status-note" hidden>包含Stages的父任务状态和进度由Stage自动计算。</p>
+        <label class="modal-field"><span>DDL</span><input id="edit-ddl" type="date"></label>
+        <label class="modal-field"><span>Owner / 负责人</span><input id="edit-owner" list="owner-options" autocomplete="off"></label>
+        <datalist id="owner-options"></datalist>
+        <div class="edit-meta" id="edit-meta"></div>
+        <div class="modal-error" id="edit-error" role="alert"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="button" id="edit-cancel" type="button">Cancel / 取消</button>
+        <button class="button button-primary" id="edit-save" type="submit">Save / 保存</button>
+      </div>
+    </form>
+  </dialog>
+
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-  <script src="event_data.js?v=1.5.2"></script>
-  <script src="assets/app.js?v=1.5.2"></script>
+  <script src="config.js"></script>
+  <script src="event_data.js?v=1.6.0"></script>
+  <script src="assets/collaboration.js?v=1.6.0"></script>
+  <script src="assets/app.js?v=1.6.0"></script>
 </body>
 </html>

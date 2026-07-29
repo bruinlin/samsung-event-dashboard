@@ -12,13 +12,12 @@ __pycache__/
 /seed_octs_2026.sql
 /OCTS_Event_Dashboard_Online_Deployment_Kit.zip
 
-# Legacy / future Supabase helpers are kept locally but are not part of this static release
+# Legacy Supabase helpers are kept locally but are not part of this release
 /README_DEPLOY.md
 /prepare_online_dashboard.py
 /generate_seed_sql.py
 /supabase-data.js
 /supabase_schema.sql
-/config.example.js
 /config.js
 
 # Pre-web source copies retained locally; runtime files are event_data.js and data/OCTS_2026.js

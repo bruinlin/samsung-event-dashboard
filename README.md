@@ -2,7 +2,7 @@
 
 Repository: `samsung-event-dashboard`
 
-Framework-free static Event Dashboard for Samsung Semiconductor Marcom. The event selector currently includes OCTS 2026, ODX 2026 and ICCAD 2026. All runtime assets are stored in this repository; no server-side application, package installation, CDN, online font, or external API is required.
+Framework-free Event Dashboard for Samsung Semiconductor Marcom. The event selector currently includes OCTS 2026, ODX 2026 and ICCAD 2026. Public viewing continues to use local JavaScript data with no server, package installation, CDN, or online font. An optional Supabase collaboration layer adds invited-member login, field-level updates, Realtime refresh and private downloads; when it is unavailable, the Dashboard remains local and read-only.
 
 ## Run locally
 
@@ -18,7 +18,18 @@ When the URL has no event hash, the Dashboard opens the nearest upcoming event t
 
 Project Calendar opens in `2 Weeks` view for every screen size. It shows the current 14-day period in two week groups and lists the next five filtered, unfinished items under Later Deadlines. Use Previous, Today, and Next to move by 14 days; select `Month` for the full month grid. Calendar filters are collapsed by default and continue to apply to both views.
 
-Documents & Deliverables sits directly below Attention Needed in the side column. Its filters, file records and repository-relative download behavior remain data-driven through `finalDocuments`; only the display is condensed for the narrow column.
+Documents & Deliverables sits directly below Attention Needed in the side column. File names and status remain public. Download actions require an authenticated Viewer, Editor or Admin and obtain a short-lived private Storage URL; Guest users are prompted to sign in. The four legacy OCTS repository files remain directly public until private migration is tested and their later removal is explicitly approved.
+
+## Access and collaboration
+
+- Guest: public Dashboard, filters, Calendar, Attention Needed and print; no editing or controlled downloads.
+- Viewer: Guest access plus controlled downloads for assigned events.
+- Editor: Viewer access plus Status, Task Final DDL, Stage DDL and Owner editing for assigned events.
+- Admin: Editor access across all registered events.
+
+The static activity files remain the reviewed public baseline. Supabase stores only field-level overrides, their version, updater and update time. A null/unset database field never replaces the static value. Workstream and Stage updates are saved separately; tasks with Stages continue to calculate parent Status and Progress in the browser.
+
+Copy `config.example.js` to ignored `config.js` to enable collaboration. Run `supabase/migrations/001_collaboration_v1.sql` and `supabase/seed_dashboard.sql`, then follow `supabase/README.md` for OTP, membership, Storage and deployment setup. Never use a `service_role` key in browser code.
 
 ## Update event data
 
@@ -37,7 +48,7 @@ Documents & Deliverables sits directly below Attention Needed in the side column
 
 ## Update task stages and DDL
 
-The Dashboard is read-only. Update `data/<EVENT_ID>.js` directly, or ask Codex to make the same controlled data-file change. Do not try to edit the browser page: changes there are not saved.
+The static baseline is maintained in `data/<EVENT_ID>.js`. With Supabase configured, an authorized Editor or Admin can also update the supported collaborative fields from the browser; those changes are stored as overlays and do not rewrite the static event file.
 
 Start the Initial Draft:
 
@@ -70,16 +81,16 @@ After a task has `stages`, do not manually set a conflicting task `status` or `p
 
 ## Maintain Documents & Deliverables
 
-1. Confirm that the source is an approved Final file and is suitable for public or cross-team sharing.
-2. Inspect the file content, properties, comments/notes, contacts, amounts, local paths, private links, and embedded content before copying it.
-3. Put the verified copy in `downloads/<EVENT_ID>/presentations`, `reports`, `photos`, or `other`.
-4. Add or update its record in `data/<EVENT_ID>.js` under `finalDocuments`. Use a repository-relative `filePath` only for an approved public download. For an archived or controlled document, omit `filePath` and set `downloadable: false` so the Dashboard shows its status only. If a reviewed file needs a narrowly scoped scan exception, record its exact SHA-256 and the precise allowed finding in `scripts/download_safety_allowlist.json`; never create a broad exception.
-5. Keep an existing public filename when replacing a file so old links do not break. If the filename changes, update `filePath` at the same time.
-6. Run `scripts/check_download_safety.ps1`, test each local download URL, then commit and push.
+1. Confirm that the source is an approved Final file and is suitable for the intended member audience.
+2. Inspect the file content, properties, comments/notes, contacts, amounts, local paths, private links, and embedded content before upload.
+3. Upload a controlled file to the private `event-files` bucket; do not add a new protected file to the public `downloads/` tree.
+4. Add or update its public status record in `data/<EVENT_ID>.js` under `finalDocuments`, using a stable `id`. Register the bucket/object mapping in `document_files`; do not place the private URL or object path in the public data file. For a status-only document, set `downloadable: false`.
+5. Treat the existing OCTS repository copies as a separate legacy-public migration. Run `scripts/check_download_safety.ps1` whenever one of those public copies changes.
+6. Test Guest denial, Viewer download and signed-URL expiry before requesting approval to remove a legacy public copy. Removing the latest copy does not remove it from Git history.
 
 The safety script uses Python with `pypdf` to inspect PDF text, metadata, annotations and embedded content, and fails closed when reliable inspection is unavailable. If Python is not on `PATH`, pass its executable with `-PythonPath`. Non-PDF formats are reported as requiring manual review before publication. Historical and working versions belong in the internal archive, not the public download directory.
 
-GitHub Pages is the acceptance target for Final-file downloads. The current Cloudflare Workers Static Assets service has a 25 MiB individual-file limit, so larger PDFs may remain unavailable from the Cloudflare hostname even though the Dashboard page itself is online. Do not compress, split, or alter an Approved Final merely to meet that limit.
+GitHub Pages remains the Dashboard deployment target. Controlled downloads come from Supabase Private Storage, not GitHub Pages or Cloudflare. The existing repository PDFs are legacy-public files only; do not compress, split, or alter an Approved Final merely to meet a hosting limit.
 
 ## Add another event
 
@@ -91,7 +102,7 @@ GitHub Pages is the acceptance target for Final-file downloads. The current Clou
 ## Publish updates to GitHub
 
 ```powershell
-git add index.html event_data.js assets data downloads scripts README.md CHANGELOG.md VERSION_INDEX.md .gitignore
+git add index.html event_data.js assets data downloads scripts supabase config.example.js README.md CHANGELOG.md VERSION_INDEX.md .gitignore
 git commit -m "Update event dashboard"
 git push origin main
 ```
@@ -104,7 +115,7 @@ The `main` branch is currently published through GitHub Pages and the existing C
 
 ## Supabase status and security
 
-Supabase is not enabled in this release. Local JavaScript data remains the runtime fallback. If Supabase is introduced later, use only a public anonymous key with Row Level Security and keep the local files as a fallback. Never expose a `service_role` key, access token, password, private contract, quotation amount, or confidential source material in front-end code or Git history.
+The collaboration code and SQL are included, but the live project remains inactive until `config.js`, database migrations, invited users and private Storage objects are configured. Local JavaScript data is always the public fallback. The browser may contain only the Supabase Project URL and Publishable Key; Row Level Security and database functions enforce authorization. Never expose a `service_role` key, access token, refresh token, password, private contract, quotation amount, or confidential source material in front-end code or Git history.
 
 ## Roll back
 

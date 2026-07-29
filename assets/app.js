@@ -194,7 +194,28 @@
     });
   }
 
-  async function loadEvent(eventId) {
+  function cloneEventData(data) {
+    return typeof structuredClone === "function"
+      ? structuredClone(data)
+      : JSON.parse(JSON.stringify(data));
+  }
+
+  async function mergeCollaborativeData(baseData) {
+    return window.DashboardCollab?.mergeEventData
+      ? window.DashboardCollab.mergeEventData(baseData)
+      : cloneEventData(baseData);
+  }
+
+  async function reloadCurrentEvent() {
+    const registry = window.EVENT_INDEX?.events || [];
+    const item = registry.find((event) => event.eventId === state.eventId);
+    const source = item ? window.EVENT_DATASETS?.[item.dataKey] : null;
+    if (!source) return;
+    state.data = await mergeCollaborativeData(cloneEventData(source));
+    renderDashboard();
+  }
+
+  async function loadEvent(eventId, { historyMode = "push" } = {}) {
     const registry = window.EVENT_INDEX?.events || [];
     const item = registry.find((event) => event.eventId === eventId);
     if (!item) throw new Error(`活动未登记：${eventId}`);
@@ -202,8 +223,9 @@
     window.EVENT_DATASETS = window.EVENT_DATASETS || {};
     if (!window.EVENT_DATASETS[item.dataKey]) await loadScript(item.dataFile);
 
-    const data = window.EVENT_DATASETS[item.dataKey];
-    if (!data) throw new Error(`数据文件未注册 window.EVENT_DATASETS.${item.dataKey}`);
+    const source = window.EVENT_DATASETS[item.dataKey];
+    if (!source) throw new Error(`数据文件未注册 window.EVENT_DATASETS.${item.dataKey}`);
+    const data = await mergeCollaborativeData(cloneEventData(source));
 
     state.data = data;
     state.eventId = eventId;
@@ -226,8 +248,13 @@
     state.calendarSelectedDate = "";
     state.calendarItems = [];
     state.calendarValidationSignature = "";
-    window.location.hash = eventId;
+    if (window.location.hash !== `#${eventId}`) {
+      const nextUrl = `${window.location.pathname}${window.location.search}#${eventId}`;
+      if (historyMode === "replace") window.history.replaceState(null, "", nextUrl);
+      else if (historyMode === "push") window.history.pushState(null, "", nextUrl);
+    }
     renderDashboard();
+    window.DashboardCollab?.subscribe?.(eventId);
   }
 
   function stagesFor(item) {
@@ -479,6 +506,15 @@
     return { completed, total: items.length, completion, status };
   }
 
+  function existingOwnerOptions() {
+    const owners = new Set();
+    (state.data?.workstreams || []).forEach((item) => {
+      if (item.owner) owners.add(item.owner);
+      stagesFor(item).forEach((stage) => { if (stage.owner) owners.add(stage.owner); });
+    });
+    return [...owners].sort((a, b) => a.localeCompare(b, "zh-CN"));
+  }
+
   function stageTracker(item) {
     const stages = stagesFor(item);
     if (!stages.length) return "";
@@ -496,9 +532,11 @@
               <div class="stage-meta">
                 <span>Status: <b>${safeText(stageStatus)}</b></span>
                 <span>DDL: <b>${formatDeadline(stage.dueDate)}</b></span>
+                ${stage.owner ? `<span>Owner: <b>${safeText(stage.owner)}</b></span>` : ""}
                 ${stage.completedDate ? `<span>Completed: <b>${formatDate(stage.completedDate)}</b></span>` : stageStatus === "Completed" ? `<span>Completed: <b>Missing Date</b></span>` : ""}
               </div>
             </div>
+            <button class="edit-button stage-edit-button no-print" type="button" data-edit-stage="${escapeHtml(stage.id)}" data-workstream-id="${escapeHtml(item.workstreamId)}">Edit</button>
           </div>`;
         }).join("")}
       </div>`;
@@ -523,6 +561,7 @@
     const detailButton = hasExpandableContent
       ? `<button class="detail-button" type="button" data-detail-id="${id}" aria-expanded="false" aria-label="展开 ${safeText(item.nameCN)} ${stages.length ? "阶段" : "详情"}">＋</button>`
       : "";
+    const editButton = `<button class="edit-button" type="button" data-edit-workstream="${id}">Edit</button>`;
     const detailRow = hasExpandableContent
       ? `<tr class="detail-row" data-detail-row="${id}" hidden>
           <td colspan="7">
@@ -548,7 +587,7 @@
         </td>
         <td data-label="Latest Update">${safeText(item.latestUpdate)}</td>
         <td data-label="Next Action">${safeText(item.nextAction)}</td>
-        <td class="no-print" data-label="Details">${detailButton}</td>
+        <td class="no-print" data-label="Actions"><div class="row-actions">${editButton}${detailButton}</div></td>
       </tr>
       ${detailRow}`;
   }
@@ -1002,22 +1041,12 @@
     }).join("");
   }
 
-  function finalDocumentHref(item) {
-    const path = String(item.filePath || "").trim();
-    const isSafeRelativePath = path &&
-      !/^[a-z][a-z0-9+.-]*:/i.test(path) &&
-      !path.startsWith("/") &&
-      !path.includes("\\") &&
-      !/(^|\/)\.\.(\/|$)/.test(path);
-    return item.downloadable === true && item.status === "Available" && isSafeRelativePath ? path : "";
-  }
-
   function renderFinalDocuments(data) {
     const documents = Array.isArray(data.finalDocuments) ? data.finalDocuments : [];
     const filtered = state.documentCategory === "all"
       ? documents
       : documents.filter((item) => item.category === state.documentCategory);
-    const downloadableCount = documents.filter((item) => finalDocumentHref(item)).length;
+    const downloadableCount = documents.filter((item) => item.downloadable === true && item.status === "Available").length;
 
     $("final-document-filters").innerHTML = FINAL_DOCUMENT_CATEGORIES.map((item) =>
       `<button type="button" class="filter-chip ${item.id === state.documentCategory ? "active" : ""}" data-document-category="${escapeHtml(item.id)}">${safeText(item.label)}</button>`
@@ -1027,12 +1056,12 @@
 
     $("final-document-empty").hidden = filtered.length !== 0;
     $("final-document-list").innerHTML = filtered.map((item) => {
-      const href = finalDocumentHref(item);
-      const fileName = href
-        ? `<a class="final-document-name" href="${escapeHtml(href)}" download target="_blank" rel="noopener">${safeText(item.nameZh)}</a>`
-        : `<div class="final-document-name">${safeText(item.nameZh)}</div>`;
-      const action = href
-        ? `<a class="download-button" href="${escapeHtml(href)}" download target="_blank" rel="noopener">Download / 下载</a>`
+      const canRequestDownload = item.downloadable === true && item.status === "Available" && item.id;
+      const role = window.DashboardCollab?.effectiveRole?.(data.event.eventId) || "guest";
+      const actionLabel = role === "guest" ? "Sign in to download / 登录下载" : "Download / 下载";
+      const fileName = `<div class="final-document-name">${safeText(item.nameZh)}</div>`;
+      const action = canRequestDownload
+        ? `<button class="download-button" type="button" data-download-document-id="${escapeHtml(item.id)}">${actionLabel}</button>`
         : `<span class="download-button unavailable" aria-disabled="true">Status only / 仅状态</span>`;
       return `
         <article class="final-document-card">
@@ -1083,7 +1112,7 @@
 
   function bindEvents() {
     $("event-select").addEventListener("change", async (event) => {
-      try { await loadEvent(event.target.value); }
+      try { await loadEvent(event.target.value, { historyMode: "push" }); }
       catch (error) { showToast(error.message); }
     });
 
@@ -1175,7 +1204,58 @@
       renderFinalDocuments(state.data);
     });
 
+    $("final-document-list").addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-download-document-id]");
+      if (!button) return;
+      const item = (state.data.finalDocuments || []).find((entry) => entry.id === button.dataset.downloadDocumentId);
+      if (!item) return;
+      window.DashboardCollab?.requestDownload?.(state.eventId, {
+        id: item.id,
+        fileName: String(item.filePath || "").split("/").pop() || item.nameEn || item.nameZh
+      });
+    });
+
     $("workstream-body").addEventListener("click", (event) => {
+      const stageEditButton = event.target.closest("button[data-edit-stage]");
+      if (stageEditButton) {
+        const item = state.data.workstreams.find((entry) => entry.workstreamId === stageEditButton.dataset.workstreamId);
+        const stage = item?.stages?.find((entry) => entry.id === stageEditButton.dataset.editStage);
+        if (item && stage) {
+          window.DashboardCollab?.requestEdit?.({
+            entityType: "stage",
+            eventId: state.eventId,
+            workstreamId: item.workstreamId,
+            stageId: stage.id,
+            workstreamName: `${item.nameEN} / ${item.nameCN}`,
+            stageName: `${stage.nameEN} / ${stage.nameCN}`,
+            status: stage.status || "Not Started",
+            dueDate: stage.dueDate || "",
+            owner: stage.owner || item.owner || "",
+            ownerOptions: existingOwnerOptions(),
+            collaboration: stage._collaboration || { version: 1 }
+          });
+        }
+        return;
+      }
+      const workstreamEditButton = event.target.closest("button[data-edit-workstream]");
+      if (workstreamEditButton) {
+        const item = state.data.workstreams.find((entry) => entry.workstreamId === workstreamEditButton.dataset.editWorkstream);
+        if (item) {
+          window.DashboardCollab?.requestEdit?.({
+            entityType: "workstream",
+            eventId: state.eventId,
+            workstreamId: item.workstreamId,
+            workstreamName: `${item.nameEN} / ${item.nameCN}`,
+            status: workstreamStatus(item) || "Not Started",
+            dueDate: item.dueDate || "",
+            owner: item.owner || "",
+            ownerOptions: existingOwnerOptions(),
+            hasStages: stagesFor(item).length > 0,
+            collaboration: item._collaboration || { version: 1 }
+          });
+        }
+        return;
+      }
       const categoryButton = event.target.closest("button[data-category-id]");
       if (categoryButton) {
         const categoryId = categoryButton.dataset.categoryId;
@@ -1202,14 +1282,26 @@
       showToast("event_index.js 中没有登记活动。");
       return;
     }
+    await window.DashboardCollab?.init?.({
+      showToast,
+      reloadCurrentEvent,
+      refreshAccessUi: () => { if (state.data) renderFinalDocuments(state.data); }
+    });
     bindEvents();
     const hashId = window.location.hash.replace(/^#/, "");
-    const initial = registry.events.some((item) => item.eventId === hashId) ? hashId : defaultEventId(registry.events);
-    try { await loadEvent(initial); }
+    const hasValidHash = registry.events.some((item) => item.eventId === hashId);
+    const initial = hasValidHash ? hashId : defaultEventId(registry.events);
+    try { await loadEvent(initial, { historyMode: hasValidHash ? "none" : "replace" }); }
     catch (error) {
       console.error(error);
       showToast(error.message);
     }
+    window.addEventListener("hashchange", async () => {
+      const nextId = window.location.hash.replace(/^#/, "");
+      if (nextId === state.eventId || !registry.events.some((item) => item.eventId === nextId)) return;
+      try { await loadEvent(nextId, { historyMode: "none" }); }
+      catch (error) { showToast(error.message); }
+    });
   }
 
   init();
