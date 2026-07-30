@@ -48,10 +48,10 @@ Do not put role data in user-editable `raw_user_meta_data`. Authorization is enf
 2. Do not enable anonymous access or automatic Dashboard membership.
 3. Authentication → Email Templates → Magic Link: use `{{ .Token }}` in the template so the user receives an OTP code instead of relying on a magic link.
 4. Authentication → URL Configuration:
-   - For the current local E2E test, Site URL: `http://localhost:3000/`.
-   - Redirect URL: `http://localhost:3000/`.
-   - Keep the production Redirect URL: `https://bruinlin.github.io/samsung-event-dashboard/`.
-   - When GitHub Pages is deliberately activated for collaboration, set its URL as Site URL and retain the local Redirect URL for future testing. The local test server is started with `node scripts/local-auth-server.mjs`.
+   - Production Site URL: `https://bruinlin.github.io/samsung-event-dashboard/`.
+   - Production Redirect URL: `https://bruinlin.github.io/samsung-event-dashboard/`.
+   - Keep `http://localhost:3000/` as an additional local Redirect URL only.
+   - The browser sends the exact redirect target through `POST /auth/v1/otp?redirect_to=...`; set the Magic Link email button to `<a href="{{ .ConfirmationURL }}">Sign in</a>`, never `{{ .SiteURL }}`.
 5. Configure approved SMTP settings in Supabase Dashboard. SMTP credentials must remain in Supabase and must not be copied into this repository.
 
 The client requests OTP with user creation disabled. A valid Auth user starts with `is_approved = false`. Public Dashboard data and the public Overlay are available without login; an unapproved or unassigned login remains read-only. Realtime collaboration, private document mapping and Private Storage file access remain restricted until an administrator approves the profile and assigns activity access (or approves it as an Admin).

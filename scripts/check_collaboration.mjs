@@ -65,9 +65,10 @@ for (const forbidden of ["email", "user_id", "event_members", "object_path"]) {
 const configExample = read("config.example.js");
 if (/service_role\s*[:=]\s*["'][^"']+/i.test(configExample)) fail("Example config contains a service role value.");
 const collaboration = read("assets/collaboration.js");
-for (const required of ["email_redirect_to", "authRedirectUrl", "consumeAuthCallback", "AUTH_RETURN_EVENT_KEY"]) {
+for (const required of ["redirect_to=${encodeURIComponent(redirectTo)}", "PRODUCTION_REDIRECT_URL", "LOCAL_REDIRECT_URL", "authRedirectUrl", "consumeAuthCallback", "AUTH_RETURN_EVENT_KEY"]) {
   if (!collaboration.includes(required)) fail(`Collaboration Auth redirect support is missing ${required}.`);
 }
+if (collaboration.includes("email_redirect_to")) fail("OTP redirect target must be sent as a URL query parameter, not in the JSON body.");
 if (!collaboration.includes('rpc("get_public_dashboard_updates"')) fail("Anonymous public Overlay read is not wired into the client.");
 if (!app.includes('href="${escapeHtml(item.filePath)}" download')) fail("Public PDF download action is not wired into the client.");
 if (!app.includes("canEditCurrentEvent") || !app.includes("renderWorkstreams();\n        renderFinalDocuments")) fail("Edit controls are not gated and refreshed by the current event role.");

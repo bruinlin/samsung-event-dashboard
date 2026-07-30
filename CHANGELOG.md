@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.4-web - 2026-07-30
+
+- Send the Supabase Auth `redirect_to` value as a query parameter on `POST /auth/v1/otp`. GitHub Pages always uses its canonical production URL; only `http://localhost:3000/` uses the local redirect URL.
+
 ## 1.6.3-web - 2026-07-30
 
 - Hide Workstream and Stage editing controls for public viewers and read-only signed-in users. The controls now re-render after an authorization change; database RPC authorization remains the enforcement boundary.

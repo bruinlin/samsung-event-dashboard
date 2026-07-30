@@ -3,6 +3,8 @@
 
   const SESSION_KEY = "samsung-event-dashboard.supabase-session.v1";
   const AUTH_RETURN_EVENT_KEY = "samsung-event-dashboard.auth-return-event.v1";
+  const PRODUCTION_REDIRECT_URL = "https://bruinlin.github.io/samsung-event-dashboard/";
+  const LOCAL_REDIRECT_URL = "http://localhost:3000/";
   const WORKSTREAM_STATUSES = [
     "Not Started", "In Progress", "Internal Review", "HQ Review",
     "Pending Approval", "Pending Review", "Confirmed", "In Production",
@@ -94,10 +96,9 @@
 
   function authRedirectUrl() {
     const origin = String(window.location.origin || "");
-    if (!/^https?:\/\//i.test(origin)) {
-      throw new Error("Open the Dashboard through an approved HTTP or HTTPS address before requesting an email sign-in link.");
-    }
-    return `${origin}${window.location.pathname || "/"}`;
+    if (origin === "https://bruinlin.github.io") return PRODUCTION_REDIRECT_URL;
+    if (origin === "http://localhost:3000") return LOCAL_REDIRECT_URL;
+    throw new Error("Open the Dashboard through the production URL or http://localhost:3000 before requesting an email sign-in link.");
   }
 
   function rememberReturnEvent() {
@@ -286,12 +287,12 @@
   async function sendOtp(email) {
     rememberReturnEvent();
     if (!configured) throw new Error("Supabase尚未配置。");
-    await request("/auth/v1/otp", {
+    const redirectTo = authRedirectUrl();
+    await request(`/auth/v1/otp?redirect_to=${encodeURIComponent(redirectTo)}`, {
       method: "POST",
       body: JSON.stringify({
         email,
-        create_user: false,
-        email_redirect_to: authRedirectUrl()
+        create_user: false
       })
     }, false);
   }
