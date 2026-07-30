@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.7-web - 2026-07-30
+
+- Refreshed activity-data cache keys so GitHub Pages retrieves the Collaboration V1.6.6 canonical-status records together with the updated application assets.
+
 ## 1.6.6-web - 2026-07-30
 
 - Unified Workstream and Stage status handling to Planning, In Progress, Under Review, Completed, and Blocked, with a guarded incremental Supabase migration for existing overlay values.

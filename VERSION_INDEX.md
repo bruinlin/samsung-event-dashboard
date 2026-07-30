@@ -2,6 +2,7 @@
 
 | Version | Date | Primary Deliverable | Lifecycle Status | Purpose |
 |---|---|---|---|---|
+| 1.6.7-web | 2026-07-30 | `index.html` + `event_data.js` | Working | Refreshes event-data cache keys for the canonical-status GitHub Pages rollout. |
 | 1.6.6-web | 2026-07-30 | `supabase/migrations/003_collaboration_v1_6_status_and_notes.sql` + collaboration assets | Working | Standardizes the five-status model and adds audited Workstream Latest Update / Next Action overlays. |
 | 1.6.5-web | 2026-07-30 | `assets/collaboration.js` + `scripts/manage-auth-users.mjs` | Working | Uses administrator-created email-and-password member sign-in, self-service session-based password changes, and Git-ignored local user management. |
 | 1.6.4-web | 2026-07-30 | `assets/collaboration.js` | Working | Uses a fixed production or localhost Auth redirect URL in the Supabase OTP request query string. |
