@@ -2,6 +2,8 @@
 
 ## 1.6.0-web - 2026-07-29
 
+- Tightened the pending collaboration migration to require an approved profile plus activity membership (or approved Admin) before reading any collaboration overlay, Realtime change, document mapping or Private Storage file. Anonymous collaboration reads are revoked.
+- Renamed the authenticated overlay RPC to `get_dashboard_updates`, revoked browser execution of all `dashboard_private` helpers, and kept private-helper authorization inside controlled SECURITY DEFINER RPCs.
 - Added optional Supabase invite-only email OTP with Guest, Viewer, Editor and Admin access states while keeping public static viewing available when Supabase is missing or unavailable.
 - Added field-level Workstream and Stage overlays, activity membership, RLS-enforced updates, version conflict protection, update metadata, Change History and authenticated Realtime refresh without replacing complete event JSON payloads.
 - Added in-page Status, DDL and Owner editing for authorized members. Parent task Status and Progress remain derived from Stage records.

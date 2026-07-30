@@ -17,10 +17,15 @@ create table if not exists public.profiles (
   user_id uuid primary key references auth.users(id) on delete cascade,
   email text not null,
   display_name text,
+  is_approved boolean not null default false,
   is_admin boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- Auth-created profiles are not approved for Dashboard access by default.
+alter table public.profiles
+  add column if not exists is_approved boolean not null default false;
 
 create table if not exists public.event_members (
   event_id text not null references public.dashboard_events(event_id) on delete cascade,
@@ -117,7 +122,11 @@ stable
 security definer
 set search_path = public, pg_temp
 as $$
-  select coalesce((select is_admin from public.profiles where user_id = p_user_id), false);
+  select coalesce((
+    select p.is_admin and p.is_approved
+    from public.profiles p
+    where p.user_id = p_user_id
+  ), false);
 $$;
 
 create or replace function dashboard_private.event_role(p_event_id text, p_user_id uuid default auth.uid())
@@ -130,8 +139,10 @@ as $$
   select case
     when dashboard_private.is_admin(p_user_id) then 'admin'
     else coalesce((
-      select role from public.event_members
-      where event_id = p_event_id and user_id = p_user_id
+      select m.role
+      from public.event_members m
+      join public.profiles p on p.user_id = m.user_id and p.is_approved
+      where m.event_id = p_event_id and m.user_id = p_user_id
     ), '')
   end;
 $$;
@@ -176,6 +187,13 @@ begin
 end;
 $$;
 
+-- Private helpers may be called only by database-owned functions and triggers.
+revoke execute on function dashboard_private.is_admin(uuid) from public, anon, authenticated;
+revoke execute on function dashboard_private.event_role(text, uuid) from public, anon, authenticated;
+revoke execute on function dashboard_private.can_download(text, uuid) from public, anon, authenticated;
+revoke execute on function dashboard_private.can_edit(text, uuid) from public, anon, authenticated;
+revoke execute on function dashboard_private.handle_new_user() from public, anon, authenticated;
+
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
 after insert or update of email on auth.users
@@ -191,13 +209,22 @@ on conflict (user_id) do update
 set email = excluded.email,
     updated_at = now();
 
-create or replace function public.get_public_dashboard_updates(p_event_id text)
+drop function if exists public.get_public_dashboard_updates(text);
+
+create or replace function public.get_dashboard_updates(p_event_id text)
 returns jsonb
-language sql
+language plpgsql
 stable
 security definer
 set search_path = public, pg_temp
 as $$
+declare
+  v_result jsonb;
+begin
+  if auth.uid() is null or not dashboard_private.can_download(p_event_id, auth.uid()) then
+    raise exception 'DASHBOARD_READ_NOT_AUTHORIZED' using errcode = '42501';
+  end if;
+
   select jsonb_build_object(
     'workstreams', coalesce((
       select jsonb_agg(jsonb_build_object(
@@ -236,7 +263,10 @@ as $$
       left join public.profiles p on p.user_id = s.updated_by
       where s.event_id = p_event_id
     ), '[]'::jsonb)
-  );
+  ) into v_result;
+
+  return v_result;
+end;
 $$;
 
 create or replace function public.get_my_dashboard_access()
@@ -246,7 +276,11 @@ stable
 security definer
 set search_path = public, pg_temp
 as $$
-  select case when auth.uid() is null then
+  select case when auth.uid() is null or not exists (
+    select 1
+    from public.profiles p
+    where p.user_id = auth.uid() and p.is_approved
+  ) then
     jsonb_build_object('global_role', '', 'event_roles', '{}'::jsonb)
   else jsonb_build_object(
     'global_role', case when dashboard_private.is_admin(auth.uid()) then 'admin' else '' end,
@@ -456,42 +490,141 @@ alter table public.change_history enable row level security;
 alter table public.document_files enable row level security;
 
 drop policy if exists dashboard_events_public_read on public.dashboard_events;
-create policy dashboard_events_public_read on public.dashboard_events
-for select to anon, authenticated using (true);
+drop policy if exists dashboard_events_member_read on public.dashboard_events;
+create policy dashboard_events_member_read on public.dashboard_events
+for select to authenticated using (
+  (select auth.uid()) is not null
+  and exists (
+    select 1
+    from public.profiles p
+    where p.user_id = (select auth.uid())
+      and p.is_approved
+      and (
+        p.is_admin
+        or exists (
+          select 1
+          from public.event_members m
+          where m.event_id = public.dashboard_events.event_id
+            and m.user_id = (select auth.uid())
+        )
+      )
+  )
+);
 
 drop policy if exists profiles_self_read on public.profiles;
 create policy profiles_self_read on public.profiles
-for select to authenticated using (user_id = auth.uid() or dashboard_private.is_admin(auth.uid()));
+for select to authenticated using (
+  (select auth.uid()) is not null
+  and user_id = (select auth.uid())
+);
 
 drop policy if exists event_members_self_read on public.event_members;
 create policy event_members_self_read on public.event_members
-for select to authenticated using (user_id = auth.uid() or dashboard_private.is_admin(auth.uid()));
+for select to authenticated using (
+  (select auth.uid()) is not null
+  and exists (
+    select 1
+    from public.profiles p
+    where p.user_id = (select auth.uid())
+      and p.is_approved
+      and (p.is_admin or public.event_members.user_id = (select auth.uid()))
+  )
+);
 
 drop policy if exists workstream_member_read on public.workstream_updates;
 create policy workstream_member_read on public.workstream_updates
-for select to authenticated using (dashboard_private.can_download(event_id, auth.uid()));
+for select to authenticated using (
+  (select auth.uid()) is not null
+  and exists (
+    select 1
+    from public.profiles p
+    where p.user_id = (select auth.uid())
+      and p.is_approved
+      and (
+        p.is_admin
+        or exists (
+          select 1
+          from public.event_members m
+          where m.event_id = public.workstream_updates.event_id
+            and m.user_id = (select auth.uid())
+        )
+      )
+  )
+);
 
 drop policy if exists stage_member_read on public.stage_updates;
 create policy stage_member_read on public.stage_updates
-for select to authenticated using (dashboard_private.can_download(event_id, auth.uid()));
+for select to authenticated using (
+  (select auth.uid()) is not null
+  and exists (
+    select 1
+    from public.profiles p
+    where p.user_id = (select auth.uid())
+      and p.is_approved
+      and (
+        p.is_admin
+        or exists (
+          select 1
+          from public.event_members m
+          where m.event_id = public.stage_updates.event_id
+            and m.user_id = (select auth.uid())
+        )
+      )
+  )
+);
 
 drop policy if exists history_editor_read on public.change_history;
 create policy history_editor_read on public.change_history
-for select to authenticated using (dashboard_private.can_edit(event_id, auth.uid()));
+for select to authenticated using (
+  (select auth.uid()) is not null
+  and exists (
+    select 1
+    from public.profiles p
+    where p.user_id = (select auth.uid())
+      and p.is_approved
+      and (
+        p.is_admin
+        or exists (
+          select 1
+          from public.event_members m
+          where m.event_id = public.change_history.event_id
+            and m.user_id = (select auth.uid())
+            and m.role = 'editor'
+        )
+      )
+  )
+);
 
 drop policy if exists document_member_read on public.document_files;
 create policy document_member_read on public.document_files
-for select to authenticated using (dashboard_private.can_download(event_id, auth.uid()));
+for select to authenticated using (
+  (select auth.uid()) is not null
+  and exists (
+    select 1
+    from public.profiles p
+    where p.user_id = (select auth.uid())
+      and p.is_approved
+      and (
+        p.is_admin
+        or exists (
+          select 1
+          from public.event_members m
+          where m.event_id = public.document_files.event_id
+            and m.user_id = (select auth.uid())
+        )
+      )
+  )
+);
 
-revoke all on public.profiles, public.event_members, public.workstream_updates, public.stage_updates, public.change_history, public.document_files from anon;
-grant select on public.dashboard_events to anon, authenticated;
+revoke all on public.dashboard_events, public.profiles, public.event_members, public.workstream_updates, public.stage_updates, public.change_history, public.document_files from public, anon;
+grant select on public.dashboard_events to authenticated;
 grant select on public.profiles, public.event_members, public.workstream_updates, public.stage_updates, public.change_history, public.document_files to authenticated;
-revoke all on function public.get_public_dashboard_updates(text) from public;
-revoke all on function public.get_my_dashboard_access() from public;
-revoke all on function public.update_workstream_overlay(text,text,bigint,text,date,text,boolean,boolean,boolean) from public;
-revoke all on function public.update_stage_overlay(text,text,text,bigint,text,date,text,boolean,boolean,boolean) from public;
-revoke all on function public.get_document_file(text,text) from public;
-grant execute on function public.get_public_dashboard_updates(text) to anon, authenticated;
+revoke execute on function public.get_dashboard_updates(text) from public, anon, authenticated;
+revoke execute on function public.get_my_dashboard_access() from public, anon, authenticated;
+revoke execute on function public.update_workstream_overlay(text,text,bigint,text,date,text,boolean,boolean,boolean) from public, anon, authenticated;
+revoke execute on function public.update_stage_overlay(text,text,text,bigint,text,date,text,boolean,boolean,boolean) from public, anon, authenticated;
+revoke execute on function public.get_document_file(text,text) from public, anon, authenticated;
+grant execute on function public.get_dashboard_updates(text) to authenticated;
 grant execute on function public.get_my_dashboard_access() to authenticated;
 grant execute on function public.update_workstream_overlay(text,text,bigint,text,date,text,boolean,boolean,boolean) to authenticated;
 grant execute on function public.update_stage_overlay(text,text,text,bigint,text,date,text,boolean,boolean,boolean) to authenticated;
@@ -501,16 +634,30 @@ insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_typ
 values ('event-files', 'event-files', false, 52428800, array['application/pdf'])
 on conflict (id) do update set public = false;
 
+revoke all on table storage.buckets, storage.objects from public, anon;
+grant select on table storage.buckets, storage.objects to authenticated;
+
 drop policy if exists event_file_member_download on storage.objects;
 create policy event_file_member_download on storage.objects
 for select to authenticated
 using (
   bucket_id = 'event-files'
+  and (select auth.uid()) is not null
   and exists (
-    select 1 from public.document_files d
+    select 1
+    from public.document_files d
+    join public.profiles p on p.user_id = (select auth.uid()) and p.is_approved
     where d.bucket_id = storage.objects.bucket_id
       and d.object_path = storage.objects.name
-      and dashboard_private.can_download(d.event_id, auth.uid())
+      and (
+        p.is_admin
+        or exists (
+          select 1
+          from public.event_members m
+          where m.event_id = d.event_id
+            and m.user_id = (select auth.uid())
+        )
+      )
   )
 );
 

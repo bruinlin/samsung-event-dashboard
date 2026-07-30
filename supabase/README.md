@@ -24,11 +24,19 @@ values ('ODX_2026', '<AUTH_USER_UUID>', 'editor')
 on conflict (event_id, user_id) do update set role = excluded.role;
 ```
 
-Valid member roles are `viewer` and `editor`. To grant global Admin access:
+Valid member roles are `viewer` and `editor`. A matching profile must also be approved before the membership becomes effective:
 
 ```sql
 update public.profiles
-set is_admin = true, display_name = 'Display Name', updated_at = now()
+set is_approved = true, display_name = 'Display Name', updated_at = now()
+where user_id = '<AUTH_USER_UUID>';
+```
+
+To grant global Admin access:
+
+```sql
+update public.profiles
+set is_approved = true, is_admin = true, display_name = 'Display Name', updated_at = now()
 where user_id = '<AUTH_USER_UUID>';
 ```
 
@@ -45,7 +53,7 @@ Do not put role data in user-editable `raw_user_meta_data`. Authorization is enf
    - Add the approved local test URL, such as `http://localhost:8080/**`, only when needed.
 5. Configure approved SMTP settings in Supabase Dashboard. SMTP credentials must remain in Supabase and must not be copied into this repository.
 
-The client requests OTP with user creation disabled. A valid Auth user may sign in, but only a Viewer, Editor, or Admin record grants download or editing rights.
+The client requests OTP with user creation disabled. A valid Auth user starts with `is_approved = false` and cannot read any event collaboration overlay, Realtime change, document mapping, or Private Storage file until an administrator approves the profile and assigns activity access (or approves it as an Admin).
 
 ## 4. Migrate controlled files
 
@@ -76,8 +84,8 @@ The Publishable Key is not a server secret, but RLS must be active before it is 
 
 ## 6. Acceptance checks
 
-- Guest can open every activity and cannot edit or obtain a private download.
-- Signed-in non-members receive a clear denial.
+- Guest can open static activity data but cannot retrieve a collaboration overlay, Realtime change, document mapping or Private Storage download.
+- Signed-in unapproved users and approved non-members receive a clear denial and cannot retrieve activity collaboration data.
 - Viewer can download authorized event files but cannot edit.
 - Editor can edit only assigned events.
 - Admin can edit all events.

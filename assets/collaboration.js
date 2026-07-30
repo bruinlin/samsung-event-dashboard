@@ -212,8 +212,13 @@
       renderAccess();
       return cloneData(baseData);
     }
+    if (!state.session?.access_token || !canDownload(baseData.event.eventId)) {
+      state.connection = "online";
+      renderAccess();
+      return cloneData(baseData);
+    }
     try {
-      const overlay = await rpc("get_public_dashboard_updates", { p_event_id: baseData.event.eventId }, false);
+      const overlay = await rpc("get_dashboard_updates", { p_event_id: baseData.event.eventId }, true);
       state.connection = "online";
       renderAccess();
       return applyPublicUpdates(baseData, overlay || {});
@@ -449,7 +454,7 @@
     stopRealtime();
     state.activeEventId = eventId;
     renderAccess();
-    if (!configured || config.enableRealtime === false || !state.session?.access_token) return;
+    if (!configured || config.enableRealtime === false || !state.session?.access_token || !canDownload(eventId)) return;
     try { await ensureFreshSession(); }
     catch { return; }
     if (state.activeEventId !== eventId) return;

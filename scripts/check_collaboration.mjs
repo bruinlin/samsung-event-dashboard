@@ -45,8 +45,15 @@ const app = read("assets/app.js");
 if (!app.includes('window.addEventListener("hashchange"')) fail("Hash navigation listener is missing.");
 if (/href="\$\{escapeHtml\(href\)\}"/.test(app)) fail("Legacy direct document href is still rendered.");
 const migration = read("supabase/migrations/001_collaboration_v1.sql");
-for (const required of ["enable row level security", "COLLAB_CONFLICT", "change_history", "event_file_member_download", "get_public_dashboard_updates"]) {
+for (const required of ["enable row level security", "COLLAB_CONFLICT", "change_history", "event_file_member_download", "get_dashboard_updates", "is_approved"]) {
   if (!migration.toLowerCase().includes(required.toLowerCase())) fail(`Migration is missing ${required}.`);
+}
+for (const forbidden of [
+  "grant execute on function public.get_dashboard_updates(text) to anon",
+  "grant select on public.dashboard_events to anon",
+  "dashboard_private.can_download(event_id, auth.uid())"
+]) {
+  if (migration.toLowerCase().includes(forbidden.toLowerCase())) fail(`Migration retains forbidden anonymous or private-helper access: ${forbidden}`);
 }
 const configExample = read("config.example.js");
 if (/service_role\s*[:=]\s*["'][^"']+/i.test(configExample)) fail("Example config contains a service role value.");
