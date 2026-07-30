@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.5-web - 2026-07-30
+
+- Replaced the visible member Magic Link / OTP flow with administrator-created email-and-password sign-in, retaining the public Dashboard and existing RLS, role, edit RPC, Realtime and audit behavior.
+- Added an authenticated Change Password dialog that updates only the current user's password through Supabase Auth and does not send email.
+- Retained the legacy Magic Link code and callback support as inactive UI for a future SMTP-enabled rollout.
+- Added a Git-ignored local administrator script for creating confirmed Auth users, approving Profiles, assigning Viewer/Editor event roles, and resetting passwords without exposing a service-role key or password to browser code or Git.
+
 ## 1.6.4-web - 2026-07-30
 
 - Send the Supabase Auth `redirect_to` value as a query parameter on `POST /auth/v1/otp`. GitHub Pages always uses its canonical production URL; only `http://localhost:3000/` uses the local redirect URL.

@@ -69,8 +69,22 @@ for (const required of ["redirect_to=${encodeURIComponent(redirectTo)}", "PRODUC
   if (!collaboration.includes(required)) fail(`Collaboration Auth redirect support is missing ${required}.`);
 }
 if (collaboration.includes("email_redirect_to")) fail("OTP redirect target must be sent as a URL query parameter, not in the JSON body.");
+for (const required of ["signInWithPassword", "grant_type=password", "auth-password-form", "change-password-button", "/auth/v1/user"]) {
+  if (!collaboration.includes(required)) fail(`Password sign-in or self-service password update is missing ${required}.`);
+}
+const html = read("index.html");
+for (const required of ["auth-password-form", "auth-magic-link-legacy", "change-password-button", "password-form"]) {
+  if (!html.includes(required)) fail(`Password sign-in UI is missing ${required}.`);
+}
+const userManager = read("scripts/manage-auth-users.mjs");
+for (const required of ["SUPABASE_SERVICE_ROLE_KEY", "email_confirm: true", "set-approval", "assign-role", "promptHidden"]) {
+  if (!userManager.includes(required)) fail(`Local member-management script is missing ${required}.`);
+}
+if (/console\.log\(\s*(password|serviceKey|localConfig)/i.test(userManager)) fail("Local member-management script may log sensitive values.");
+const config = read("config.js");
+if (/service_role|sb_secret|SUPABASE_SERVICE_ROLE_KEY|database_password/i.test(config)) fail("Browser config contains a secret or service role value.");
 if (!collaboration.includes('rpc("get_public_dashboard_updates"')) fail("Anonymous public Overlay read is not wired into the client.");
 if (!app.includes('href="${escapeHtml(item.filePath)}" download')) fail("Public PDF download action is not wired into the client.");
-if (!app.includes("canEditCurrentEvent") || !app.includes("renderWorkstreams();\n        renderFinalDocuments")) fail("Edit controls are not gated and refreshed by the current event role.");
+if (!app.includes("canEditCurrentEvent") || !/renderWorkstreams\(\);\s+renderFinalDocuments/.test(app)) fail("Edit controls are not gated and refreshed by the current event role.");
 
 console.log("Collaboration checks passed: syntax, safe public Overlay merge, Auth redirect markers, public PDF download UI, RLS markers, and config safety.");

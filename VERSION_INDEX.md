@@ -2,6 +2,7 @@
 
 | Version | Date | Primary Deliverable | Lifecycle Status | Purpose |
 |---|---|---|---|---|
+| 1.6.5-web | 2026-07-30 | `assets/collaboration.js` + `scripts/manage-auth-users.mjs` | Working | Uses administrator-created email-and-password member sign-in, self-service session-based password changes, and Git-ignored local user management. |
 | 1.6.4-web | 2026-07-30 | `assets/collaboration.js` | Working | Uses a fixed production or localhost Auth redirect URL in the Supabase OTP request query string. |
 | 1.6.3-web | 2026-07-30 | `assets/app.js` | Working | Hides editing controls from public and read-only users while retaining database-enforced Editor/Admin authorization. |
 | 1.6.2-web | 2026-07-30 | `supabase/migrations/002_public_dashboard_overlay_v1.sql` + collaboration assets | Working | Restores public Dashboard Overlay reads and public approved-PDF downloads while retaining approved Editor/Admin-only writes. |

@@ -195,6 +195,7 @@
     const role = effectiveRole(state.activeEventId);
     const authState = byId("auth-state");
     const authButton = byId("auth-button");
+    const passwordButton = byId("change-password-button");
     const mode = byId("collaboration-mode");
     if (!authState || !authButton || !mode) return;
     const email = state.session?.user?.email || "";
@@ -202,6 +203,7 @@
     authState.dataset.role = role;
     authButton.textContent = state.session ? "Sign out" : "Sign in";
     authButton.dataset.authAction = state.session ? "sign-out" : "sign-in";
+    if (passwordButton) passwordButton.hidden = !state.session;
     mode.textContent = !configured
       ? "Local data · Read only"
       : state.connection === "online"
@@ -274,8 +276,8 @@
     const dialog = byId("auth-dialog");
     if (!dialog) return;
     byId("auth-error").textContent = message;
-    byId("auth-email-step").hidden = false;
-    byId("auth-otp-step").hidden = true;
+    byId("auth-password-step").hidden = false;
+    byId("auth-magic-link-legacy").hidden = true;
     if (!configured) byId("auth-error").textContent = "Supabase尚未配置，当前只能以Guest只读方式使用。";
     dialog.showModal();
   }
@@ -302,15 +304,51 @@
       method: "POST",
       body: JSON.stringify({ email, token, type: "email" })
     }, false);
+    await completeSignIn(payload, "登录成功。权限已更新。");
+  }
+
+  async function signInWithPassword(email, password) {
+    if (!configured) throw new Error("Supabase尚未配置。");
+    const payload = await request("/auth/v1/token?grant_type=password", {
+      method: "POST",
+      body: JSON.stringify({ email, password })
+    }, false);
+    await completeSignIn(payload, "登录成功。权限已更新。");
+  }
+
+  async function completeSignIn(payload, message) {
     saveSession(normalizeSession(payload));
     await loadAccess();
     state.connection = "online";
     renderAccess();
     refreshAccessUi();
     closeDialog(byId("auth-dialog"));
-    notify("登录成功。权限已更新。");
+    notify(message);
     await runPendingAction();
     if (state.activeEventId) subscribe(state.activeEventId);
+  }
+
+  function openPasswordDialog() {
+    if (!state.session) {
+      openAuthDialog("请先登录后修改密码。");
+      return;
+    }
+    byId("password-error").textContent = "";
+    byId("new-password").value = "";
+    byId("confirm-password").value = "";
+    byId("password-dialog").showModal();
+  }
+
+  async function updatePassword(newPassword, confirmedPassword) {
+    if (!state.session) throw new Error("请先登录。");
+    if (!newPassword) throw new Error("请输入新密码。");
+    if (newPassword !== confirmedPassword) throw new Error("两次输入的新密码不一致。");
+    await request("/auth/v1/user", {
+      method: "PUT",
+      body: JSON.stringify({ password: newPassword })
+    }, true);
+    closeDialog(byId("password-dialog"));
+    notify("密码已更新。旧密码已失效。");
   }
 
   async function signOut() {
@@ -325,6 +363,7 @@
     state.access = { globalRole: "", eventRoles: {} };
     state.pendingAction = null;
     stopRealtime();
+    closeDialog(byId("password-dialog"));
     renderAccess();
     refreshAccessUi();
     notify("已退出登录。当前为Guest只读模式。");
@@ -547,25 +586,40 @@
       else openAuthDialog();
     });
     byId("auth-close")?.addEventListener("click", () => closeDialog(byId("auth-dialog")));
+    byId("change-password-button")?.addEventListener("click", openPasswordDialog);
+    byId("password-close")?.addEventListener("click", () => closeDialog(byId("password-dialog")));
+    byId("password-cancel")?.addEventListener("click", () => closeDialog(byId("password-dialog")));
     byId("edit-cancel")?.addEventListener("click", () => closeDialog(byId("edit-dialog")));
-    byId("auth-email-form")?.addEventListener("submit", async (event) => {
+    byId("auth-password-form")?.addEventListener("submit", async (event) => {
       event.preventDefault();
       const email = byId("auth-email").value.trim();
-      const submit = byId("auth-send-otp");
+      const password = byId("auth-password").value;
+      const submit = byId("auth-sign-in-password");
       byId("auth-error").textContent = "";
       submit.disabled = true;
-      submit.textContent = "Sending…";
+      submit.textContent = "Signing in…";
       try {
-        await sendOtp(email);
-        byId("auth-email-step").hidden = true;
-        byId("auth-otp-step").hidden = false;
-        byId("auth-otp-email").textContent = email;
-        byId("auth-otp").focus();
+        await signInWithPassword(email, password);
       } catch (error) {
         byId("auth-error").textContent = error.message;
       } finally {
         submit.disabled = false;
-        submit.textContent = "Send OTP / 获取验证码";
+        submit.textContent = "Sign in / 登录";
+      }
+    });
+    byId("password-form")?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const submit = byId("password-save");
+      submit.disabled = true;
+      submit.textContent = "Updating…";
+      byId("password-error").textContent = "";
+      try {
+        await updatePassword(byId("new-password").value, byId("confirm-password").value);
+      } catch (error) {
+        byId("password-error").textContent = error.message;
+      } finally {
+        submit.disabled = false;
+        submit.textContent = "Update Password / 更新密码";
       }
     });
     byId("auth-otp-form")?.addEventListener("submit", async (event) => {
@@ -582,11 +636,6 @@
         submit.disabled = false;
         submit.textContent = "Verify / 登录";
       }
-    });
-    byId("auth-back")?.addEventListener("click", () => {
-      byId("auth-email-step").hidden = false;
-      byId("auth-otp-step").hidden = true;
-      byId("auth-error").textContent = "";
     });
     byId("edit-form")?.addEventListener("submit", (event) => {
       event.preventDefault();

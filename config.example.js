@@ -1,6 +1,6 @@
 /*
   Copy this file to config.js and replace only the placeholder values.
-  config.js is intentionally ignored by Git. A Supabase publishable key is
+  The production config.js contains only browser-safe values. A Supabase publishable key is
   suitable for browser use when Row Level Security is enabled; never place a
   service_role key, database password, SMTP password, or private token here.
 */

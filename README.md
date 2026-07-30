@@ -2,7 +2,7 @@
 
 Repository: `samsung-event-dashboard`
 
-Framework-free Event Dashboard for Samsung Semiconductor Marcom. The event selector currently includes OCTS 2026, ODX 2026 and ICCAD 2026. Public viewing continues to use local JavaScript data with no server, package installation, CDN, or online font. An optional Supabase collaboration layer adds invited-member login, field-level updates, Realtime refresh and private downloads; when it is unavailable, the Dashboard remains local and read-only.
+Framework-free Event Dashboard for Samsung Semiconductor Marcom. The event selector currently includes OCTS 2026, ODX 2026 and ICCAD 2026. Public viewing continues to use local JavaScript data with no server, package installation, CDN, or online font. An optional Supabase collaboration layer adds administrator-created email-and-password member login, field-level updates, Realtime refresh and private downloads; when it is unavailable, the Dashboard remains local and read-only.
 
 ## Run locally
 
@@ -29,7 +29,20 @@ Documents & Deliverables sits directly below Attention Needed in the side column
 
 The static activity files remain the reviewed public baseline. Supabase stores only field-level overrides, their version, updater and update time. `002_public_dashboard_overlay_v1.sql` exposes those display fields through one anonymous read-only RPC; it returns no email, UUID, membership, credential or Storage-object data. A null/unset database field never replaces the static value. Workstream and Stage updates are saved separately; tasks with Stages continue to calculate parent Status and Progress in the browser.
 
-The tracked production `config.js` contains only the Supabase Project URL and browser-safe Publishable Key, so GitHub Pages can load the public Overlay without a build step. Never add a `service_role` key, Secret Key, database password, access token or refresh token to it. The OTP request sends the fixed GitHub Pages URL through its `redirect_to` query parameter; only the local server uses `http://localhost:3000/`. Run `supabase/migrations/001_collaboration_v1.sql`, then `supabase/migrations/002_public_dashboard_overlay_v1.sql`; run `supabase/seed_dashboard.sql` only when the database has not already been seeded. Follow `supabase/README.md` for OTP, membership, Storage and deployment setup.
+The tracked production `config.js` contains only the Supabase Project URL and browser-safe Publishable Key, so GitHub Pages can load the public Overlay without a build step. Never add a `service_role` key, Secret Key, database password, access token or refresh token to it. Member sign-in uses the Supabase password grant; the legacy Magic Link code remains inactive for a future SMTP-enabled rollout. Run `supabase/migrations/001_collaboration_v1.sql`, then `supabase/migrations/002_public_dashboard_overlay_v1.sql`; run `supabase/seed_dashboard.sql` only when the database has not already been seeded. Follow `supabase/README.md` for member management, Storage and deployment setup.
+
+### Local member management
+
+Create `.env.admin.local` from `.env.admin.example` and keep its Supabase service-role value on the local machine only. It is ignored by Git. Use the local interactive script; it never prints passwords or the key:
+
+```powershell
+node scripts/manage-auth-users.mjs create
+node scripts/manage-auth-users.mjs reset-password
+node scripts/manage-auth-users.mjs set-approval
+node scripts/manage-auth-users.mjs assign-role
+```
+
+`create` confirms the email in Auth, creates the trigger-backed Profile, optionally approves it, and can assign one Viewer or Editor event role. The script does not create Admins; set an Admin only through the controlled Supabase administrative process. A logged-in user can change only their own password from the Dashboard header. There is no self-registration or public password-reset entry.
 
 ## Update event data
 

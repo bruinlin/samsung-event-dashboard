@@ -45,6 +45,7 @@
         <span class="collaboration-mode" id="collaboration-mode">Local data · Read only</span>
         <span class="auth-state" id="auth-state" data-role="guest">Public viewer</span>
         <button class="button" id="auth-button" type="button" data-auth-action="sign-in">Sign in</button>
+        <button class="button" id="change-password-button" type="button" hidden>Change Password</button>
       </div>
       <button class="button button-primary" id="print-button" type="button">打印页面</button>
     </section>
@@ -176,18 +177,20 @@
     <div class="modal-heading">
       <div>
         <h2 id="auth-dialog-title">Member Sign in / 成员登录</h2>
-        <p>邀请制邮箱 OTP。登录不会影响公开查看。</p>
+        <p>邀请制邮箱＋密码。登录不会影响公开查看。</p>
       </div>
       <button class="modal-close" id="auth-close" type="button" aria-label="Close">×</button>
     </div>
     <div class="modal-body">
-      <div id="auth-email-step">
-        <form id="auth-email-form">
+      <div id="auth-password-step">
+        <form id="auth-password-form">
           <label class="modal-field"><span>Email / 邮箱</span><input id="auth-email" type="email" autocomplete="email" required></label>
-          <button class="button button-primary modal-submit" id="auth-send-otp" type="submit">Send OTP / 获取验证码</button>
+          <label class="modal-field"><span>Password / 密码</span><input id="auth-password" type="password" autocomplete="current-password" required></label>
+          <button class="button button-primary modal-submit" id="auth-sign-in-password" type="submit">Sign in / 登录</button>
         </form>
       </div>
-      <div id="auth-otp-step" hidden>
+      <!-- Legacy Magic Link controls are deliberately retained for a future SMTP-enabled flow. -->
+      <div id="auth-magic-link-legacy" hidden aria-hidden="true">
         <p class="modal-copy">验证码已发送至 <b id="auth-otp-email"></b></p>
         <form id="auth-otp-form">
           <label class="modal-field"><span>One-time code / 验证码</span><input id="auth-otp" inputmode="numeric" autocomplete="one-time-code" minlength="6" maxlength="8" required></label>
@@ -199,6 +202,27 @@
       </div>
       <div class="modal-error" id="auth-error" role="alert"></div>
     </div>
+  </dialog>
+
+  <dialog class="modal-dialog" id="password-dialog" aria-labelledby="password-dialog-title">
+    <form id="password-form">
+      <div class="modal-heading">
+        <div>
+          <h2 id="password-dialog-title">Change Password / 修改密码</h2>
+          <p>使用当前登录会话更新密码；不会发送邮件。</p>
+        </div>
+        <button class="modal-close" id="password-close" type="button" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body modal-form-grid">
+        <label class="modal-field"><span>New Password / 新密码</span><input id="new-password" type="password" autocomplete="new-password" required></label>
+        <label class="modal-field"><span>Confirm Password / 确认新密码</span><input id="confirm-password" type="password" autocomplete="new-password" required></label>
+        <div class="modal-error" id="password-error" role="alert"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="button" id="password-cancel" type="button">Cancel / 取消</button>
+        <button class="button button-primary" id="password-save" type="submit">Update Password / 更新密码</button>
+      </div>
+    </form>
   </dialog>
 
   <dialog class="modal-dialog edit-dialog" id="edit-dialog" aria-labelledby="edit-dialog-title">
@@ -229,7 +253,7 @@
 
   <script src="config.js"></script>
   <script src="event_data.js?v=1.6.0"></script>
-  <script src="assets/collaboration.js?v=1.6.4"></script>
+  <script src="assets/collaboration.js?v=1.6.5"></script>
   <script src="assets/app.js?v=1.6.3"></script>
 </body>
 </html>
