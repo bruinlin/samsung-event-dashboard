@@ -8,7 +8,7 @@ This folder enables the optional multi-user layer without replacing the static e
 2. In SQL Editor, run `migrations/001_collaboration_v1.sql`, then `migrations/002_public_dashboard_overlay_v1.sql`.
 3. Run `seed_dashboard.sql` only when the database has not already been seeded.
 4. Confirm that the `event-files` bucket exists and is **Private**.
-5. Copy `config.example.js` to `config.js`, then enter only the Project URL and browser-safe Publishable Key.
+5. The production `config.js` is tracked only because it contains the Project URL and browser-safe Publishable Key. Keep its scope limited to those browser-safe values and optional non-secret client settings.
 
 Never use a `service_role` key, database password, SMTP password, user password, personal access token, or refresh token in the repository or browser configuration.
 
@@ -76,12 +76,7 @@ Do not replace a public Dashboard download with a controlled copy unless the pub
 
 ## 5. Deploy configuration
 
-`config.js` is intentionally ignored. The current branch-based GitHub Pages deployment will not receive it automatically. Choose one reviewed activation method:
-
-- generate `config.js` in a GitHub Pages deployment workflow from repository secrets; or
-- explicitly commit a browser-safe public configuration after reviewing that it contains only the Project URL and Publishable Key.
-
-The Publishable Key is not a server secret, but RLS must be active before it is exposed. Never deploy `service_role`.
+`config.js` is tracked so the current branch-based GitHub Pages deployment receives it without a build step. It contains only the Project URL, Publishable Key and browser-safe settings. The Publishable Key is not a server secret, but RLS must be active before it is exposed. Never deploy `service_role`, Secret Key, database password, access token or refresh token.
 
 ## 6. Acceptance checks
 

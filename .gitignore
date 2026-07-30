@@ -18,7 +18,6 @@ __pycache__/
 /generate_seed_sql.py
 /supabase-data.js
 /supabase_schema.sql
-/config.js
 
 # Pre-web source copies retained locally; runtime files are event_data.js and data/OCTS_2026.js
 /event_index.js

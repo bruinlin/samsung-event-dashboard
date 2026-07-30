@@ -29,7 +29,7 @@ Documents & Deliverables sits directly below Attention Needed in the side column
 
 The static activity files remain the reviewed public baseline. Supabase stores only field-level overrides, their version, updater and update time. `002_public_dashboard_overlay_v1.sql` exposes those display fields through one anonymous read-only RPC; it returns no email, UUID, membership, credential or Storage-object data. A null/unset database field never replaces the static value. Workstream and Stage updates are saved separately; tasks with Stages continue to calculate parent Status and Progress in the browser.
 
-Copy `config.example.js` to ignored `config.js` to enable collaboration. Run `supabase/migrations/001_collaboration_v1.sql`, then `supabase/migrations/002_public_dashboard_overlay_v1.sql`; run `supabase/seed_dashboard.sql` only when the database has not already been seeded. Follow `supabase/README.md` for OTP, membership, Storage and deployment setup. Never use a `service_role` key in browser code.
+The tracked production `config.js` contains only the Supabase Project URL and browser-safe Publishable Key, so GitHub Pages can load the public Overlay without a build step. Never add a `service_role` key, Secret Key, database password, access token or refresh token to it. Run `supabase/migrations/001_collaboration_v1.sql`, then `supabase/migrations/002_public_dashboard_overlay_v1.sql`; run `supabase/seed_dashboard.sql` only when the database has not already been seeded. Follow `supabase/README.md` for OTP, membership, Storage and deployment setup.
 
 ## Update event data
 
