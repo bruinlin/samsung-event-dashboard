@@ -70,5 +70,6 @@ for (const required of ["email_redirect_to", "authRedirectUrl", "consumeAuthCall
 }
 if (!collaboration.includes('rpc("get_public_dashboard_updates"')) fail("Anonymous public Overlay read is not wired into the client.");
 if (!app.includes('href="${escapeHtml(item.filePath)}" download')) fail("Public PDF download action is not wired into the client.");
+if (!app.includes("canEditCurrentEvent") || !app.includes("renderWorkstreams();\n        renderFinalDocuments")) fail("Edit controls are not gated and refreshed by the current event role.");
 
 console.log("Collaboration checks passed: syntax, safe public Overlay merge, Auth redirect markers, public PDF download UI, RLS markers, and config safety.");

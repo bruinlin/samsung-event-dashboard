@@ -2,6 +2,7 @@
 
 | Version | Date | Primary Deliverable | Lifecycle Status | Purpose |
 |---|---|---|---|---|
+| 1.6.3-web | 2026-07-30 | `assets/app.js` | Working | Hides editing controls from public and read-only users while retaining database-enforced Editor/Admin authorization. |
 | 1.6.2-web | 2026-07-30 | `supabase/migrations/002_public_dashboard_overlay_v1.sql` + collaboration assets | Working | Restores public Dashboard Overlay reads and public approved-PDF downloads while retaining approved Editor/Admin-only writes. |
 | 1.6.1-web | 2026-07-30 | `assets/collaboration.js` + `scripts/local-auth-server.mjs` | Working | Adds safe local HTTP Auth callback testing and Magic Link session restoration without changing production deployment. |
 | 1.6.0-web | 2026-07-29 | `index.html` + `assets/` + `supabase/` | Working | Adds optional approved-member login, field-level collaborative editing, RLS, authorized Realtime refresh and private-download preparation while retaining public static fallback. |

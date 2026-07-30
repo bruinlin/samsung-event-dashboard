@@ -515,6 +515,10 @@
     return [...owners].sort((a, b) => a.localeCompare(b, "zh-CN"));
   }
 
+  function canEditCurrentEvent() {
+    return window.DashboardCollab?.canEdit?.(state.eventId) === true;
+  }
+
   function stageTracker(item) {
     const stages = stagesFor(item);
     if (!stages.length) return "";
@@ -536,7 +540,7 @@
                 ${stage.completedDate ? `<span>Completed: <b>${formatDate(stage.completedDate)}</b></span>` : stageStatus === "Completed" ? `<span>Completed: <b>Missing Date</b></span>` : ""}
               </div>
             </div>
-            <button class="edit-button stage-edit-button no-print" type="button" data-edit-stage="${escapeHtml(stage.id)}" data-workstream-id="${escapeHtml(item.workstreamId)}">Edit</button>
+            ${canEditCurrentEvent() ? `<button class="edit-button stage-edit-button no-print" type="button" data-edit-stage="${escapeHtml(stage.id)}" data-workstream-id="${escapeHtml(item.workstreamId)}">Edit</button>` : ""}
           </div>`;
         }).join("")}
       </div>`;
@@ -561,7 +565,9 @@
     const detailButton = hasExpandableContent
       ? `<button class="detail-button" type="button" data-detail-id="${id}" aria-expanded="false" aria-label="展开 ${safeText(item.nameCN)} ${stages.length ? "阶段" : "详情"}">＋</button>`
       : "";
-    const editButton = `<button class="edit-button" type="button" data-edit-workstream="${id}">Edit</button>`;
+    const editButton = canEditCurrentEvent()
+      ? `<button class="edit-button" type="button" data-edit-workstream="${id}">Edit</button>`
+      : "";
     const detailRow = hasExpandableContent
       ? `<tr class="detail-row" data-detail-row="${id}" hidden>
           <td colspan="7">
@@ -1284,7 +1290,11 @@
     await window.DashboardCollab?.init?.({
       showToast,
       reloadCurrentEvent,
-      refreshAccessUi: () => { if (state.data) renderFinalDocuments(state.data); }
+      refreshAccessUi: () => {
+        if (!state.data) return;
+        renderWorkstreams();
+        renderFinalDocuments(state.data);
+      }
     });
     bindEvents();
     const hashId = window.location.hash.replace(/^#/, "");

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.3-web - 2026-07-30
+
+- Hide Workstream and Stage editing controls for public viewers and read-only signed-in users. The controls now re-render after an authorization change; database RPC authorization remains the enforcement boundary.
+
 ## 1.6.2-web - 2026-07-30
 
 - Restored anonymous and authenticated read-only access to the Dashboard Overlay through the narrowly scoped `get_public_dashboard_updates` RPC. It returns only Status, DDL, Owner, Completed Date, update metadata, version and the corresponding set flags; it does not expose email, UUID, membership, credentials or Storage object paths.
