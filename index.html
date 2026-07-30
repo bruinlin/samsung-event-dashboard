@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <title>Samsung Event Dashboard</title>
-  <link rel="stylesheet" href="assets/style.css?v=1.6.0">
+  <link rel="stylesheet" href="assets/style.css?v=1.6.6">
 </head>
 <body>
   <div class="page-shell">
@@ -238,6 +238,8 @@
         <p class="modal-field-note" id="edit-status-note" hidden>包含Stages的父任务状态和进度由Stage自动计算。</p>
         <label class="modal-field"><span>DDL</span><input id="edit-ddl" type="date"></label>
         <label class="modal-field"><span>Owner / 负责人</span><input id="edit-owner" list="owner-options" autocomplete="off"></label>
+        <label class="modal-field" id="edit-latest-update-field"><span>Latest Update / 最新进展</span><textarea id="edit-latest-update" rows="3" maxlength="500"></textarea></label>
+        <label class="modal-field" id="edit-next-action-field"><span>Next Action / 下一步</span><textarea id="edit-next-action" rows="3" maxlength="500"></textarea></label>
         <datalist id="owner-options"></datalist>
         <div class="edit-meta" id="edit-meta"></div>
         <div class="modal-error" id="edit-error" role="alert"></div>
@@ -253,7 +255,7 @@
 
   <script src="config.js"></script>
   <script src="event_data.js?v=1.6.0"></script>
-  <script src="assets/collaboration.js?v=1.6.5"></script>
-  <script src="assets/app.js?v=1.6.3"></script>
+  <script src="assets/collaboration.js?v=1.6.6"></script>
+  <script src="assets/app.js?v=1.6.6"></script>
 </body>
 </html>

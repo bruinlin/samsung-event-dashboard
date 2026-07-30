@@ -1,53 +1,31 @@
 (function () {
   "use strict";
 
-  const VALID_STATUSES = [
-    "Not Started", "In Progress", "Internal Review", "HQ Review",
-    "Pending Approval", "Pending Review", "Confirmed", "In Production", "Completed",
-    "Blocked", "Needs Update", "Not Applicable"
-  ];
+  const VALID_STATUSES = ["Planning", "In Progress", "Under Review", "Completed", "Blocked"];
 
   const STATUS_STYLE = {
-    "Not Started": ["Not Started", "grey"],
+    "Planning": ["Planning", "grey"],
     "In Progress": ["In Progress", "blue"],
-    "Internal Review": ["Internal Review", "purple"],
-    "HQ Review": ["HQ Review", "purple"],
-    "Pending Approval": ["Pending Approval", "amber"],
-    "Pending Review": ["Pending Review", "amber"],
-    "Confirmed": ["Confirmed", "blue"],
-    "In Production": ["In Production", "blue"],
+    "Under Review": ["Under Review", "purple"],
     "Completed": ["Completed", "green"],
-    "Blocked": ["Blocked", "red"],
-    "Needs Update": ["Needs Update", "grey"],
-    "Not Applicable": ["Not Applicable", "grey"]
+    "Blocked": ["Blocked", "red"]
   };
 
   const STATUS_COUNT_LABELS = {
-    "Not Started": "未开始",
+    "Planning": "计划中",
     "In Progress": "进行中",
-    "Internal Review": "内部审核",
-    "HQ Review": "总部审核",
-    "Pending Approval": "待批准",
-    "Pending Review": "待复审",
-    "Confirmed": "已确认",
-    "In Production": "制作中",
+    "Under Review": "审核中",
     "Completed": "已完成",
-    "Blocked": "被阻塞",
-    "Needs Update": "待补充",
-    "Not Applicable": "不适用"
-  };
-
-  const DOCUMENT_STYLE = {
-    Confirmed: ["Confirmed", "green"],
-    "Needs Update": ["Needs Update", "grey"]
+    "Blocked": "被阻塞"
   };
 
   const QUICK_FILTERS = [
     { id: "all", label: "全部模块" },
-    { id: "completed", label: "已完成" },
+    { id: "planning", label: "计划中" },
     { id: "in_progress", label: "进行中" },
-    { id: "needs_update", label: "待补充" },
-    { id: "confirmed", label: "已确认" }
+    { id: "under_review", label: "审核中" },
+    { id: "blocked", label: "被阻塞" },
+    { id: "completed", label: "已完成" },
   ];
 
   const FINAL_DOCUMENT_CATEGORIES = [
@@ -300,10 +278,10 @@
     if (!stages.length) return item.status;
     if (stages.some((stage) => stage.status === "Blocked")) return "Blocked";
     const currentStage = currentStageFor(item);
-    if (currentStage?.status === "Pending Review" || stages.some((stage) => stage.status === "Pending Review")) return "Pending Review";
+    if (currentStage?.status === "Under Review" || stages.some((stage) => stage.status === "Under Review")) return "Under Review";
     const completed = stages.filter((stage) => stage.status === "Completed").length;
     if (completed === stages.length) return "Completed";
-    if (completed === 0 && stages.every((stage) => stage.status === "Not Started")) return "Not Started";
+    if (completed === 0 && stages.every((stage) => stage.status === "Planning")) return "Planning";
     return "In Progress";
   }
 
@@ -314,10 +292,7 @@
   }
 
   function assessedWorkstreams(workstreams) {
-    return workstreams.filter((item) =>
-      workstreamStatus(item) !== "Not Applicable" &&
-      workstreamStatus(item) !== "Needs Update"
-    );
+    return workstreams.filter((item) => VALID_STATUSES.includes(workstreamStatus(item)));
   }
 
   function participationSummary(event) {
@@ -429,7 +404,7 @@
   function renderStatusCounts(data) {
     const counts = (data.workstreams || []).reduce((result, item) => {
       const derivedStatus = workstreamStatus(item);
-      const status = VALID_STATUSES.includes(derivedStatus) ? derivedStatus : "Needs Update";
+    const status = VALID_STATUSES.includes(derivedStatus) ? derivedStatus : "Planning";
       result[status] = (result[status] || 0) + 1;
       return result;
     }, {});
@@ -456,11 +431,10 @@
     if (state.quickFilter === "all") return true;
     const status = workstreamStatus(item);
     if (state.quickFilter === "completed") return status === "Completed";
-    if (state.quickFilter === "in_progress") {
-      return !["Completed", "Needs Update", "Not Applicable"].includes(status);
-    }
-    if (state.quickFilter === "needs_update") return status === "Needs Update";
-    if (state.quickFilter === "confirmed") return status === "Confirmed";
+    if (state.quickFilter === "planning") return status === "Planning";
+    if (state.quickFilter === "in_progress") return status === "In Progress";
+    if (state.quickFilter === "under_review") return status === "Under Review";
+    if (state.quickFilter === "blocked") return status === "Blocked";
     return true;
   }
 
@@ -477,7 +451,7 @@
   function progressCell(item) {
     const status = workstreamStatus(item);
     const progress = workstreamProgress(item);
-    if (progress === null || progress === undefined || status === "Needs Update" || status === "Not Applicable") {
+    if (progress === null || progress === undefined) {
       return `<span class="progress-value">—</span><div class="muted">不计入 0%</div>`;
     }
     const value = Math.max(0, Math.min(100, Number(progress)));
@@ -500,9 +474,8 @@
     let status = "In Progress";
     if (statuses.length && statuses.every((value) => value === "Completed")) status = "Completed";
     else if (statuses.includes("Blocked")) status = "Blocked";
-    else if (statuses.includes("Pending Review")) status = "Pending Review";
-    else if (statuses.length && statuses.every((value) => value === "Not Started")) status = "Not Started";
-    else if (statuses.length && statuses.every((value) => ["Needs Update", "Not Applicable"].includes(value))) status = "Needs Update";
+    else if (statuses.includes("Under Review")) status = "Under Review";
+    else if (statuses.length && statuses.every((value) => value === "Planning")) status = "Planning";
     return { completed, total: items.length, completion, status };
   }
 
@@ -526,7 +499,7 @@
       <div class="stage-tracker" aria-label="${safeText(item.nameCN)} 阶段进度">
         ${stages.map((stage) => {
           const isCurrent = stage.id === currentStageFor(item)?.id;
-          const stageStatus = stage.status || "Not Started";
+          const stageStatus = stage.status || "Planning";
           const symbol = stageStatus === "Completed" ? "✓" : isCurrent ? "●" : "○";
           return `<div class="stage-item ${escapeHtml(stageStatus.toLowerCase().replaceAll(" ", "-"))} ${isCurrent ? "current" : ""}">
             <span class="stage-symbol" aria-hidden="true">${symbol}</span>
@@ -556,7 +529,7 @@
     const currentStageMarkup = currentStage
       ? `<div class="current-stage">
           <span>Current Stage</span><b>${safeText(currentStage.nameEN)} / ${safeText(currentStage.nameCN)}</b>
-          <span>Stage Status</span><b>${safeText(currentStage.status || "Not Started")}</b>
+          <span>Stage Status</span><b>${safeText(currentStage.status || "Planning")}</b>
           <span>Stage DDL</span><b>${formatDeadline(currentStage.dueDate)}</b>
           <span>Progress</span><b>${completedStages} / ${stages.length} completed · ${workstreamProgress(item)}%</b>
           <span>Final DDL</span><b>${formatDeadline(item.dueDate)}</b>
@@ -631,7 +604,7 @@
   }
 
   function isCompletedStatus(status) {
-    return status === "Completed" || status === "Not Applicable";
+    return status === "Completed";
   }
 
   function validateDeadlines(data) {
@@ -671,7 +644,7 @@
           type: "event",
           date,
           eventId: event.eventId,
-          status: event.overallStatus || "Not Started",
+          status: event.overallStatus || "Planning",
           titleEN: `${event.shortName} · Event Day`,
           titleCN: event.nameCN || event.shortName,
           owner: "",
@@ -687,7 +660,7 @@
         date: milestone.date,
         eventId: event.eventId,
         milestoneId: milestone.milestoneId,
-        status: milestone.status || "Not Started",
+        status: milestone.status || "Planning",
         titleEN: "Milestone",
         titleCN: milestone.titleCN || "Milestone",
         owner: "",
@@ -721,7 +694,7 @@
           eventId: event.eventId,
           workstreamId: item.workstreamId,
           stageId: stage.id,
-          status: stage.status || "Not Started",
+          status: stage.status || "Planning",
           titleEN: `${item.nameEN} · ${stage.nameEN}`,
           titleCN: stage.nameCN || stage.nameEN,
           taskNameEN: item.nameEN,
@@ -746,7 +719,6 @@
   function calendarVisibleItems() {
     return calendarBaseFilter(state.calendarItems).filter((item) => {
       if (!state.calendarIncludeCompleted && isCompletedStatus(item.status)) return false;
-      if (state.calendarActiveOnly && item.status === "Not Applicable") return false;
       return true;
     });
   }
@@ -949,7 +921,7 @@
     if (isValidDate(dueDate) && dueDate < today) return { priority: 2, label: "Overdue" };
     if (isValidDate(dueDate) && dueDate === today) return { priority: 3, label: "Due Today" };
     if (isValidDate(dueDate) && dueDate <= addDays(today, 3)) return { priority: 4, label: "Due Soon" };
-    if (status === "Pending Review") return { priority: 5, label: "Pending Review" };
+    if (status === "Under Review") return { priority: 5, label: "Under Review" };
     if (!dueDate) return { priority: 6, label: "Missing DDL" };
     return null;
   }
@@ -960,7 +932,7 @@
       const candidates = [];
       stagesFor(item).forEach((stage) => {
         if (isCompletedStatus(stage.status)) return;
-        const reason = attentionReason(stage.status || "Not Started", stage.dueDate);
+        const reason = attentionReason(stage.status || "Planning", stage.dueDate);
         if (reason) candidates.push({
           ...reason,
           id: `attention:${item.workstreamId}:${stage.id}`,
@@ -970,7 +942,7 @@
           titleCN: stage.nameCN || stage.nameEN,
           dueDate: stage.dueDate || "",
           owner: item.owner || "",
-          status: stage.status || "Not Started"
+          status: stage.status || "Planning"
         });
       });
       const taskStatus = workstreamStatus(item);
@@ -1035,7 +1007,7 @@
       return a.date.localeCompare(b.date);
     });
     $("timeline").innerHTML = milestones.map((item) => {
-      const dotClass = item.status === "Needs Update" ? "grey" : "";
+      const dotClass = item.status === "Planning" ? "grey" : "";
       return `
         <div class="timeline-item" data-milestone-id="${escapeHtml(item.milestoneId || "")}">
           <span class="timeline-dot ${dotClass}"></span>
@@ -1233,7 +1205,7 @@
             stageId: stage.id,
             workstreamName: `${item.nameEN} / ${item.nameCN}`,
             stageName: `${stage.nameEN} / ${stage.nameCN}`,
-            status: stage.status || "Not Started",
+            status: stage.status || "Planning",
             dueDate: stage.dueDate || "",
             owner: stage.owner || item.owner || "",
             ownerOptions: existingOwnerOptions(),
@@ -1251,9 +1223,11 @@
             eventId: state.eventId,
             workstreamId: item.workstreamId,
             workstreamName: `${item.nameEN} / ${item.nameCN}`,
-            status: workstreamStatus(item) || "Not Started",
+            status: workstreamStatus(item) || "Planning",
             dueDate: item.dueDate || "",
             owner: item.owner || "",
+            latestUpdate: item.latestUpdate || "",
+            nextAction: item.nextAction || "",
             ownerOptions: existingOwnerOptions(),
             hasStages: stagesFor(item).length > 0,
             collaboration: item._collaboration || { version: 1 }

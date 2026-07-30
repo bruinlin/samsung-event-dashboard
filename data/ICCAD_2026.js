@@ -30,9 +30,8 @@ window.EVENT_DATASETS.ICCAD_2026 = {
     boothArea: "56㎡",
     boothNumber: "C009-010 / C019-020 / C029-030",
     showcasedProducts: "TBD",
-    keynoteStatus: "Not Applicable",
     overallStatus: "In Progress",
-    reportStatus: "Not Started",
+    reportStatus: "Planning",
     nextMilestone: "TBD",
     resultMetrics: [],
     showEventCountdown: true,
@@ -50,7 +49,7 @@ window.EVENT_DATASETS.ICCAD_2026 = {
     time: "TBD",
     topicEN: "TBD",
     topicCN: "TBD",
-    status: "Under Discussion"
+    status: "Planning"
   },
 
   workstreams: [
@@ -61,7 +60,7 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryId: "event-operations-content",
       categoryNameCN: "活动执行与内容交付",
       categoryNameEN: "Event Operations & Content",
-      status: "Not Started",
+      status: "Planning",
       progress: 0,
       owner: "TBD",
       dueDate: "",
@@ -78,12 +77,12 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryNameCN: "活动执行与内容交付",
       categoryNameEN: "Event Operations & Content",
       stages: [
-        { id: "presenter-confirmation", nameCN: "演讲人确认", nameEN: "Presenter Confirmation", status: "Not Started", dueDate: "", completedDate: "" },
-        { id: "topic-confirmation", nameCN: "主题确认", nameEN: "Topic Confirmation", status: "Not Started", dueDate: "", completedDate: "" },
-        { id: "initial-draft", nameCN: "初稿", nameEN: "Initial Draft", status: "Not Started", dueDate: "", completedDate: "" },
-        { id: "internal-review", nameCN: "内部审核", nameEN: "Internal Review", status: "Not Started", dueDate: "", completedDate: "" },
-        { id: "final-approval", nameCN: "最终确认", nameEN: "Final Approval", status: "Not Started", dueDate: "", completedDate: "" },
-        { id: "rehearsal", nameCN: "彩排", nameEN: "Rehearsal", status: "Not Started", dueDate: "", completedDate: "" }
+        { id: "presenter-confirmation", nameCN: "演讲人确认", nameEN: "Presenter Confirmation", status: "Planning", dueDate: "", completedDate: "" },
+        { id: "topic-confirmation", nameCN: "主题确认", nameEN: "Topic Confirmation", status: "Planning", dueDate: "", completedDate: "" },
+        { id: "initial-draft", nameCN: "初稿", nameEN: "Initial Draft", status: "Planning", dueDate: "", completedDate: "" },
+        { id: "internal-review", nameCN: "内部审核", nameEN: "Internal Review", status: "Planning", dueDate: "", completedDate: "" },
+        { id: "final-approval", nameCN: "最终确认", nameEN: "Final Approval", status: "Planning", dueDate: "", completedDate: "" },
+        { id: "rehearsal", nameCN: "彩排", nameEN: "Rehearsal", status: "Planning", dueDate: "", completedDate: "" }
       ],
       currentStageId: "presenter-confirmation",
       owner: "TBD",
@@ -100,7 +99,7 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryId: "event-operations-content",
       categoryNameCN: "活动执行与内容交付",
       categoryNameEN: "Event Operations & Content",
-      status: "Not Started",
+      status: "Planning",
       progress: 0,
       owner: "TBD",
       dueDate: "",
@@ -117,11 +116,11 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryNameCN: "活动执行与内容交付",
       categoryNameEN: "Event Operations & Content",
       stages: [
-        { id: "design-brief", nameCN: "需求简报", nameEN: "Design Brief", status: "Not Started", dueDate: "", completedDate: "" },
-        { id: "initial-design", nameCN: "初版设计", nameEN: "Initial Design", status: "Not Started", dueDate: "", completedDate: "" },
-        { id: "review-revision", nameCN: "审核与修改", nameEN: "Review & Revision", status: "Not Started", dueDate: "", completedDate: "" },
-        { id: "final-artwork", nameCN: "最终画稿", nameEN: "Final Artwork", status: "Not Started", dueDate: "", completedDate: "" },
-        { id: "onsite-completion", nameCN: "现场完成", nameEN: "Onsite Completion", status: "Not Started", dueDate: "", completedDate: "" }
+        { id: "design-brief", nameCN: "需求简报", nameEN: "Design Brief", status: "Planning", dueDate: "", completedDate: "" },
+        { id: "initial-design", nameCN: "初版设计", nameEN: "Initial Design", status: "Planning", dueDate: "", completedDate: "" },
+        { id: "review-revision", nameCN: "审核与修改", nameEN: "Review & Revision", status: "Planning", dueDate: "", completedDate: "" },
+        { id: "final-artwork", nameCN: "最终画稿", nameEN: "Final Artwork", status: "Planning", dueDate: "", completedDate: "" },
+        { id: "onsite-completion", nameCN: "现场完成", nameEN: "Onsite Completion", status: "Planning", dueDate: "", completedDate: "" }
       ],
       currentStageId: "design-brief",
       owner: "TBD",
@@ -138,7 +137,7 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryId: "event-operations-content",
       categoryNameCN: "活动执行与内容交付",
       categoryNameEN: "Event Operations & Content",
-      status: "Not Started",
+      status: "Planning",
       progress: 0,
       owner: "TBD",
       dueDate: "",
@@ -170,7 +169,7 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryId: "business-commercial",
       categoryNameCN: "商务与商业管理",
       categoryNameEN: "Business & Commercial",
-      status: "Not Started",
+      status: "Planning",
       progress: 0,
       owner: "TBD",
       dueDate: "",
@@ -186,7 +185,7 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryId: "business-commercial",
       categoryNameCN: "商务与商业管理",
       categoryNameEN: "Business & Commercial",
-      status: "Not Started",
+      status: "Planning",
       progress: 0,
       owner: "TBD",
       dueDate: "",
@@ -202,7 +201,7 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryId: "business-commercial",
       categoryNameCN: "商务与商业管理",
       categoryNameEN: "Business & Commercial",
-      status: "Not Started",
+      status: "Planning",
       progress: 0,
       owner: "TBD",
       dueDate: "",
@@ -219,7 +218,7 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryNameCN: "传播、公关与报告",
       categoryNameEN: "Social, PR & Reporting",
       stages: [
-        { id: "planning-draft", nameCN: "计划初稿", nameEN: "Planning Draft", status: "Not Started", dueDate: "", completedDate: "" }
+        { id: "planning-draft", nameCN: "计划初稿", nameEN: "Planning Draft", status: "Planning", dueDate: "", completedDate: "" }
       ],
       currentStageId: "planning-draft",
       owner: "TBD",
@@ -236,7 +235,7 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryId: "social-pr-reporting",
       categoryNameCN: "传播、公关与报告",
       categoryNameEN: "Social, PR & Reporting",
-      status: "Not Started",
+      status: "Planning",
       progress: 0,
       owner: "TBD",
       dueDate: "",
@@ -253,9 +252,9 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryNameCN: "传播、公关与报告",
       categoryNameEN: "Social, PR & Reporting",
       stages: [
-        { id: "data-collection", nameCN: "数据收集", nameEN: "Data Collection", status: "Not Started", dueDate: "", completedDate: "" },
-        { id: "report-draft", nameCN: "报告初稿", nameEN: "Report Draft", status: "Not Started", dueDate: "", completedDate: "" },
-        { id: "final-report", nameCN: "最终报告", nameEN: "Final Report", status: "Not Started", dueDate: "", completedDate: "" }
+        { id: "data-collection", nameCN: "数据收集", nameEN: "Data Collection", status: "Planning", dueDate: "", completedDate: "" },
+        { id: "report-draft", nameCN: "报告初稿", nameEN: "Report Draft", status: "Planning", dueDate: "", completedDate: "" },
+        { id: "final-report", nameCN: "最终报告", nameEN: "Final Report", status: "Planning", dueDate: "", completedDate: "" }
       ],
       currentStageId: "data-collection",
       owner: "TBD",
@@ -278,7 +277,7 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       topicEN: "TBD",
       topicCN: "TBD",
       time: "TBD",
-      status: "Not Started",
+      status: "Planning",
       remarks: "Under Discussion"
     }
   ],

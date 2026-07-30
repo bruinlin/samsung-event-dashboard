@@ -54,8 +54,8 @@ node scripts/manage-auth-users.mjs assign-role
 - `data/OCTS_2026.js` also contains `finalDocuments`, which controls the unified Documents & Deliverables list, file metadata, category filters, download links, and status-only records.
 - Keep the data structure consistent with the existing event file. Use only the supported status values documented at the top of the data file.
 - Each workstream belongs to one of three categories: `business-commercial`, `event-operations-content`, or `social-pr-reporting`. Add `categoryId`, `categoryNameCN`, and `categoryNameEN` to every new workstream.
-- Use `stages` and `currentStageId` only for tasks that have meaningful multi-step tracking. Stage status values are `Not Started`, `In Progress`, `Pending Review`, `Completed`, and `Blocked`; the dashboard calculates task status and progress from completed stages. Simple tasks keep their existing `status` and `progress` fields.
-- `workstreams[].dueDate` is the task Final DDL. Each `stages[]` entry may have its own `dueDate` for the planned stage DDL; `completedDate` is only the actual completion date. Leave an unconfirmed DDL as an empty string so the dashboard can show `Missing DDL` rather than an invented date.
+- Use `stages` and `currentStageId` only for tasks that have meaningful multi-step tracking. Workstream and Stage statuses use one five-status model: `Planning`, `In Progress`, `Under Review`, `Completed`, and `Blocked`. Do not add legacy labels such as `Not Started`, `Confirmed`, or `Pending Review`.
+- `workstreams[].dueDate` is the task Final DDL. Each `stages[]` entry may have its own `dueDate` for the planned stage DDL; `completedDate` is only the actual completion date. Leave an unconfirmed DDL as an empty string so the dashboard can show `Missing DDL` rather than an invented date. `latestUpdate` and `nextAction` are plain-text fields; they may contain line breaks and should remain concise.
 - Update `meta.lastUpdated`, `meta.updatedBy`, and `CHANGELOG.md` with every meaningful revision.
 - Do not put contract values, quotation values, credentials, personal data, or non-public source documents in the repository.
 

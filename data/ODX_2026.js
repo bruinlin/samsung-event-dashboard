@@ -36,7 +36,7 @@ window.EVENT_DATASETS.ODX_2026 = {
     boothNumber: "TBD",
     detailedAgenda: "TBD",
     overallStatus: "In Progress",
-    reportStatus: "Not Started",
+    reportStatus: "Planning",
     nextMilestone: "TBD",
     showcasedProducts: "TBD",
     resultMetrics: [],
@@ -51,7 +51,7 @@ window.EVENT_DATASETS.ODX_2026 = {
     time: "10:30-10:45",
     topicEN: "TBD",
     topicCN: "TBD",
-    status: "Not Started"
+    status: "Planning"
   },
 
   workstreams: [
@@ -94,14 +94,14 @@ window.EVENT_DATASETS.ODX_2026 = {
       categoryId: "event-operations-content",
       categoryNameCN: "活动执行与内容交付",
       categoryNameEN: "Event Operations & Content",
-      status: "Not Started",
+      status: "Planning",
       progress: 0,
       stages: [
-        { id: "initial-draft", nameCN: "初稿", nameEN: "Initial Draft", status: "Not Started", dueDate: "2026-08-10", completedDate: "" },
-        { id: "first-washing", nameCN: "第一次 Washing", nameEN: "First Washing", status: "Not Started", dueDate: "2026-08-14", completedDate: "" },
-        { id: "internal-review", nameCN: "复审", nameEN: "Internal Review", status: "Not Started", dueDate: "2026-08-19", completedDate: "" },
-        { id: "second-revision", nameCN: "第二次修改", nameEN: "Second Revision", status: "Not Started", dueDate: "2026-08-24", completedDate: "" },
-        { id: "final-approval", nameCN: "最终确认", nameEN: "Final Approval", status: "Not Started", dueDate: "2026-08-26", completedDate: "" }
+        { id: "initial-draft", nameCN: "初稿", nameEN: "Initial Draft", status: "Planning", dueDate: "2026-08-10", completedDate: "" },
+        { id: "first-washing", nameCN: "第一次 Washing", nameEN: "First Washing", status: "Planning", dueDate: "2026-08-14", completedDate: "" },
+        { id: "internal-review", nameCN: "复审", nameEN: "Internal Review", status: "Planning", dueDate: "2026-08-19", completedDate: "" },
+        { id: "second-revision", nameCN: "第二次修改", nameEN: "Second Revision", status: "Planning", dueDate: "2026-08-24", completedDate: "" },
+        { id: "final-approval", nameCN: "最终确认", nameEN: "Final Approval", status: "Planning", dueDate: "2026-08-26", completedDate: "" }
       ],
       currentStageId: "initial-draft",
       owner: "Bruin & Leo",
@@ -166,10 +166,10 @@ window.EVENT_DATASETS.ODX_2026 = {
       categoryId: "social-pr-reporting",
       categoryNameCN: "传播、公关与报告",
       categoryNameEN: "Social, PR & Reporting",
-      status: "Not Started",
+      status: "Planning",
       progress: 0,
       stages: [
-        { id: "planning-draft", nameCN: "计划初稿", nameEN: "Planning Draft", status: "Not Started", dueDate: "2026-08-19", completedDate: "" }
+        { id: "planning-draft", nameCN: "计划初稿", nameEN: "Planning Draft", status: "Planning", dueDate: "2026-08-19", completedDate: "" }
       ],
       currentStageId: "planning-draft",
       owner: "Seloma",
@@ -186,7 +186,7 @@ window.EVENT_DATASETS.ODX_2026 = {
       categoryId: "social-pr-reporting",
       categoryNameCN: "传播、公关与报告",
       categoryNameEN: "Social, PR & Reporting",
-      status: "Not Started",
+      status: "Planning",
       progress: 0,
       owner: "Iris & Christy",
       dueDate: "2026-09-02",
@@ -202,7 +202,7 @@ window.EVENT_DATASETS.ODX_2026 = {
       categoryId: "event-operations-content",
       categoryNameCN: "活动执行与内容交付",
       categoryNameEN: "Event Operations & Content",
-      status: "Not Started",
+      status: "Planning",
       progress: 0,
       owner: "Bruin",
       dueDate: "",
@@ -214,17 +214,17 @@ window.EVENT_DATASETS.ODX_2026 = {
   ],
 
   milestones: [
-    { milestoneId: "ODX26-M-01", date: "2026-08-06", titleCN: "礼品方案确认", titleEN: "Gift Proposal Confirmation", status: "Not Started", remarks: "" },
-    { milestoneId: "ODX26-M-02", date: "2026-08-10", titleCN: "活动基本信息、报价与 Keynote 初稿", titleEN: "Event Information, Quotation & Keynote Initial Draft", status: "Not Started", remarks: "" },
-    { milestoneId: "ODX26-M-03", date: "2026-08-14", titleCN: "Booth 设计、产品信息与资产、Keynote 第一次 Washing", titleEN: "Booth, Product Assets & Keynote First Washing", status: "Not Started", remarks: "" },
-    { milestoneId: "ODX26-M-04", date: "2026-08-19", titleCN: "Keynote 内部审核与社媒发布计划", titleEN: "Keynote Internal Review & Social Posting Plan", status: "Not Started", remarks: "" },
-    { milestoneId: "ODX26-M-05", date: "2026-08-24", titleCN: "Keynote 第二次修改", titleEN: "Keynote Second Revision", status: "Not Started", remarks: "" },
-    { milestoneId: "ODX26-M-06", date: "2026-08-25", titleCN: "活动议程与人员明细收集", titleEN: "Event Agenda & Personnel Details Collection", status: "Not Started", remarks: "" },
-    { milestoneId: "ODX26-M-07", date: "2026-08-26", titleCN: "Keynote 最终确认", titleEN: "Keynote Final Approval", status: "Not Started", remarks: "" },
-    { milestoneId: "ODX26-M-08", date: "2026-08-31", titleCN: "会后报告初稿", titleEN: "Report Draft", status: "Not Started", remarks: "" },
-    { milestoneId: "ODX26-M-09", date: "2026-09-02", titleCN: "PR 文章", titleEN: "PR Article", status: "Not Started", remarks: "" },
-    { milestoneId: "ODX26-M-10", date: "2026-09-03", titleCN: "主论坛演讲与会后报告定稿", titleEN: "Main Forum Keynote & Report Final", status: "Not Started", remarks: "" },
-    { milestoneId: "ODX26-M-11", date: "2026-09-20", titleCN: "合同", titleEN: "Contract", status: "Not Started", remarks: "" }
+    { milestoneId: "ODX26-M-01", date: "2026-08-06", titleCN: "礼品方案确认", titleEN: "Gift Proposal Confirmation", status: "Planning", remarks: "" },
+    { milestoneId: "ODX26-M-02", date: "2026-08-10", titleCN: "活动基本信息、报价与 Keynote 初稿", titleEN: "Event Information, Quotation & Keynote Initial Draft", status: "Planning", remarks: "" },
+    { milestoneId: "ODX26-M-03", date: "2026-08-14", titleCN: "Booth 设计、产品信息与资产、Keynote 第一次 Washing", titleEN: "Booth, Product Assets & Keynote First Washing", status: "Planning", remarks: "" },
+    { milestoneId: "ODX26-M-04", date: "2026-08-19", titleCN: "Keynote 内部审核与社媒发布计划", titleEN: "Keynote Internal Review & Social Posting Plan", status: "Planning", remarks: "" },
+    { milestoneId: "ODX26-M-05", date: "2026-08-24", titleCN: "Keynote 第二次修改", titleEN: "Keynote Second Revision", status: "Planning", remarks: "" },
+    { milestoneId: "ODX26-M-06", date: "2026-08-25", titleCN: "活动议程与人员明细收集", titleEN: "Event Agenda & Personnel Details Collection", status: "Planning", remarks: "" },
+    { milestoneId: "ODX26-M-07", date: "2026-08-26", titleCN: "Keynote 最终确认", titleEN: "Keynote Final Approval", status: "Planning", remarks: "" },
+    { milestoneId: "ODX26-M-08", date: "2026-08-31", titleCN: "会后报告初稿", titleEN: "Report Draft", status: "Planning", remarks: "" },
+    { milestoneId: "ODX26-M-09", date: "2026-09-02", titleCN: "PR 文章", titleEN: "PR Article", status: "Planning", remarks: "" },
+    { milestoneId: "ODX26-M-10", date: "2026-09-03", titleCN: "主论坛演讲与会后报告定稿", titleEN: "Main Forum Keynote & Report Final", status: "Planning", remarks: "" },
+    { milestoneId: "ODX26-M-11", date: "2026-09-20", titleCN: "合同", titleEN: "Contract", status: "Planning", remarks: "" }
   ],
 
   sessions: [
@@ -236,7 +236,7 @@ window.EVENT_DATASETS.ODX_2026 = {
       topicEN: "TBD",
       topicCN: "TBD",
       time: "TBD",
-      status: "Not Started",
+      status: "Planning",
       remarks: ""
     }
   ],

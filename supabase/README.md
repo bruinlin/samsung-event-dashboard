@@ -4,7 +4,7 @@ This folder enables the optional multi-user layer without replacing the public s
 
 ## 1. Database and browser configuration
 
-1. Run `migrations/001_collaboration_v1.sql`, followed by `migrations/002_public_dashboard_overlay_v1.sql`.
+1. Run `migrations/001_collaboration_v1.sql`, followed by `migrations/002_public_dashboard_overlay_v1.sql`, then `migrations/003_collaboration_v1_6_status_and_notes.sql`.
 2. Run `seed_dashboard.sql` only when the database is not already seeded.
 3. Confirm that the `event-files` bucket remains **Private**.
 4. Keep the tracked browser `config.js` limited to the Supabase Project URL, Publishable Key and other browser-safe settings.
@@ -79,3 +79,4 @@ Do not replace a public Dashboard download with a controlled copy unless the pub
 - `change_history`, `updated_at`, `updated_by`, and `version` are updated.
 - A second authenticated page receives Postgres Changes and refreshes the event.
 - When Supabase is unavailable, the page clearly remains public, local and read-only.
+- Workstream and Stage status values are limited to `Planning`, `In Progress`, `Under Review`, `Completed`, and `Blocked`. Workstream overlays also support plain-text `Latest Update` and `Next Action` values (500 characters each); an explicitly saved empty value clears the static baseline for that field.

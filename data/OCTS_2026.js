@@ -13,11 +13,9 @@
   9. 展出产品：修改 event.showcasedProducts 数组。
   10. 最终交付文件：将已确认可公开下载的 Final 文件放入 downloads/OCTS_2026/，
       并在 finalDocuments 中登记相对路径、格式、大小和状态。
-  11. 有效状态：Not Started, In Progress, Internal Review, HQ Review,
-     Pending Approval, Confirmed, In Production, Completed, Blocked,
-     Needs Update, Not Applicable。
+  11. 有效状态：Planning, In Progress, Under Review, Completed, Blocked。
   12. 阶段追踪：仅复杂任务添加 stages 和 currentStageId。阶段状态仅可使用
-      Not Started, In Progress, Pending Review, Completed, Blocked；页面会自动计算该任务的状态和进度。
+      Planning, In Progress, Under Review, Completed, Blocked；页面会自动计算该任务的状态和进度。
   13. DDL：workstreams[].dueDate 是任务 Final DDL；stages[].dueDate 是阶段计划 DDL。
       未确认日期保留空字符串，页面显示 Missing DDL；completedDate 仅记录实际完成日期，不能替代 dueDate。
 

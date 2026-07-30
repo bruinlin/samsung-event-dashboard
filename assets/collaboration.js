@@ -5,12 +5,8 @@
   const AUTH_RETURN_EVENT_KEY = "samsung-event-dashboard.auth-return-event.v1";
   const PRODUCTION_REDIRECT_URL = "https://bruinlin.github.io/samsung-event-dashboard/";
   const LOCAL_REDIRECT_URL = "http://localhost:3000/";
-  const WORKSTREAM_STATUSES = [
-    "Not Started", "In Progress", "Internal Review", "HQ Review",
-    "Pending Approval", "Pending Review", "Confirmed", "In Production",
-    "Completed", "Blocked", "Needs Update", "Not Applicable"
-  ];
-  const STAGE_STATUSES = ["Not Started", "In Progress", "Pending Review", "Completed", "Blocked"];
+  const WORKSTREAM_STATUSES = ["Planning", "In Progress", "Under Review", "Completed", "Blocked"];
+  const STAGE_STATUSES = ["Planning", "In Progress", "Under Review", "Completed", "Blocked"];
   const config = window.DASHBOARD_CONFIG || {};
   const configured = /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(String(config.supabaseUrl || "")) &&
     Boolean(config.supabasePublishableKey) &&
@@ -230,10 +226,14 @@
       if (row.status_set) item.status = row.status;
       if (row.due_date_set) item.dueDate = row.due_date || "";
       if (row.owner_set) item.owner = row.owner || "";
+      if (row.latest_update_set) item.latestUpdate = row.latest_update || "";
+      if (row.next_action_set) item.nextAction = row.next_action || "";
       item._collaboration = {
         version: Number(row.version || 1),
         updatedAt: row.updated_at || "",
-        updatedBy: row.updated_by_name || ""
+        updatedBy: row.updated_by_name || "",
+        latestUpdateSet: Boolean(row.latest_update_set),
+        nextActionSet: Boolean(row.next_action_set)
       };
     });
     (overlay?.stages || []).forEach((row) => {
@@ -413,11 +413,17 @@
     const statusLocked = context.entityType === "workstream" && context.hasStages;
     byId("edit-dialog-title").textContent = isStage ? "Edit Stage / 编辑阶段" : "Edit Workstream / 编辑任务";
     byId("edit-entity-name").textContent = [context.workstreamName, context.stageName].filter(Boolean).join(" · ");
-    fillSelect(byId("edit-status"), isStage ? STAGE_STATUSES : WORKSTREAM_STATUSES, context.status || "Not Started");
+    fillSelect(byId("edit-status"), isStage ? STAGE_STATUSES : WORKSTREAM_STATUSES, context.status || "Planning");
     byId("edit-status").disabled = statusLocked;
     byId("edit-status-note").hidden = !statusLocked;
     byId("edit-ddl").value = context.dueDate || "";
     byId("edit-owner").value = context.owner || "";
+    byId("edit-latest-update-field").hidden = isStage;
+    byId("edit-next-action-field").hidden = isStage;
+    if (!isStage) {
+      byId("edit-latest-update").value = context.latestUpdate || "";
+      byId("edit-next-action").value = context.nextAction || "";
+    }
     const ownerList = byId("owner-options");
     ownerList.replaceChildren();
     (context.ownerOptions || []).forEach((owner) => {
@@ -444,6 +450,8 @@
     const status = byId("edit-status").value;
     const dueDate = byId("edit-ddl").value.trim();
     const owner = byId("edit-owner").value.trim();
+    const latestUpdate = context.entityType === "workstream" ? byId("edit-latest-update").value.trim() : "";
+    const nextAction = context.entityType === "workstream" ? byId("edit-next-action").value.trim() : "";
     try {
       if (dueDate && !/^\d{4}-\d{2}-\d{2}$/.test(dueDate)) throw new Error("DDL必须使用YYYY-MM-DD格式。");
       const common = {
@@ -460,7 +468,13 @@
       if (context.entityType === "stage") {
         await rpc("update_stage_overlay", { ...common, p_stage_id: context.stageId }, true);
       } else {
-        await rpc("update_workstream_overlay", common, true);
+        await rpc("update_workstream_overlay", {
+          ...common,
+          p_latest_update: latestUpdate,
+          p_next_action: nextAction,
+          p_latest_update_set: true,
+          p_next_action_set: true
+        }, true);
       }
       closeDialog(byId("edit-dialog"));
       notify("保存成功，页面已更新。");
@@ -601,7 +615,9 @@
       try {
         await signInWithPassword(email, password);
       } catch (error) {
-        byId("auth-error").textContent = error.message;
+        byId("auth-error").textContent = error.status === 400 || /invalid login credentials/i.test(error.message)
+          ? "Invalid email or password."
+          : "Sign-in is unavailable. Please try again.";
       } finally {
         submit.disabled = false;
         submit.textContent = "Sign in / 登录";

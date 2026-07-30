@@ -470,7 +470,7 @@ select {
 .col-owner { width: 12%; }
 .col-update { width: 19.5%; }
 .col-action { width: 19.5%; }
-.col-detail { width: 7%; }
+.col-detail { width: 86px; min-width: 86px; }
 
 .workstream-name { color: var(--ink-900); font-size: 14px; font-weight: 720; }
 .workstream-en { margin-top: 3px; color: var(--ink-500); font-size: 11px; }
@@ -542,8 +542,10 @@ select {
   cursor: pointer;
 }
 .detail-button:hover, .detail-button:focus-visible { border-color: #84b1e4; background: var(--blue-50); outline: none; }
-.row-actions { display: flex; align-items: center; justify-content: flex-end; gap: 5px; }
-.edit-button { min-height: 30px; padding: 5px 8px; border: 1px solid #b8cee5; border-radius: 7px; background: #fff; color: var(--blue-700); cursor: pointer; font-size: 10px; font-weight: 750; }
+.workstream-table td[data-label="Latest Update"],
+.workstream-table td[data-label="Next Action"] { white-space: pre-line; overflow-wrap: anywhere; word-break: break-word; }
+.row-actions { display: flex; align-items: center; justify-content: flex-end; gap: 5px; min-width: 66px; white-space: nowrap; }
+.edit-button { min-height: 30px; padding: 5px 8px; border: 1px solid #b8cee5; border-radius: 7px; background: #fff; color: var(--blue-700); cursor: pointer; font-size: 10px; font-weight: 750; white-space: nowrap; }
 .edit-button:hover, .edit-button:focus-visible { border-color: var(--blue-600); background: var(--blue-50); outline: none; }
 .stage-edit-button { align-self: center; }
 
@@ -567,7 +569,7 @@ select {
 }
 .stage-item.completed { color: var(--green); background: var(--green-bg); border-color: #ccebdc; }
 .stage-item.blocked { color: var(--red); background: var(--red-bg); border-color: #f4ccd2; }
-.stage-item.pending-review { color: var(--amber); background: var(--amber-bg); border-color: #f2dfb2; }
+.stage-item.under-review { color: var(--purple); background: var(--purple-bg); border-color: #d8c8ee; }
 .stage-item.in-progress, .stage-item.current { color: var(--blue-700); border-color: #a9cbed; background: var(--blue-50); }
 .stage-symbol { font-size: 15px; font-weight: 800; text-align: center; }
 .stage-copy { display: grid; gap: 1px; min-width: 0; }
@@ -715,13 +717,16 @@ footer { display: flex; justify-content: space-between; gap: 16px; padding: 4px 
 .modal-body form, .modal-form-grid { display: grid; gap: 13px; }
 .modal-field { display: grid; gap: 6px; }
 .modal-field > span { color: var(--ink-700); font-size: 11px; font-weight: 750; }
-.modal-field input, .modal-field select { width: 100%; min-width: 0; height: 40px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink-900); font-size: 13px; }
-.modal-field input:focus, .modal-field select:focus { border-color: var(--blue-600); outline: 2px solid #d7eaff; }
+.modal-field input, .modal-field select, .modal-field textarea { width: 100%; min-width: 0; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink-900); font-size: 13px; }
+.modal-field input, .modal-field select { height: 40px; }
+.modal-field textarea { min-height: 78px; line-height: 1.45; resize: vertical; }
+.modal-field input:focus, .modal-field select:focus, .modal-field textarea:focus { border-color: var(--blue-600); outline: 2px solid #d7eaff; }
 .modal-field select:disabled { background: var(--grey-bg); color: var(--grey); }
 .modal-field-note { margin: -6px 0 0; color: var(--ink-500); font-size: 10px; line-height: 1.45; }
 .modal-copy { margin: 0 0 13px; color: var(--ink-700); font-size: 12px; line-height: 1.5; }
 .modal-submit { width: 100%; margin-left: 0; }
 .modal-actions, .modal-footer { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+.edit-dialog .modal-footer { position: sticky; bottom: 0; z-index: 1; background: #fff; border-top: 1px solid var(--line-soft); }
 .modal-footer { padding: 13px 19px 17px; border-top: 1px solid var(--line-soft); }
 .modal-footer .button-primary, .modal-actions .button-primary { margin-left: 0; }
 .modal-error { min-height: 18px; margin-top: 11px; color: var(--red); font-size: 11px; line-height: 1.45; }

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.6-web - 2026-07-30
+
+- Unified Workstream and Stage status handling to Planning, In Progress, Under Review, Completed, and Blocked, with a guarded incremental Supabase migration for existing overlay values.
+- Added editable plain-text Workstream Latest Update and Next Action overlays, including version-safe RPC updates, public read-only overlay rendering, and individual audit history records.
+- Refined the collaboration editor, task table wrapping, action-column sizing, status colours, and cache versions for more reliable desktop and mobile editing.
+
 ## 1.6.5-web - 2026-07-30
 
 - Replaced the visible member Magic Link / OTP flow with administrator-created email-and-password sign-in, retaining the public Dashboard and existing RLS, role, edit RPC, Realtime and audit behavior.
