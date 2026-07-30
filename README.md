@@ -9,10 +9,10 @@ Framework-free Event Dashboard for Samsung Semiconductor Marcom. The event selec
 From the repository root:
 
 ```powershell
-python -m http.server 8080
+node scripts/local-auth-server.mjs
 ```
 
-Open `http://localhost:8080/`. Directly opening `index.html` also works because event data is provided by JavaScript files rather than fetched JSON.
+Open `http://localhost:3000/` for Supabase Auth testing. Directly opening `index.html` also works for offline public viewing, but `file://` cannot receive a Supabase email-link callback.
 
 When the URL has no event hash, the Dashboard opens the nearest upcoming event that is not `Completed`; if none remain, it opens the newest completed event. A valid event hash such as `#OCTS_2026`, `#ODX_2026` or `#ICCAD_2026` always takes priority. For deadline-enabled events, the Calendar initially opens the month containing the nearest uncompleted task or stage DDL; it falls back to the event month, then the current month.
 

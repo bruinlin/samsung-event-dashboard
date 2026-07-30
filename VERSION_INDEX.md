@@ -2,6 +2,7 @@
 
 | Version | Date | Primary Deliverable | Lifecycle Status | Purpose |
 |---|---|---|---|---|
+| 1.6.1-web | 2026-07-30 | `assets/collaboration.js` + `scripts/local-auth-server.mjs` | Working | Adds safe local HTTP Auth callback testing and Magic Link session restoration without changing production deployment. |
 | 1.6.0-web | 2026-07-29 | `index.html` + `assets/` + `supabase/` | Working | Adds optional approved-member login, field-level collaborative editing, RLS, authorized Realtime refresh and private-download preparation while retaining public static fallback. |
 | 1.5.2-web | 2026-07-29 | `index.html` + `assets/` + `data/ODX_2026.js` + `data/ICCAD_2026.js` | Working | Moves ODX and ICCAD Participation into the Hero metadata and condenses the shared presentation Overview card. |
 | 1.5.1-web | 2026-07-29 | `index.html` + `assets/` + `data/ICCAD_2026.js` | Working | Corrects ICCAD to the shared ODX/OCTS page structure, restores Calendar and DDL support, and adds optional official-website Hero links. |

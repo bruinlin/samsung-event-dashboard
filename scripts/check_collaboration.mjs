@@ -57,5 +57,9 @@ for (const forbidden of [
 }
 const configExample = read("config.example.js");
 if (/service_role\s*[:=]\s*["'][^"']+/i.test(configExample)) fail("Example config contains a service role value.");
+const collaboration = read("assets/collaboration.js");
+for (const required of ["email_redirect_to", "authRedirectUrl", "consumeAuthCallback", "AUTH_RETURN_EVENT_KEY"]) {
+  if (!collaboration.includes(required)) fail(`Collaboration Auth redirect support is missing ${required}.`);
+}
 
-console.log("Collaboration checks passed: syntax, safe overlay merge, hash sync, protected download UI, RLS markers, and config safety.");
+console.log("Collaboration checks passed: syntax, safe overlay merge, Auth redirect markers, hash sync, protected download UI, RLS markers, and config safety.");

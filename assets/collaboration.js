@@ -2,6 +2,7 @@
   "use strict";
 
   const SESSION_KEY = "samsung-event-dashboard.supabase-session.v1";
+  const AUTH_RETURN_EVENT_KEY = "samsung-event-dashboard.auth-return-event.v1";
   const WORKSTREAM_STATUSES = [
     "Not Started", "In Progress", "Internal Review", "HQ Review",
     "Pending Approval", "Pending Review", "Confirmed", "In Production",
@@ -89,6 +90,46 @@
     } catch {
       localStorage.removeItem(SESSION_KEY);
     }
+  }
+
+  function authRedirectUrl() {
+    const origin = String(window.location.origin || "");
+    if (!/^https?:\/\//i.test(origin)) {
+      throw new Error("Open the Dashboard through an approved HTTP or HTTPS address before requesting an email sign-in link.");
+    }
+    return `${origin}${window.location.pathname || "/"}`;
+  }
+
+  function rememberReturnEvent() {
+    const hash = String(window.location.hash || "");
+    if (/^#[A-Za-z0-9_-]+$/.test(hash)) sessionStorage.setItem(AUTH_RETURN_EVENT_KEY, hash);
+    else sessionStorage.removeItem(AUTH_RETURN_EVENT_KEY);
+  }
+
+  function consumeAuthCallback() {
+    const fragment = new URLSearchParams(String(window.location.hash || "").replace(/^#/, ""));
+    const query = new URLSearchParams(window.location.search || "");
+    const error = fragment.get("error_description") || query.get("error_description") || "";
+    const accessToken = fragment.get("access_token");
+    const refreshToken = fragment.get("refresh_token");
+    const returnHash = sessionStorage.getItem(AUTH_RETURN_EVENT_KEY) || "";
+
+    if (accessToken && refreshToken) {
+      saveSession(normalizeSession({
+        access_token: accessToken,
+        refresh_token: refreshToken,
+        expires_in: fragment.get("expires_in"),
+        token_type: fragment.get("token_type")
+      }));
+      sessionStorage.removeItem(AUTH_RETURN_EVENT_KEY);
+      window.history.replaceState(null, "", `${window.location.pathname}${returnHash}`);
+      return { success: true, error: "" };
+    }
+    if (error) {
+      window.history.replaceState(null, "", `${window.location.pathname}${returnHash}`);
+      return { success: false, error };
+    }
+    return { success: false, error: "" };
   }
 
   async function ensureFreshSession() {
@@ -245,10 +286,15 @@
   }
 
   async function sendOtp(email) {
+    rememberReturnEvent();
     if (!configured) throw new Error("Supabase尚未配置。");
     await request("/auth/v1/otp", {
       method: "POST",
-      body: JSON.stringify({ email, create_user: false })
+      body: JSON.stringify({
+        email,
+        create_user: false,
+        email_redirect_to: authRedirectUrl()
+      })
     }, false);
   }
 
@@ -552,6 +598,7 @@
   async function init(hooks = {}) {
     state.hooks = hooks;
     bindUi();
+    const authCallback = consumeAuthCallback();
     restoreSession();
     if (configured && state.session) {
       try {
@@ -565,6 +612,12 @@
       }
     }
     renderAccess();
+    if (authCallback.success) {
+      notify("Signed in through email link. Access has been refreshed.");
+      refreshAccessUi();
+    } else if (authCallback.error) {
+      openAuthDialog(authCallback.error);
+    }
     return { configured, authenticated: Boolean(state.session) };
   }
 

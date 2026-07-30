@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.1-web - 2026-07-30
+
+- Added an HTTP-only Supabase email redirect target and safe Magic Link callback session restoration for local collaboration testing.
+- Added the dependency-free `scripts/local-auth-server.mjs` test server on `http://localhost:3000/`; `file://` remains supported only for offline public viewing.
+
 ## 1.6.0-web - 2026-07-29
 
 - Tightened the pending collaboration migration to require an approved profile plus activity membership (or approved Admin) before reading any collaboration overlay, Realtime change, document mapping or Private Storage file. Anonymous collaboration reads are revoked.
