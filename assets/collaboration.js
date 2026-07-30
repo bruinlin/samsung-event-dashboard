@@ -197,7 +197,7 @@
     const mode = byId("collaboration-mode");
     if (!authState || !authButton || !mode) return;
     const email = state.session?.user?.email || "";
-    authState.textContent = role === "guest" ? "Guest" : role === "authenticated" ? "No access" : role;
+    authState.textContent = role === "guest" ? "Public viewer" : role === "authenticated" ? "Read only" : role;
     authState.dataset.role = role;
     authButton.textContent = state.session ? "Sign out" : "Sign in";
     authButton.dataset.authAction = state.session ? "sign-out" : "sign-in";
@@ -209,6 +209,9 @@
           ? "Local data · Save unavailable"
           : "Connecting…";
     mode.dataset.connection = state.connection;
+    if (!configured) mode.textContent = "Public baseline · Read only";
+    else if (state.connection === "online") mode.textContent = `Live dashboard${email ? ` · ${email}` : ""}`;
+    else if (state.connection === "degraded") mode.textContent = "Public baseline · Overlay unavailable";
   }
 
   function refreshAccessUi() {
@@ -253,13 +256,8 @@
       renderAccess();
       return cloneData(baseData);
     }
-    if (!state.session?.access_token || !canDownload(baseData.event.eventId)) {
-      state.connection = "online";
-      renderAccess();
-      return cloneData(baseData);
-    }
     try {
-      const overlay = await rpc("get_dashboard_updates", { p_event_id: baseData.event.eventId }, true);
+      const overlay = await rpc("get_public_dashboard_updates", { p_event_id: baseData.event.eventId }, false);
       state.connection = "online";
       renderAccess();
       return applyPublicUpdates(baseData, overlay || {});

@@ -1056,12 +1056,11 @@
 
     $("final-document-empty").hidden = filtered.length !== 0;
     $("final-document-list").innerHTML = filtered.map((item) => {
-      const canRequestDownload = item.downloadable === true && item.status === "Available" && item.id;
-      const role = window.DashboardCollab?.effectiveRole?.(data.event.eventId) || "guest";
-      const actionLabel = role === "guest" ? "Sign in to download / 登录下载" : "Download / 下载";
+      const publicPath = typeof item.filePath === "string" && /^downloads\/[A-Za-z0-9._/-]+\.pdf$/i.test(item.filePath) && !item.filePath.includes("..");
+      const canRequestDownload = item.downloadable === true && item.status === "Available" && publicPath;
       const fileName = `<div class="final-document-name">${safeText(item.nameZh)}</div>`;
       const action = canRequestDownload
-        ? `<button class="download-button" type="button" data-download-document-id="${escapeHtml(item.id)}">${actionLabel}</button>`
+        ? `<a class="download-button" href="${escapeHtml(item.filePath)}" download>Download / 下载</a>`
         : `<span class="download-button unavailable" aria-disabled="true">Status only / 仅状态</span>`;
       return `
         <article class="final-document-card">

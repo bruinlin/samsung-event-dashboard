@@ -55,11 +55,20 @@ for (const forbidden of [
 ]) {
   if (migration.toLowerCase().includes(forbidden.toLowerCase())) fail(`Migration retains forbidden anonymous or private-helper access: ${forbidden}`);
 }
+const publicOverlayMigration = read("supabase/migrations/002_public_dashboard_overlay_v1.sql");
+for (const required of ["get_public_dashboard_updates", "grant execute on function public.get_public_dashboard_updates(text) to anon, authenticated", "updated_by_name", "completed_date_set"]) {
+  if (!publicOverlayMigration.toLowerCase().includes(required.toLowerCase())) fail(`Public Overlay migration is missing ${required}.`);
+}
+for (const forbidden of ["email", "user_id", "event_members", "object_path"]) {
+  if (publicOverlayMigration.toLowerCase().includes(`'${forbidden}'`)) fail(`Public Overlay returns a forbidden field: ${forbidden}.`);
+}
 const configExample = read("config.example.js");
 if (/service_role\s*[:=]\s*["'][^"']+/i.test(configExample)) fail("Example config contains a service role value.");
 const collaboration = read("assets/collaboration.js");
 for (const required of ["email_redirect_to", "authRedirectUrl", "consumeAuthCallback", "AUTH_RETURN_EVENT_KEY"]) {
   if (!collaboration.includes(required)) fail(`Collaboration Auth redirect support is missing ${required}.`);
 }
+if (!collaboration.includes('rpc("get_public_dashboard_updates"')) fail("Anonymous public Overlay read is not wired into the client.");
+if (!app.includes('href="${escapeHtml(item.filePath)}" download')) fail("Public PDF download action is not wired into the client.");
 
-console.log("Collaboration checks passed: syntax, safe overlay merge, Auth redirect markers, hash sync, protected download UI, RLS markers, and config safety.");
+console.log("Collaboration checks passed: syntax, safe public Overlay merge, Auth redirect markers, public PDF download UI, RLS markers, and config safety.");

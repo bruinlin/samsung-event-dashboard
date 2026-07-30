@@ -22,14 +22,14 @@ Documents & Deliverables sits directly below Attention Needed in the side column
 
 ## Access and collaboration
 
-- Guest: public Dashboard, filters, Calendar, Attention Needed and print; no editing or controlled downloads.
-- Viewer: Guest access plus controlled downloads for assigned events.
+- Public viewer (anonymous or signed in without an approved assignment): full public Dashboard baseline, public status overlays and repository-hosted approved PDFs; no editing.
+- Viewer: the same public access plus authorized Realtime refresh for assigned events; no editing.
 - Editor: Viewer access plus Status, Task Final DDL, Stage DDL and Owner editing for assigned events.
 - Admin: Editor access across all registered events.
 
-The static activity files remain the reviewed public baseline. Supabase stores only field-level overrides, their version, updater and update time. A null/unset database field never replaces the static value. Workstream and Stage updates are saved separately; tasks with Stages continue to calculate parent Status and Progress in the browser.
+The static activity files remain the reviewed public baseline. Supabase stores only field-level overrides, their version, updater and update time. `002_public_dashboard_overlay_v1.sql` exposes those display fields through one anonymous read-only RPC; it returns no email, UUID, membership, credential or Storage-object data. A null/unset database field never replaces the static value. Workstream and Stage updates are saved separately; tasks with Stages continue to calculate parent Status and Progress in the browser.
 
-Copy `config.example.js` to ignored `config.js` to enable collaboration. Run `supabase/migrations/001_collaboration_v1.sql` and `supabase/seed_dashboard.sql`, then follow `supabase/README.md` for OTP, membership, Storage and deployment setup. Never use a `service_role` key in browser code.
+Copy `config.example.js` to ignored `config.js` to enable collaboration. Run `supabase/migrations/001_collaboration_v1.sql`, then `supabase/migrations/002_public_dashboard_overlay_v1.sql`; run `supabase/seed_dashboard.sql` only when the database has not already been seeded. Follow `supabase/README.md` for OTP, membership, Storage and deployment setup. Never use a `service_role` key in browser code.
 
 ## Update event data
 
@@ -81,16 +81,15 @@ After a task has `stages`, do not manually set a conflicting task `status` or `p
 
 ## Maintain Documents & Deliverables
 
-1. Confirm that the source is an approved Final file and is suitable for the intended member audience.
+1. Confirm that the source is an approved Final file and is suitable for public release.
 2. Inspect the file content, properties, comments/notes, contacts, amounts, local paths, private links, and embedded content before upload.
-3. Upload a controlled file to the private `event-files` bucket; do not add a new protected file to the public `downloads/` tree.
-4. Add or update its public status record in `data/<EVENT_ID>.js` under `finalDocuments`, using a stable `id`. Register the bucket/object mapping in `document_files`; do not place the private URL or object path in the public data file. For a status-only document, set `downloadable: false`.
-5. Treat the existing OCTS repository copies as a separate legacy-public migration. Run `scripts/check_download_safety.ps1` whenever one of those public copies changes.
-6. Test Guest denial, Viewer download and signed-URL expiry before requesting approval to remove a legacy public copy. Removing the latest copy does not remove it from Git history.
+3. For an approved public PDF, put the reviewed copy in `downloads/` and use its repository-relative `filePath` in `finalDocuments`. Do not put a private Storage path there.
+4. For a status-only record, set `downloadable: false`. Keep private or unapproved source documents out of this repository.
+5. Run `scripts/check_download_safety.ps1` whenever a public PDF changes. Removing the latest copy does not remove it from Git history.
 
 The safety script uses Python with `pypdf` to inspect PDF text, metadata, annotations and embedded content, and fails closed when reliable inspection is unavailable. If Python is not on `PATH`, pass its executable with `-PythonPath`. Non-PDF formats are reported as requiring manual review before publication. Historical and working versions belong in the internal archive, not the public download directory.
 
-GitHub Pages remains the Dashboard deployment target. Controlled downloads come from Supabase Private Storage, not GitHub Pages or Cloudflare. The existing repository PDFs are legacy-public files only; do not compress, split, or alter an Approved Final merely to meet a hosting limit.
+GitHub Pages remains the Dashboard deployment target. Public downloads use repository-relative `downloads/` paths. The private `event-files` bucket remains available for a future controlled-file workflow, but it is not used by the public download buttons. Do not compress, split, or alter an Approved Final merely to meet a hosting limit.
 
 ## Add another event
 
@@ -115,7 +114,7 @@ The `main` branch is currently published through GitHub Pages and the existing C
 
 ## Supabase status and security
 
-The collaboration code and SQL are included, but the live project remains inactive until `config.js`, database migrations, invited users and private Storage objects are configured. Local JavaScript data is always the public fallback. The browser may contain only the Supabase Project URL and Publishable Key; Row Level Security and database functions enforce authorization. Never expose a `service_role` key, access token, refresh token, password, private contract, quotation amount, or confidential source material in front-end code or Git history.
+The collaboration code and SQL are included, but the live project remains inactive until `config.js` and database migrations are configured. Local JavaScript data is always the public baseline. The public Overlay RPC makes only Status, DDL, Owner, Completed Date, Updated At, Updated By, version and corresponding `*_set` flags readable to anonymous and authenticated viewers; editing still requires an approved event Editor or approved Admin. The browser may contain only the Supabase Project URL and Publishable Key. Never expose a `service_role` key, access token, refresh token, password, private contract, quotation amount, or confidential source material in front-end code or Git history.
 
 ## Roll back
 

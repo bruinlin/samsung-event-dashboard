@@ -5,8 +5,8 @@ This folder enables the optional multi-user layer without replacing the static e
 ## 1. Create and initialize the project
 
 1. Create a Supabase project in the intended tenant and region.
-2. In SQL Editor, run `migrations/001_collaboration_v1.sql`.
-3. Run `seed_dashboard.sql`.
+2. In SQL Editor, run `migrations/001_collaboration_v1.sql`, then `migrations/002_public_dashboard_overlay_v1.sql`.
+3. Run `seed_dashboard.sql` only when the database has not already been seeded.
 4. Confirm that the `event-files` bucket exists and is **Private**.
 5. Copy `config.example.js` to `config.js`, then enter only the Project URL and browser-safe Publishable Key.
 
@@ -54,25 +54,25 @@ Do not put role data in user-editable `raw_user_meta_data`. Authorization is enf
    - When GitHub Pages is deliberately activated for collaboration, set its URL as Site URL and retain the local Redirect URL for future testing. The local test server is started with `node scripts/local-auth-server.mjs`.
 5. Configure approved SMTP settings in Supabase Dashboard. SMTP credentials must remain in Supabase and must not be copied into this repository.
 
-The client requests OTP with user creation disabled. A valid Auth user starts with `is_approved = false` and cannot read any event collaboration overlay, Realtime change, document mapping, or Private Storage file until an administrator approves the profile and assigns activity access (or approves it as an Admin).
+The client requests OTP with user creation disabled. A valid Auth user starts with `is_approved = false`. Public Dashboard data and the public Overlay are available without login; an unapproved or unassigned login remains read-only. Realtime collaboration, private document mapping and Private Storage file access remain restricted until an administrator approves the profile and assigns activity access (or approves it as an Admin).
 
-## 4. Migrate controlled files
+## 4. Public files and optional controlled files
 
-The following files are already public through GitHub Pages and Git history. Login controls cannot retroactively make these URLs private:
+The following files are intentionally public through GitHub Pages and Git history:
 
 - `downloads/OCTS_2026/presentations/OCTS_2026_Main_Forum_Keynote_CN_Final.pdf`
 - `downloads/OCTS_2026/presentations/OCTS_2026_Main_Forum_Keynote_EN_Final.pdf`
 - `downloads/OCTS_2026/presentations/OCTS_2026_Main_Forum_Speech_Script_Final.pdf`
 - `downloads/OCTS_2026/reports/OCTS_2026_Post_Event_Report_Final.pdf`
 
-Upload reviewed copies to the private `event-files` bucket using the object keys seeded in `document_files`:
+If a later use case needs a separate controlled copy, upload it to the private `event-files` bucket using the object keys seeded in `document_files`:
 
 - `OCTS_2026/OCTS-DOC-001.pdf`
 - `OCTS_2026/OCTS-DOC-002.pdf`
 - `OCTS_2026/OCTS-DOC-003.pdf`
 - `OCTS_2026/OCTS-DOC-004.pdf`
 
-Then test Guest denial, Viewer download, and a 5-minute signed URL expiry. Do not delete the repository copies until the user explicitly approves removal after successful private-download testing. Removing them from the latest commit does not remove them from existing Git history.
+Do not replace a public Dashboard download with a controlled copy unless the publication model changes and is explicitly approved. Removing a public file from the latest commit does not remove it from existing Git history.
 
 ## 5. Deploy configuration
 
@@ -85,9 +85,9 @@ The Publishable Key is not a server secret, but RLS must be active before it is 
 
 ## 6. Acceptance checks
 
-- Guest can open static activity data but cannot retrieve a collaboration overlay, Realtime change, document mapping or Private Storage download.
-- Signed-in unapproved users and approved non-members receive a clear denial and cannot retrieve activity collaboration data.
-- Viewer can download authorized event files but cannot edit.
+- Guest can open static activity data, the public collaboration Overlay and approved repository PDFs; it cannot query direct collaboration tables, member data, private document mappings or Private Storage.
+- Signed-in unapproved users and approved non-members have the same read-only public Dashboard access and cannot edit.
+- Viewer can receive assigned-event Realtime changes but cannot edit.
 - Editor can edit only assigned events.
 - Admin can edit all events.
 - Stage edits recalculate parent status/progress in the existing client logic.

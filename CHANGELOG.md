@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.2-web - 2026-07-30
+
+- Restored anonymous and authenticated read-only access to the Dashboard Overlay through the narrowly scoped `get_public_dashboard_updates` RPC. It returns only Status, DDL, Owner, Completed Date, update metadata, version and the corresponding set flags; it does not expose email, UUID, membership, credentials or Storage object paths.
+- Kept direct business-table RLS, private Storage and all edit RPC authorization unchanged: only approved event Editors and approved Admins can write.
+- Returned approved repository PDFs to direct public download actions. The static event files remain the public baseline if Supabase is unavailable.
+
 ## 1.6.1-web - 2026-07-30
 
 - Added an HTTP-only Supabase email redirect target and safe Magic Link callback session restoration for local collaboration testing.
