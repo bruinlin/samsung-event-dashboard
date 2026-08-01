@@ -67,7 +67,6 @@ async function main() {
   const mappings = await api("/rest/v1/document_files?event_id=eq.OCTS_2026&select=document_id,bucket_id,object_path,file_name&order=document_id.asc");
   const mappingById = new Map((mappings.payload || []).map((row) => [row.document_id, row]));
 
-  const results = [];
   for (const file of files) {
     const mapping = mappingById.get(file.documentId);
     if (!mapping || mapping.bucket_id !== "event-files" || mapping.object_path !== file.objectPath || mapping.file_name !== file.fileName) {
@@ -79,10 +78,20 @@ async function main() {
       headers: { "Content-Type": "application/pdf", "x-upsert": "true" },
       body: bytes
     });
-    const info = await api(`/storage/v1/object/info/event-files/${encodedPath(file.objectPath)}`);
-    const metadata = info.payload?.metadata || info.payload || {};
-    const size = Number(metadata.size || info.payload?.size || 0);
-    const mime = String(metadata.mimetype || metadata.contentType || info.payload?.mimetype || "").toLowerCase();
+  }
+
+  const listed = await api("/storage/v1/object/list/event-files", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prefix: "OCTS_2026", limit: 100, offset: 0, sortBy: { column: "name", order: "asc" } })
+  });
+  const objectByName = new Map((listed.payload || []).map((object) => [object.name, object]));
+  const results = [];
+  for (const file of files) {
+    const object = objectByName.get(file.fileName);
+    const metadata = object?.metadata || {};
+    const size = Number(metadata.size || metadata.contentLength || 0);
+    const mime = String(metadata.mimetype || "").toLowerCase();
     if (size < 1 || mime !== "application/pdf") throw new Error(`Private object verification failed for ${file.fileName}.`);
     const signed = await api(`/storage/v1/object/sign/event-files/${encodedPath(file.objectPath)}`, {
       method: "POST",

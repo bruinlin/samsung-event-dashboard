@@ -62,7 +62,7 @@ if ($PythonPath) {
     $pythonCommand = Get-Command python -ErrorAction SilentlyContinue
     if ($pythonCommand) { $pythonExecutable = $pythonCommand.Source }
 }
-if (-not $pythonExecutable) {
+if (-not $pythonExecutable -and $downloadFiles.Count -gt 0) {
     $errors.Add("Python is unavailable; PDF content cannot be checked reliably.")
 }
 $pdfInspector = Join-Path $PSScriptRoot "check_pdf_content.py"

@@ -7,8 +7,8 @@
   4. 增加模块：复制一条 workstreams 记录并使用新的 workstreamId、categoryId、categoryNameCN 和 categoryNameEN。
   5. 负责人：修改 workstreams[].owner；页面仅显示姓名，不显示 Owner 字样。
   6. 详情：仅填写 workstreams[].remarks 或 comments；没有内容时保持空字符串。
-  7. 文件与交付物：只有通过公开审核的文件才能在 finalDocuments 中填写 repository-relative filePath 并设为 downloadable: true；
-     其他文件仅登记 status，不填写 filePath 或下载链接。
+  7. 文件与交付物：仅登记公开文件名称、状态和下载资格；受控 PDF 由 private event-files Bucket 提供短时授权链接，
+     不填写 filePath、对象路径或下载链接。
   8. 活动结束后结果：在 event.resultMetrics 中增加或修改大标题栏结果数据。
   9. 展出产品：修改 event.showcasedProducts 数组。
   10. 最终交付文件：将已确认可公开下载的 Final 文件放入 downloads/OCTS_2026/，
@@ -408,7 +408,6 @@ window.EVENT_DATASETS.OCTS_2026 = {
       format: "PDF",
       fileSize: "30.6 MB",
       fileSizeBytes: 32056302,
-      filePath: "downloads/OCTS_2026/presentations/OCTS_2026_Main_Forum_Keynote_CN_Final.pdf",
       descriptionZh: "田成勳主论坛演讲中文正式版本",
       descriptionEn: "Final Chinese main forum keynote presentation",
       speaker: "田成勳 / Sunghoon Chun",
@@ -426,7 +425,6 @@ window.EVENT_DATASETS.OCTS_2026 = {
       format: "PDF",
       fileSize: "31.4 MB",
       fileSizeBytes: 32916772,
-      filePath: "downloads/OCTS_2026/presentations/OCTS_2026_Main_Forum_Keynote_EN_Final.pdf",
       descriptionZh: "田成勳主论坛演讲英文正式版本",
       descriptionEn: "Final English main forum keynote presentation",
       speaker: "田成勳 / Sunghoon Chun",
@@ -444,7 +442,6 @@ window.EVENT_DATASETS.OCTS_2026 = {
       format: "PDF",
       fileSize: "115.4 KB",
       fileSizeBytes: 118124,
-      filePath: "downloads/OCTS_2026/presentations/OCTS_2026_Main_Forum_Speech_Script_Final.pdf",
       descriptionZh: "田成勳主论坛演讲稿正式版本",
       descriptionEn: "Final main forum keynote speech script",
       speaker: "田成勳 / Sunghoon Chun",
@@ -462,7 +459,6 @@ window.EVENT_DATASETS.OCTS_2026 = {
       format: "PDF",
       fileSize: "10.8 MB",
       fileSizeBytes: 11276065,
-      filePath: "downloads/OCTS_2026/reports/OCTS_2026_Post_Event_Report_Final.pdf",
       descriptionZh: "OCTS 2026 会后报告正式归档版本。",
       descriptionEn: "Final archived OCTS 2026 post-event report.",
       speaker: "",
