@@ -58,6 +58,34 @@ on conflict (event_id, workstream_id) do update set
   baseline_due_date = excluded.baseline_due_date,
   baseline_owner = excluded.baseline_owner;
 
+-- Progress remains a Workstream-owned manual value. Keep fresh installations
+-- aligned with the reviewed static baseline; later editor updates set progress_set.
+with progress_seed(event_id, workstream_id, baseline_progress) as (values
+  ('OCTS_2026','OCTS26-WS-01',100), ('OCTS_2026','OCTS26-WS-02',100),
+  ('OCTS_2026','OCTS26-WS-03',100), ('OCTS_2026','OCTS26-WS-04',100),
+  ('OCTS_2026','OCTS26-WS-05',100), ('OCTS_2026','OCTS26-WS-06',100),
+  ('OCTS_2026','OCTS26-WS-07',100), ('OCTS_2026','OCTS26-WS-08',100),
+  ('OCTS_2026','OCTS26-WS-09',100), ('OCTS_2026','OCTS26-WS-10',100),
+  ('OCTS_2026','OCTS26-WS-11',100), ('OCTS_2026','OCTS26-WS-12',100),
+  ('OCTS_2026','OCTS26-WS-13',100), ('OCTS_2026','OCTS26-WS-14',100),
+  ('OCTS_2026','OCTS26-WS-15',100), ('ODX_2026','ODX26-WS-01',50),
+  ('ODX_2026','ODX26-WS-02',100), ('ODX_2026','ODX26-WS-03',0),
+  ('ODX_2026','ODX26-WS-04',30), ('ODX_2026','ODX26-WS-05',60),
+  ('ODX_2026','ODX26-WS-06',30), ('ODX_2026','ODX26-WS-07',0),
+  ('ODX_2026','ODX26-WS-08',0), ('ODX_2026','ODX26-WS-09',0),
+  ('ICCAD_2026','ICCAD26-WS-01',0), ('ICCAD_2026','ICCAD26-WS-02',0),
+  ('ICCAD_2026','ICCAD26-WS-03',0), ('ICCAD_2026','ICCAD26-WS-04',0),
+  ('ICCAD_2026','ICCAD26-WS-05',0), ('ICCAD_2026','ICCAD26-WS-06',0),
+  ('ICCAD_2026','ICCAD26-WS-07',0), ('ICCAD_2026','ICCAD26-WS-08',0),
+  ('ICCAD_2026','ICCAD26-WS-09',0), ('ICCAD_2026','ICCAD26-WS-10',0),
+  ('ICCAD_2026','ICCAD26-WS-11',0), ('ICCAD_2026','ICCAD26-WS-12',0)
+)
+update public.workstream_updates w
+set baseline_progress = progress_seed.baseline_progress
+from progress_seed
+where w.event_id = progress_seed.event_id
+  and w.workstream_id = progress_seed.workstream_id;
+
 with seed(event_id, workstream_id, stage_id, baseline_status, baseline_due_date, baseline_owner, baseline_completed_date) as (values
   ('OCTS_2026','OCTS26-WS-03','initial-draft','Completed',null::date,'Bruin & Leo',null::date),
   ('OCTS_2026','OCTS26-WS-03','first-washing','Completed',null::date,'Bruin & Leo',null::date),
@@ -112,10 +140,10 @@ on conflict (event_id, workstream_id, stage_id) do update set
 -- The four object keys below are stable identifiers only. Upload the reviewed
 -- PDFs to the private event-files bucket using these exact paths before testing.
 insert into public.document_files (event_id, document_id, bucket_id, object_path, file_name) values
-  ('OCTS_2026','OCTS-DOC-001','event-files','OCTS_2026/OCTS-DOC-001.pdf','OCTS_2026_Main_Forum_Keynote_CN_Final.pdf'),
-  ('OCTS_2026','OCTS-DOC-002','event-files','OCTS_2026/OCTS-DOC-002.pdf','OCTS_2026_Main_Forum_Keynote_EN_Final.pdf'),
-  ('OCTS_2026','OCTS-DOC-003','event-files','OCTS_2026/OCTS-DOC-003.pdf','OCTS_2026_Main_Forum_Speech_Script_Final.pdf'),
-  ('OCTS_2026','OCTS-DOC-004','event-files','OCTS_2026/OCTS-DOC-004.pdf','OCTS_2026_Post_Event_Report_Final.pdf')
+  ('OCTS_2026','OCTS-DOC-001','event-files','OCTS_2026/OCTS_2026_Main_Forum_Keynote_CN_Final.pdf','OCTS_2026_Main_Forum_Keynote_CN_Final.pdf'),
+  ('OCTS_2026','OCTS-DOC-002','event-files','OCTS_2026/OCTS_2026_Main_Forum_Keynote_EN_Final.pdf','OCTS_2026_Main_Forum_Keynote_EN_Final.pdf'),
+  ('OCTS_2026','OCTS-DOC-003','event-files','OCTS_2026/OCTS_2026_Main_Forum_Speech_Script_Final.pdf','OCTS_2026_Main_Forum_Speech_Script_Final.pdf'),
+  ('OCTS_2026','OCTS-DOC-004','event-files','OCTS_2026/OCTS_2026_Post_Event_Report_Final.pdf','OCTS_2026_Post_Event_Report_Final.pdf')
 on conflict (event_id, document_id) do update set
   bucket_id = excluded.bucket_id,
   object_path = excluded.object_path,

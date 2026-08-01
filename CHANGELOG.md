@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.7.0-web - 2026-08-01
+
+- Added manually maintained integer Workstream Progress overlays with server-side 0–100 validation, Planning=0 and Completed=100 enforcement, version-safe audit history, and Stage-completion reference display.
+- Added local administrator assignment of one, comma-separated, or dynamically resolved `all` event IDs after full validation, without exposing credentials or raw API errors.
+- Moved the active OCTS document-delivery path to private `event-files` object mappings and short-lived authorized signed URLs; public viewers retain document metadata but cannot request a file.
+
 ## 1.6.7-web - 2026-07-30
 
 - Refreshed activity-data cache keys so GitHub Pages retrieves the Collaboration V1.6.6 canonical-status records together with the updated application assets.

@@ -26,20 +26,21 @@ const apply = context.window.DashboardCollab.__test.applyPublicUpdates;
 const base = {
   event: { eventId: "TEST" },
   workstreams: [{
-    workstreamId: "W1", status: "Planning", dueDate: "2026-08-01", owner: "A", latestUpdate: "Baseline update", nextAction: "Baseline action",
+    workstreamId: "W1", status: "Planning", progress: 0, dueDate: "2026-08-01", owner: "A", latestUpdate: "Baseline update", nextAction: "Baseline action",
     stages: [{ id: "S1", status: "Planning", dueDate: "", completedDate: "" }]
   }]
 };
 const unchanged = apply(base, {
-  workstreams: [{ workstream_id: "W1", status: null, due_date: null, owner: null, latest_update: null, next_action: null, status_set: false, due_date_set: false, owner_set: false, latest_update_set: false, next_action_set: false, version: 1 }]
+  workstreams: [{ workstream_id: "W1", status: null, progress: null, due_date: null, owner: null, latest_update: null, next_action: null, status_set: false, progress_set: false, due_date_set: false, owner_set: false, latest_update_set: false, next_action_set: false, version: 1 }]
 });
 if (unchanged.workstreams[0].dueDate !== "2026-08-01") fail("Null overlay replaced static DDL.");
 const updated = apply(base, {
-  workstreams: [{ workstream_id: "W1", status: "In Progress", due_date: null, owner: "B", latest_update: "Line one\nLine two", next_action: "", status_set: true, due_date_set: true, owner_set: true, latest_update_set: true, next_action_set: true, version: 2 }],
+  workstreams: [{ workstream_id: "W1", status: "In Progress", progress: 35, due_date: null, owner: "B", latest_update: "Line one\nLine two", next_action: "", status_set: true, progress_set: true, due_date_set: true, owner_set: true, latest_update_set: true, next_action_set: true, version: 2 }],
   stages: [{ workstream_id: "W1", stage_id: "S1", status: "Completed", due_date: "2026-08-03", owner: "B", completed_date: "2026-08-02", status_set: true, due_date_set: true, owner_set: true, completed_date_set: true, version: 2 }]
 });
 if (updated.workstreams[0].status !== "In Progress" || updated.workstreams[0].dueDate !== "" || updated.workstreams[0].owner !== "B") fail("Workstream overlay merge failed.");
 if (updated.workstreams[0].latestUpdate !== "Line one\nLine two" || updated.workstreams[0].nextAction !== "") fail("Workstream note overlay merge failed.");
+if (updated.workstreams[0].progress !== 35 || !updated.workstreams[0]._collaboration.progressSet) fail("Workstream Progress overlay merge failed.");
 if (updated.workstreams[0].stages[0].status !== "Completed" || updated.workstreams[0].stages[0].completedDate !== "2026-08-02") fail("Stage overlay merge failed.");
 
 const app = read("assets/app.js");
@@ -67,6 +68,11 @@ const v16Migration = read("supabase/migrations/003_collaboration_v1_6_status_and
 for (const required of ["latest_update", "next_action", "latest_update_set", "next_action_set", "Under Review", "update_stage_overlay", "COLLAB_CONFLICT", "grant execute on function public.get_public_dashboard_updates(text) to anon, authenticated"]) {
   if (!v16Migration.toLowerCase().includes(required.toLowerCase())) fail(`V1.6.6 migration is missing ${required}.`);
 }
+const v17Migration = read("supabase/migrations/004_progress_and_private_documents.sql");
+for (const required of ["baseline_progress", "progress_set", "INVALID_PROGRESS", "PLANNING_PROGRESS_MUST_BE_ZERO", "COMPLETED_PROGRESS_MUST_BE_100", "'progress'", "get_public_dashboard_updates", "event-files"]) {
+  if (!v17Migration.includes(required)) fail(`V1.7 migration is missing ${required}.`);
+}
+if (v17Migration.includes("grant execute on function public.update_workstream_overlay(text,text,bigint,text,date,text,integer,text,text,boolean,boolean,boolean,boolean,boolean,boolean) to anon")) fail("V1.7 migration grants anonymous edit access.");
 for (const forbidden of ["grant execute on function public.update_workstream_overlay(text,text,bigint,text,date,text,text,text,boolean,boolean,boolean,boolean,boolean) to anon", "not applicable' then"]) {
   if (v16Migration.toLowerCase().includes(forbidden.toLowerCase())) fail(`V1.6.6 migration has an unsafe grant or silent Not Applicable conversion: ${forbidden}.`);
 }
@@ -80,22 +86,22 @@ if (collaboration.includes("email_redirect_to")) fail("OTP redirect target must 
 for (const required of ["signInWithPassword", "grant_type=password", "auth-password-form", "change-password-button", "/auth/v1/user"]) {
   if (!collaboration.includes(required)) fail(`Password sign-in or self-service password update is missing ${required}.`);
 }
-for (const required of ["edit-latest-update", "edit-next-action", "p_latest_update", "p_next_action"]) {
+for (const required of ["edit-latest-update", "edit-next-action", "edit-progress", "p_progress", "p_latest_update", "p_next_action", "syncProgressControl"]) {
   if (!collaboration.includes(required)) fail(`Editable Workstream note support is missing ${required}.`);
 }
 const html = read("index.html");
-for (const required of ["auth-password-form", "auth-magic-link-legacy", "change-password-button", "password-form", "edit-latest-update", "edit-next-action"]) {
+for (const required of ["auth-password-form", "auth-magic-link-legacy", "change-password-button", "password-form", "edit-progress", "edit-latest-update", "edit-next-action"]) {
   if (!html.includes(required)) fail(`Password sign-in UI is missing ${required}.`);
 }
 const userManager = read("scripts/manage-auth-users.mjs");
-for (const required of ["SUPABASE_SERVICE_ROLE_KEY", "email_confirm: true", "set-approval", "assign-role", "promptHidden"]) {
+for (const required of ["SUPABASE_SERVICE_ROLE_KEY", "email_confirm: true", "set-approval", "assign-role", "promptHidden", "comma-separated", "requested.toLowerCase() === \"all\""]) {
   if (!userManager.includes(required)) fail(`Local member-management script is missing ${required}.`);
 }
 if (/console\.log\(\s*(password|serviceKey|localConfig)/i.test(userManager)) fail("Local member-management script may log sensitive values.");
 const config = read("config.js");
 if (/service_role|sb_secret|SUPABASE_SERVICE_ROLE_KEY|database_password/i.test(config)) fail("Browser config contains a secret or service role value.");
 if (!collaboration.includes('rpc("get_public_dashboard_updates"')) fail("Anonymous public Overlay read is not wired into the client.");
-if (!app.includes('href="${escapeHtml(item.filePath)}" download')) fail("Public PDF download action is not wired into the client.");
+if (app.includes('href="${escapeHtml(item.filePath)}" download') || !app.includes("data-download-document-id")) fail("Controlled PDF download action is not wired into the client.");
 if (!app.includes("canEditCurrentEvent") || !/renderWorkstreams\(\);\s+renderFinalDocuments/.test(app)) fail("Edit controls are not gated and refreshed by the current event role.");
 
 const canonicalStatuses = new Set(["Planning", "In Progress", "Under Review", "Completed", "Blocked"]);
@@ -114,4 +120,4 @@ for (const file of ["data/OCTS_2026.js", "data/ODX_2026.js", "data/ICCAD_2026.js
   }
 }
 
-console.log("Collaboration checks passed: syntax, canonical statuses, safe public Overlay merge, Auth redirect markers, editable notes, public PDF download UI, RLS markers, and config safety.");
+console.log("Collaboration checks passed: syntax, canonical statuses, Progress overlay merge, controlled downloads, role assignment, RLS markers, and config safety.");

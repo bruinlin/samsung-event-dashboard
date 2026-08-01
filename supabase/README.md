@@ -1,10 +1,10 @@
 # Supabase Collaboration Setup
 
-This folder enables the optional multi-user layer without replacing the public static event files. Public Dashboard viewing, public Overlay reads, and approved repository PDF downloads remain available without sign-in.
+This folder enables the optional multi-user layer without replacing the public static event files. Public Dashboard viewing and public Overlay reads remain available without sign-in; controlled PDFs require approved, event-authorized member access.
 
 ## 1. Database and browser configuration
 
-1. Run `migrations/001_collaboration_v1.sql`, followed by `migrations/002_public_dashboard_overlay_v1.sql`, then `migrations/003_collaboration_v1_6_status_and_notes.sql`.
+1. Run `migrations/001_collaboration_v1.sql`, followed by `migrations/002_public_dashboard_overlay_v1.sql`, `migrations/003_collaboration_v1_6_status_and_notes.sql`, and `migrations/004_progress_and_private_documents.sql`.
 2. Run `seed_dashboard.sql` only when the database is not already seeded.
 3. Confirm that the `event-files` bucket remains **Private**.
 4. Keep the tracked browser `config.js` limited to the Supabase Project URL, Publishable Key and other browser-safe settings.
@@ -21,7 +21,7 @@ Copy-Item .env.admin.example .env.admin.local
 node scripts/manage-auth-users.mjs create
 ```
 
-The script asks for the email and temporary password in the terminal without echoing the password. It creates the user with `email_confirm = true`, updates `profiles.is_approved`, and can assign a `viewer` or `editor` role for one registered event. Use these commands for later maintenance:
+The script asks for the email and temporary password in the terminal without echoing the password. It creates the user with `email_confirm = true`, updates `profiles.is_approved`, and can assign a `viewer` or `editor` role for one registered event, a comma-separated set, or dynamically resolved `all` registered events. Every ID is validated before writes. Use these commands for later maintenance:
 
 ```powershell
 node scripts/manage-auth-users.mjs reset-password
@@ -43,23 +43,16 @@ Legacy Magic Link code and callback support remain inactive for a future SMTP-en
 
 A valid Auth user starts with `is_approved = false`. Public Dashboard data and the public Overlay are available without login; an unapproved or unassigned login remains read-only. Realtime collaboration, private document mapping and Private Storage file access remain restricted until an administrator approves the profile and assigns activity access (or approves it as an Admin).
 
-## 4. Public files and optional controlled files
+## 4. Controlled PDFs
 
-The following files are intentionally public through GitHub Pages and Git history:
+The active Dashboard does not use repository-hosted PDFs. Upload the reviewed OCTS copies to the private `event-files` bucket using `node scripts/migrate-private-documents.mjs`, which checks the mappings, nonzero object sizes, PDF MIME types and signed-link generation. It uses these stable object keys:
 
-- `downloads/OCTS_2026/presentations/OCTS_2026_Main_Forum_Keynote_CN_Final.pdf`
-- `downloads/OCTS_2026/presentations/OCTS_2026_Main_Forum_Keynote_EN_Final.pdf`
-- `downloads/OCTS_2026/presentations/OCTS_2026_Main_Forum_Speech_Script_Final.pdf`
-- `downloads/OCTS_2026/reports/OCTS_2026_Post_Event_Report_Final.pdf`
+- `OCTS_2026/OCTS_2026_Main_Forum_Keynote_CN_Final.pdf`
+- `OCTS_2026/OCTS_2026_Main_Forum_Keynote_EN_Final.pdf`
+- `OCTS_2026/OCTS_2026_Main_Forum_Speech_Script_Final.pdf`
+- `OCTS_2026/OCTS_2026_Post_Event_Report_Final.pdf`
 
-If a later use case needs a separate controlled copy, upload it to the private `event-files` bucket using the object keys seeded in `document_files`:
-
-- `OCTS_2026/OCTS-DOC-001.pdf`
-- `OCTS_2026/OCTS-DOC-002.pdf`
-- `OCTS_2026/OCTS-DOC-003.pdf`
-- `OCTS_2026/OCTS-DOC-004.pdf`
-
-Do not replace a public Dashboard download with a controlled copy unless the publication model changes and is explicitly approved. Removing a public file from the latest commit does not remove it from existing Git history.
+Only an approved Viewer, Editor or Admin with access to OCTS can call `get_document_file`, obtain a short-lived URL and download a mapped file. Removing an old public file from the latest commit does not remove it from existing Git history.
 
 ## 5. Deployment configuration
 
@@ -67,14 +60,14 @@ Do not replace a public Dashboard download with a controlled copy unless the pub
 
 ## 6. Acceptance checks
 
-- Guest can open static activity data, the public collaboration Overlay and approved repository PDFs; it cannot query direct collaboration tables, member data, private document mappings or Private Storage.
+- Guest can open static activity data and the public collaboration Overlay, but cannot query direct collaboration tables, member data, private document mappings or Private Storage.
 - Wrong credentials fail sign-in without creating a session.
 - Signed-in unapproved users and approved non-members have the same read-only public Dashboard access and cannot edit.
 - Viewer can receive assigned-event Realtime changes but cannot edit.
 - Editor can edit only assigned events.
 - Admin can edit all events.
 - A signed-in user can change their own password; the prior password then fails.
-- Stage edits recalculate parent status/progress in the existing client logic.
+- Stage edits recalculate parent status only. Workstream Progress is a manually maintained whole-number field; Planning locks it to 0%, Completed locks it to 100%, and Stage completion remains reference-only.
 - A stale version produces a conflict and never silently overwrites.
 - `change_history`, `updated_at`, `updated_by`, and `version` are updated.
 - A second authenticated page receives Postgres Changes and refreshes the event.

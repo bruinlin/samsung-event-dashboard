@@ -286,8 +286,17 @@
   }
 
   function workstreamProgress(item) {
+    const status = workstreamStatus(item);
+    if (status === "Planning") return 0;
+    if (status === "Completed") return 100;
+    const value = Number(item.progress);
+    if (!Number.isFinite(value)) return 0;
+    return Math.max(0, Math.min(100, Math.round(value)));
+  }
+
+  function stageCompletionProgress(item) {
     const stages = stagesFor(item);
-    if (!stages.length) return item.progress;
+    if (!stages.length) return null;
     return Math.round((stages.filter((stage) => stage.status === "Completed").length / stages.length) * 100);
   }
 
@@ -469,14 +478,15 @@
   function categorySummary(items) {
     const assessed = assessedWorkstreams(items);
     const completed = assessed.filter((item) => workstreamStatus(item) === "Completed").length;
-    const completion = assessed.length ? Math.round((completed / assessed.length) * 100) : 0;
+    const progressValues = assessed.map(workstreamProgress).filter((value) => Number.isFinite(value));
+    const progress = progressValues.length ? Math.round(progressValues.reduce((sum, value) => sum + value, 0) / progressValues.length) : 0;
     const statuses = items.map(workstreamStatus);
     let status = "In Progress";
     if (statuses.length && statuses.every((value) => value === "Completed")) status = "Completed";
     else if (statuses.includes("Blocked")) status = "Blocked";
     else if (statuses.includes("Under Review")) status = "Under Review";
     else if (statuses.length && statuses.every((value) => value === "Planning")) status = "Planning";
-    return { completed, total: items.length, completion, status };
+    return { completed, total: items.length, progress, status };
   }
 
   function existingOwnerOptions() {
@@ -531,7 +541,8 @@
           <span>Current Stage</span><b>${safeText(currentStage.nameEN)} / ${safeText(currentStage.nameCN)}</b>
           <span>Stage Status</span><b>${safeText(currentStage.status || "Planning")}</b>
           <span>Stage DDL</span><b>${formatDeadline(currentStage.dueDate)}</b>
-          <span>Progress</span><b>${completedStages} / ${stages.length} completed · ${workstreamProgress(item)}%</b>
+          <span>Workstream Progress</span><b>${workstreamProgress(item)}%</b>
+          <span>Stage completion</span><b>${completedStages} / ${stages.length} completed · ${stageCompletionProgress(item)}%</b>
           <span>Final DDL</span><b>${formatDeadline(item.dueDate)}</b>
         </div>`
       : "";
@@ -590,7 +601,7 @@
             <button class="category-toggle" type="button" data-category-id="${escapeHtml(category.id)}" aria-expanded="${String(!collapsed)}">
               <span class="category-toggle-icon" aria-hidden="true">${collapsed ? "＋" : "−"}</span>
               <span class="category-name"><b>${safeText(category.nameCN)}</b><small>${safeText(category.nameEN)}</small></span>
-              <span class="category-summary"><b>${summary.completion}%</b><small>${summary.completed}/${summary.total} completed</small></span>
+              <span class="category-summary"><b>${summary.progress}%</b><small>${summary.completed}/${summary.total} completed</small></span>
               ${statusBadge(summary.status)}
             </button>
           </td>
@@ -1025,20 +1036,21 @@
       ? documents
       : documents.filter((item) => item.category === state.documentCategory);
     const downloadableCount = documents.filter((item) => item.downloadable === true && item.status === "Available").length;
+    const canDownload = window.DashboardCollab?.canDownload?.(state.eventId) === true;
+    const currentRole = window.DashboardCollab?.effectiveRole?.(state.eventId) || "guest";
 
     $("final-document-filters").innerHTML = FINAL_DOCUMENT_CATEGORIES.map((item) =>
       `<button type="button" class="filter-chip ${item.id === state.documentCategory ? "active" : ""}" data-document-category="${escapeHtml(item.id)}">${safeText(item.label)}</button>`
     ).join("");
 
-    $("final-document-stats").innerHTML = `<span>${safeText(documents.length)} Files · ${safeText(downloadableCount)} Downloads</span>`;
+    $("final-document-stats").innerHTML = `<span>${safeText(documents.length)} Files · ${safeText(downloadableCount)} Controlled Downloads</span>`;
 
     $("final-document-empty").hidden = filtered.length !== 0;
     $("final-document-list").innerHTML = filtered.map((item) => {
-      const publicPath = typeof item.filePath === "string" && /^downloads\/[A-Za-z0-9._/-]+\.pdf$/i.test(item.filePath) && !item.filePath.includes("..");
-      const canRequestDownload = item.downloadable === true && item.status === "Available" && publicPath;
+      const canRequestDownload = item.downloadable === true && item.status === "Available";
       const fileName = `<div class="final-document-name">${safeText(item.nameZh)}</div>`;
       const action = canRequestDownload
-        ? `<a class="download-button" href="${escapeHtml(item.filePath)}" download>Download / 下载</a>`
+        ? `<button class="download-button" type="button" data-download-document-id="${escapeHtml(item.id)}">${canDownload ? "Download / 下载" : currentRole === "guest" ? "Sign in to download / 登录下载" : "Access required / 需要授权"}</button>`
         : `<span class="download-button unavailable" aria-disabled="true">Status only / 仅状态</span>`;
       return `
         <article class="final-document-card">
@@ -1188,7 +1200,7 @@
       if (!item) return;
       window.DashboardCollab?.requestDownload?.(state.eventId, {
         id: item.id,
-        fileName: String(item.filePath || "").split("/").pop() || item.nameEn || item.nameZh
+        fileName: item.nameEn || item.nameZh
       });
     });
 
@@ -1228,6 +1240,7 @@
             owner: item.owner || "",
             latestUpdate: item.latestUpdate || "",
             nextAction: item.nextAction || "",
+            progress: workstreamProgress(item),
             ownerOptions: existingOwnerOptions(),
             hasStages: stagesFor(item).length > 0,
             collaboration: item._collaboration || { version: 1 }

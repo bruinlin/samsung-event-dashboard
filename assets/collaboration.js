@@ -224,6 +224,7 @@
       const item = workstreams.get(row.workstream_id);
       if (!item) return;
       if (row.status_set) item.status = row.status;
+      if (row.progress_set) item.progress = Math.max(0, Math.min(100, Math.trunc(Number(row.progress)) || 0));
       if (row.due_date_set) item.dueDate = row.due_date || "";
       if (row.owner_set) item.owner = row.owner || "";
       if (row.latest_update_set) item.latestUpdate = row.latest_update || "";
@@ -233,7 +234,8 @@
         updatedAt: row.updated_at || "",
         updatedBy: row.updated_by_name || "",
         latestUpdateSet: Boolean(row.latest_update_set),
-        nextActionSet: Boolean(row.next_action_set)
+        nextActionSet: Boolean(row.next_action_set),
+        progressSet: Boolean(row.progress_set)
       };
     });
     (overlay?.stages || []).forEach((row) => {
@@ -405,6 +407,30 @@
     });
   }
 
+  function normalizeProgress(value) {
+    const parsed = Number(value);
+    return Number.isInteger(parsed) ? Math.max(0, Math.min(100, parsed)) : 0;
+  }
+
+  function syncProgressControl(status) {
+    const input = byId("edit-progress");
+    const note = byId("edit-progress-note");
+    if (!input || input.closest("[hidden]")) return;
+    if (status === "Planning") {
+      input.value = "0";
+      input.disabled = true;
+      note.textContent = "Planning is always 0%.";
+    } else if (status === "Completed") {
+      input.value = "100";
+      input.disabled = true;
+      note.textContent = "Completed is always 100%.";
+    } else {
+      input.disabled = false;
+      input.value = String(normalizeProgress(input.value));
+      note.textContent = "Enter an integer from 0 to 100.";
+    }
+  }
+
   function requestEdit(context) {
     if (!requireRole("edit", context.eventId, { kind: "edit", context })) return;
     state.editContext = context;
@@ -416,6 +442,11 @@
     fillSelect(byId("edit-status"), isStage ? STAGE_STATUSES : WORKSTREAM_STATUSES, context.status || "Planning");
     byId("edit-status").disabled = statusLocked;
     byId("edit-status-note").hidden = !statusLocked;
+    byId("edit-progress-field").hidden = isStage;
+    if (!isStage) {
+      byId("edit-progress").value = String(normalizeProgress(context.progress));
+      syncProgressControl(context.status || "Planning");
+    }
     byId("edit-ddl").value = context.dueDate || "";
     byId("edit-owner").value = context.owner || "";
     byId("edit-latest-update-field").hidden = isStage;
@@ -448,6 +479,13 @@
     saveButton.textContent = "Saving…";
     errorBox.textContent = "";
     const status = byId("edit-status").value;
+    const progressInput = byId("edit-progress");
+    const rawProgress = context.entityType === "workstream" ? progressInput.value.trim() : "0";
+    if (context.entityType === "workstream" && !/^\d+$/.test(rawProgress)) {
+      setEditError("Progress must be a whole number from 0 to 100.");
+      return;
+    }
+    const progress = context.entityType === "workstream" ? normalizeProgress(rawProgress) : 0;
     const dueDate = byId("edit-ddl").value.trim();
     const owner = byId("edit-owner").value.trim();
     const latestUpdate = context.entityType === "workstream" ? byId("edit-latest-update").value.trim() : "";
@@ -470,8 +508,10 @@
       } else {
         await rpc("update_workstream_overlay", {
           ...common,
+          p_progress: progress,
           p_latest_update: latestUpdate,
           p_next_action: nextAction,
+          p_progress_set: true,
           p_latest_update_set: true,
           p_next_action_set: true
         }, true);
@@ -656,6 +696,9 @@
     byId("edit-form")?.addEventListener("submit", (event) => {
       event.preventDefault();
       saveEdit();
+    });
+    byId("edit-status")?.addEventListener("change", () => {
+      if (state.editContext?.entityType === "workstream") syncProgressControl(byId("edit-status").value);
     });
   }
 

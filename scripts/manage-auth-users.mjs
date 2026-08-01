@@ -16,17 +16,14 @@
  */
 import { existsSync, readFileSync } from "node:fs";
 import readline from "node:readline/promises";
-import { stdin, stdout, exit } from "node:process";
+import { stdin, stdout } from "node:process";
 
 const root = new URL("../", import.meta.url);
 const envPath = new URL(".env.admin.local", root);
 const action = process.argv[2] || "";
 const actions = new Set(["create", "reset-password", "set-approval", "assign-role"]);
 
-function fail(message) {
-  console.error(`Error: ${message}`);
-  exit(1);
-}
+function fail(message) { throw new Error(message); }
 
 function readLocalEnv() {
   if (!existsSync(envPath)) fail("Missing .env.admin.local. Copy .env.admin.example and fill it locally.");
@@ -107,7 +104,14 @@ function createApi({ url, serviceKey }) {
     const text = await response.text();
     let payload = null;
     try { payload = text ? JSON.parse(text) : null; } catch { /* Do not print raw API responses. */ }
-    if (!response.ok) throw new Error(`Supabase request failed (${response.status}).`);
+    if (!response.ok) {
+      const code = String(payload?.code || "").trim();
+      const message = String(payload?.message || payload?.msg || "Request failed.").trim().replace(/[\r\n]+/g, " ").slice(0, 240);
+      const error = new Error(`HTTP ${response.status}${code ? ` ${code}` : ""}: ${message}`);
+      error.status = response.status;
+      error.code = code;
+      throw error;
+    }
     return payload;
   };
 }
@@ -134,15 +138,22 @@ async function setApproval(api, userId, approved) {
 async function promptEventRole(rl, api, userId) {
   const events = await api("/rest/v1/dashboard_events?select=event_id&order=event_id.asc");
   const allowedIds = new Set((events || []).map((event) => event.event_id));
-  const eventId = (await rl.question(`Event ID (${[...allowedIds].join(", ")}): `)).trim();
-  if (!allowedIds.has(eventId)) fail("Event ID is not registered.");
+  const requested = (await rl.question(`Event IDs (single, comma-separated, or all; available: ${[...allowedIds].join(", ")}): `)).trim();
+  const eventIds = requested.toLowerCase() === "all"
+    ? [...allowedIds]
+    : [...new Set(requested.split(",").map((value) => value.trim()).filter(Boolean))];
+  if (!eventIds.length) fail("Enter at least one Event ID or all.");
+  const invalid = eventIds.filter((eventId) => !allowedIds.has(eventId));
+  if (invalid.length) fail(`Event ID is not registered: ${invalid.join(", ")}. No roles were changed.`);
   const role = (await rl.question("Role (viewer/editor): ")).trim().toLowerCase();
   if (!new Set(["viewer", "editor"]).has(role)) fail("Role must be viewer or editor.");
   await api("/rest/v1/event_members?on_conflict=event_id,user_id", {
     method: "POST",
     headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
-    body: JSON.stringify({ event_id: eventId, user_id: userId, role })
+    body: JSON.stringify(eventIds.map((eventId) => ({ event_id: eventId, user_id: userId, role })))
   });
+  console.log(`Assigned ${role} to ${eventIds.length} event${eventIds.length === 1 ? "" : "s"}:`);
+  eventIds.sort((a, b) => a.localeCompare(b)).forEach((eventId) => console.log(`- ${eventId}`));
 }
 
 async function createUser(rl, api) {
@@ -199,19 +210,23 @@ async function assignRole(rl, api) {
 
 if (!actions.has(action)) {
   console.log("Usage: node scripts/manage-auth-users.mjs <create|reset-password|set-approval|assign-role>");
-  exit(action ? 1 : 0);
+  process.exitCode = action ? 1 : 0;
 }
 
-const localConfig = readLocalEnv();
-const rl = createPrompt();
-try {
-  const api = createApi(localConfig);
-  if (action === "create") await createUser(rl, api);
-  if (action === "reset-password") await resetPassword(rl, api);
-  if (action === "set-approval") await updateApproval(rl, api);
-  if (action === "assign-role") await assignRole(rl, api);
-} catch (error) {
-  fail(error instanceof Error ? error.message : "Local user-management task failed.");
-} finally {
-  rl.close();
+if (actions.has(action)) {
+  const localConfig = readLocalEnv();
+  const rl = createPrompt();
+  try {
+    const api = createApi(localConfig);
+    if (action === "create") await createUser(rl, api);
+    if (action === "reset-password") await resetPassword(rl, api);
+    if (action === "set-approval") await updateApproval(rl, api);
+    if (action === "assign-role") await assignRole(rl, api);
+  } catch (error) {
+    console.error(`Error: ${error instanceof Error ? error.message : "Local user-management task failed."}`);
+    process.exitCode = 1;
+  } finally {
+    rl.close();
+    await new Promise((resolve) => setImmediate(resolve));
+  }
 }

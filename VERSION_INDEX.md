@@ -2,6 +2,7 @@
 
 | Version | Date | Primary Deliverable | Lifecycle Status | Purpose |
 |---|---|---|---|---|
+| 1.7.0-web | 2026-08-01 | `004_progress_and_private_documents.sql` + collaboration assets | Working | Adds controlled Workstream Progress overlays, multi-event local role assignment, and private authorized document delivery. |
 | 1.6.7-web | 2026-07-30 | `index.html` + `event_data.js` | Working | Refreshes event-data cache keys for the canonical-status GitHub Pages rollout. |
 | 1.6.6-web | 2026-07-30 | `supabase/migrations/003_collaboration_v1_6_status_and_notes.sql` + collaboration assets | Working | Standardizes the five-status model and adds audited Workstream Latest Update / Next Action overlays. |
 | 1.6.5-web | 2026-07-30 | `assets/collaboration.js` + `scripts/manage-auth-users.mjs` | Working | Uses administrator-created email-and-password member sign-in, self-service session-based password changes, and Git-ignored local user management. |

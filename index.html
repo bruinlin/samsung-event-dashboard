@@ -235,7 +235,8 @@
       </div>
       <div class="modal-body modal-form-grid">
         <label class="modal-field"><span>Status</span><select id="edit-status"></select></label>
-        <p class="modal-field-note" id="edit-status-note" hidden>包含Stages的父任务状态和进度由Stage自动计算。</p>
+        <p class="modal-field-note" id="edit-status-note" hidden>包含 Stages 的父任务状态继续由 Stage 派生；Workstream Progress 仍可单独维护。</p>
+        <label class="modal-field" id="edit-progress-field"><span>Progress / 进度</span><input id="edit-progress" type="number" min="0" max="100" step="1" inputmode="numeric" required><small id="edit-progress-note">0–100%</small></label>
         <label class="modal-field"><span>DDL</span><input id="edit-ddl" type="date"></label>
         <label class="modal-field"><span>Owner / 负责人</span><input id="edit-owner" list="owner-options" autocomplete="off"></label>
         <label class="modal-field" id="edit-latest-update-field"><span>Latest Update / 最新进展</span><textarea id="edit-latest-update" rows="3" maxlength="500"></textarea></label>
@@ -254,8 +255,8 @@
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="config.js"></script>
-  <script src="event_data.js?v=1.6.6"></script>
-  <script src="assets/collaboration.js?v=1.6.6"></script>
-  <script src="assets/app.js?v=1.6.6"></script>
+  <script src="event_data.js?v=1.7.0"></script>
+  <script src="assets/collaboration.js?v=1.7.0"></script>
+  <script src="assets/app.js?v=1.7.0"></script>
 </body>
 </html>

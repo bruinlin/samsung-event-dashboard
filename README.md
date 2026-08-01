@@ -18,18 +18,18 @@ When the URL has no event hash, the Dashboard opens the nearest upcoming event t
 
 Project Calendar opens in `2 Weeks` view for every screen size. It shows the current 14-day period in two week groups and lists the next five filtered, unfinished items under Later Deadlines. Use Previous, Today, and Next to move by 14 days; select `Month` for the full month grid. Calendar filters are collapsed by default and continue to apply to both views.
 
-Documents & Deliverables sits directly below Attention Needed in the side column. File names and status remain public. Download actions require an authenticated Viewer, Editor or Admin and obtain a short-lived private Storage URL; Guest users are prompted to sign in. The four legacy OCTS repository files remain directly public until private migration is tested and their later removal is explicitly approved.
+Documents & Deliverables sits directly below Attention Needed in the side column. File names and status remain public. Download actions require an authenticated Viewer, Editor or Admin with access to that event and obtain a short-lived private Storage URL; Guest users are prompted to sign in. No Storage object path is exposed to public viewers.
 
 ## Access and collaboration
 
 - Public viewer (anonymous or signed in without an approved assignment): full public Dashboard baseline, public status overlays and repository-hosted approved PDFs; no editing.
 - Viewer: the same public access plus authorized Realtime refresh for assigned events; no editing.
-- Editor: Viewer access plus Status, Task Final DDL, Stage DDL and Owner editing for assigned events.
+- Editor: Viewer access plus Workstream Status, Progress, Task Final DDL, Stage DDL, Owner, Latest Update and Next Action editing for assigned events.
 - Admin: Editor access across all registered events.
 
-The static activity files remain the reviewed public baseline. Supabase stores only field-level overrides, their version, updater and update time. `002_public_dashboard_overlay_v1.sql` exposes those display fields through one anonymous read-only RPC; it returns no email, UUID, membership, credential or Storage-object data. A null/unset database field never replaces the static value. Workstream and Stage updates are saved separately; tasks with Stages continue to calculate parent Status and Progress in the browser.
+The static activity files remain the reviewed public baseline. Supabase stores only field-level overrides, their version, updater and update time. The public read-only RPC returns no email, UUID, membership, credential or Storage-object data. A null/unset database field never replaces the static value. Workstream and Stage updates are saved separately: Stage status remains derived, while Workstream Progress is manually maintained. Planning always saves as 0%, Completed always saves as 100%, and the other three statuses accept whole-number values from 0 to 100. Stage completion is displayed as a reference only.
 
-The tracked production `config.js` contains only the Supabase Project URL and browser-safe Publishable Key, so GitHub Pages can load the public Overlay without a build step. Never add a `service_role` key, Secret Key, database password, access token or refresh token to it. Member sign-in uses the Supabase password grant; the legacy Magic Link code remains inactive for a future SMTP-enabled rollout. Run `supabase/migrations/001_collaboration_v1.sql`, then `supabase/migrations/002_public_dashboard_overlay_v1.sql`; run `supabase/seed_dashboard.sql` only when the database has not already been seeded. Follow `supabase/README.md` for member management, Storage and deployment setup.
+The tracked production `config.js` contains only the Supabase Project URL and browser-safe Publishable Key, so GitHub Pages can load the public Overlay without a build step. Never add a `service_role` key, Secret Key, database password, access token or refresh token to it. Member sign-in uses the Supabase password grant; the legacy Magic Link code remains inactive for a future SMTP-enabled rollout. Run migrations `001` through `004` in order; run `supabase/seed_dashboard.sql` only when the database has not already been seeded. Follow `supabase/README.md` for member management, Storage and deployment setup.
 
 ### Local member management
 
@@ -42,7 +42,7 @@ node scripts/manage-auth-users.mjs set-approval
 node scripts/manage-auth-users.mjs assign-role
 ```
 
-`create` confirms the email in Auth, creates the trigger-backed Profile, optionally approves it, and can assign one Viewer or Editor event role. The script does not create Admins; set an Admin only through the controlled Supabase administrative process. A logged-in user can change only their own password from the Dashboard header. There is no self-registration or public password-reset entry.
+`create` confirms the email in Auth, creates the trigger-backed Profile, optionally approves it, and can assign one Viewer or Editor role across one event ID, a comma-separated list, or `all` registered events. The script validates every requested ID before writing anything. It does not create Admins; set an Admin only through the controlled Supabase administrative process. A logged-in user can change only their own password from the Dashboard header. There is no self-registration or public password-reset entry.
 
 ## Update event data
 
@@ -90,19 +90,19 @@ dueDate: "2026-08-12"
 currentStageId: "first-washing"
 ```
 
-After a task has `stages`, do not manually set a conflicting task `status` or `progress`: the Dashboard calculates both from the stage records. Calendar entries are generated from task Final DDLs, stage DDLs, milestones, and event dates; do not add a separate calendar data array. Use `milestones` only for independent cross-task decision points. Do not duplicate Event Day, ordinary task Final DDLs, or stage DDLs as milestones because the Calendar already derives those entries.
+After a task has `stages`, do not manually set a conflicting task `status`: the Dashboard derives parent Status from the stage records. Workstream Progress remains a separate, manually maintained task value and Stage completion is shown as a reference. Calendar entries are generated from task Final DDLs, stage DDLs, milestones, and event dates; do not add a separate calendar data array. Use `milestones` only for independent cross-task decision points. Do not duplicate Event Day, ordinary task Final DDLs, or stage DDLs as milestones because the Calendar already derives those entries.
 
 ## Maintain Documents & Deliverables
 
-1. Confirm that the source is an approved Final file and is suitable for public release.
+1. Confirm that the source is an approved Final file and is suitable for controlled sharing.
 2. Inspect the file content, properties, comments/notes, contacts, amounts, local paths, private links, and embedded content before upload.
-3. For an approved public PDF, put the reviewed copy in `downloads/` and use its repository-relative `filePath` in `finalDocuments`. Do not put a private Storage path there.
-4. For a status-only record, set `downloadable: false`. Keep private or unapproved source documents out of this repository.
-5. Run `scripts/check_download_safety.ps1` whenever a public PDF changes. Removing the latest copy does not remove it from Git history.
+3. Place the reviewed local PDF in the approved migration input location, then run `node scripts/migrate-private-documents.mjs` from a machine with the Git-ignored `.env.admin.local`. It verifies the fixed `document_files` mapping, object bytes, PDF MIME type and a five-minute signed URL before any repository copy is removed.
+4. Keep only non-sensitive document metadata in `finalDocuments`; do not add `filePath`, a Storage object path, or an external private link.
+5. Run `scripts/check_download_safety.ps1` after a controlled-download change. Removing the latest copy does not remove an earlier public Git history copy.
 
 The safety script uses Python with `pypdf` to inspect PDF text, metadata, annotations and embedded content, and fails closed when reliable inspection is unavailable. If Python is not on `PATH`, pass its executable with `-PythonPath`. Non-PDF formats are reported as requiring manual review before publication. Historical and working versions belong in the internal archive, not the public download directory.
 
-GitHub Pages remains the Dashboard deployment target. Public downloads use repository-relative `downloads/` paths. The private `event-files` bucket remains available for a future controlled-file workflow, but it is not used by the public download buttons. Do not compress, split, or alter an Approved Final merely to meet a hosting limit.
+GitHub Pages remains the Dashboard deployment target. It never hosts an active downloadable PDF; the private `event-files` bucket supplies short-lived authorized links at request time. Do not compress, split, or alter an Approved Final merely to meet a hosting limit.
 
 ## Add another event
 
@@ -127,7 +127,7 @@ The `main` branch is currently published through GitHub Pages and the existing C
 
 ## Supabase status and security
 
-The collaboration code and SQL are included, but the live project remains inactive until `config.js` and database migrations are configured. Local JavaScript data is always the public baseline. The public Overlay RPC makes only Status, DDL, Owner, Completed Date, Updated At, Updated By, version and corresponding `*_set` flags readable to anonymous and authenticated viewers; editing still requires an approved event Editor or approved Admin. The browser may contain only the Supabase Project URL and Publishable Key. Never expose a `service_role` key, access token, refresh token, password, private contract, quotation amount, or confidential source material in front-end code or Git history.
+Local JavaScript data is always the public baseline. The public Overlay RPC makes only Status, Progress, DDL, Owner, Completed Date, Updated At, Updated By, version and corresponding `*_set` flags readable to anonymous and authenticated viewers; editing still requires an approved event Editor or approved Admin. The browser may contain only the Supabase Project URL and Publishable Key. Never expose a `service_role` key, access token, refresh token, password, private contract, quotation amount, confidential source material, or a private Storage path in front-end code or Git history.
 
 ## Roll back
 
