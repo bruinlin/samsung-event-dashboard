@@ -59,10 +59,29 @@ alter table public.change_history drop constraint if exists change_history_field
 alter table public.change_history add constraint change_history_field_name_check
   check (field_name in ('status', 'progress', 'due_date', 'owner', 'completed_date', 'latest_update', 'next_action'));
 
-revoke all on function public.update_workstream_overlay(text,text,bigint,text,date,text,text,text,boolean,boolean,boolean,boolean,boolean) from public, anon, authenticated;
-drop function if exists public.update_workstream_overlay(text,text,bigint,text,date,text,text,text,boolean,boolean,boolean,boolean,boolean);
+-- The production database may contain an earlier overload with a different
+-- parameter list. Remove every old overload by its catalog identity, while
+-- preserving the V1.7 signature when this migration is safely re-run.
+do $$
+declare v_signature regprocedure;
+begin
+  for v_signature in
+    select p.oid::regprocedure
+    from pg_catalog.pg_proc p
+    join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 'public'
+      and p.proname = 'update_workstream_overlay'
+      and p.oid is distinct from to_regprocedure(
+        'public.update_workstream_overlay(text,text,bigint,text,date,text,integer,text,text,boolean,boolean,boolean,boolean,boolean,boolean)'
+      )
+  loop
+    execute format('revoke all on function %s from public, anon, authenticated', v_signature);
+    execute format('drop function %s', v_signature);
+  end loop;
+end;
+$$;
 
-create function public.update_workstream_overlay(
+create or replace function public.update_workstream_overlay(
   p_event_id text,
   p_workstream_id text,
   p_expected_version bigint,
@@ -270,11 +289,24 @@ update storage.buckets
 set public = false, file_size_limit = 52428800, allowed_mime_types = array['application/pdf']
 where id = 'event-files';
 
-revoke all on function public.update_workstream_overlay(text,text,bigint,text,date,text,integer,text,text,boolean,boolean,boolean,boolean,boolean,boolean) from public, anon, authenticated;
+do $$
+declare v_signature regprocedure;
+begin
+  foreach v_signature in array array[
+    to_regprocedure('public.update_workstream_overlay(text,text,bigint,text,date,text,integer,text,text,boolean,boolean,boolean,boolean,boolean,boolean)'),
+    to_regprocedure('public.get_dashboard_updates(text)'),
+    to_regprocedure('public.get_public_dashboard_updates(text)')
+  ]
+  loop
+    if v_signature is not null then
+      execute format('revoke all on function %s from public, anon, authenticated', v_signature);
+    end if;
+  end loop;
+end;
+$$;
+
 grant execute on function public.update_workstream_overlay(text,text,bigint,text,date,text,integer,text,text,boolean,boolean,boolean,boolean,boolean,boolean) to authenticated;
-revoke all on function public.get_dashboard_updates(text) from public, anon, authenticated;
 grant execute on function public.get_dashboard_updates(text) to authenticated;
-revoke all on function public.get_public_dashboard_updates(text) from public, anon, authenticated;
 grant execute on function public.get_public_dashboard_updates(text) to anon, authenticated;
 
 commit;

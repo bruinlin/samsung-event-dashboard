@@ -42,6 +42,7 @@ function makeApi({ url, serviceKey }) {
   return async (path, options = {}) => {
     const response = await fetch(`${url}${path}`, {
       ...options,
+      signal: AbortSignal.timeout(30000),
       headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}`, ...(options.headers || {}) }
     });
     const text = await response.text();

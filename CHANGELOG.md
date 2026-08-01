@@ -5,6 +5,7 @@
 - Added manually maintained integer Workstream Progress overlays with server-side 0–100 validation, Planning=0 and Completed=100 enforcement, version-safe audit history, and Stage-completion reference display.
 - Added local administrator assignment of one, comma-separated, or dynamically resolved `all` event IDs after full validation, without exposing credentials or raw API errors.
 - Moved the active OCTS document-delivery path to private `event-files` object mappings and short-lived authorized signed URLs; public viewers retain document metadata but cannot request a file.
+- Made the V1.7 migration overload-safe by discovering legacy `update_workstream_overlay` identities from `pg_proc` before removing them, instead of assuming one historical signature.
 
 ## 1.6.7-web - 2026-07-30
 
