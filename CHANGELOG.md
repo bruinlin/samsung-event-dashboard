@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.7.2-web - 2026-08-05
+
+- Improved Collaboration access UX with refresh-on-activity, refresh-before-edit/download, clear event-specific role labels, and a read-only My Access dialog.
+- Removed the inactive Calendar Active Only control while retaining the working Calendar filters and Include Completed option.
+- Added the latest public Overlay update timestamp to the Hero, with a safe static-baseline fallback when the Overlay is unavailable.
+- Updated collaboration wording and runtime cache references to `v=1.7.2`.
+
 ## 1.7.0-web - 2026-08-01
 
 - Added manually maintained integer Workstream Progress overlays with server-side 0–100 validation, Planning=0 and Completed=100 enforcement, version-safe audit history, and Stage-completion reference display.

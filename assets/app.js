@@ -65,7 +65,6 @@
     calendarLaterExpanded: false,
     calendarCategory: "all",
     calendarOwner: "all",
-    calendarActiveOnly: true,
     calendarIncludeCompleted: false,
     calendarTypes: new Set(CALENDAR_TYPES.map((item) => item.id)),
     calendarSelectedDate: "",
@@ -90,6 +89,24 @@
     const parts = String(value).split("-");
     if (parts.length !== 3) return escapeHtml(value);
     return `${parts[0]}.${parts[1]}.${parts[2]}`;
+  }
+
+  function formatLiveTimestamp(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    const pad = (number) => String(number).padStart(2, "0");
+    return `${date.getFullYear()}.${pad(date.getMonth() + 1)}.${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  }
+
+  function latestCollaborationUpdate(data) {
+    const updates = [];
+    (data.workstreams || []).forEach((item) => {
+      if (item._collaboration?.updatedAt) updates.push(item._collaboration);
+      (item.stages || []).forEach((stage) => { if (stage._collaboration?.updatedAt) updates.push(stage._collaboration); });
+    });
+    return updates.map((item) => ({ ...item, timestamp: new Date(item.updatedAt).getTime() }))
+      .filter((item) => Number.isFinite(item.timestamp))
+      .sort((a, b) => b.timestamp - a.timestamp)[0] || null;
   }
 
   function isValidDate(value) {
@@ -207,6 +224,7 @@
 
     state.data = data;
     state.eventId = eventId;
+    window.DashboardCollab?.setActiveEvent?.(eventId);
     state.quickFilter = "all";
     state.status = "all";
     state.owner = "all";
@@ -220,7 +238,6 @@
     state.calendarLaterExpanded = false;
     state.calendarCategory = "all";
     state.calendarOwner = "all";
-    state.calendarActiveOnly = true;
     state.calendarIncludeCompleted = false;
     state.calendarTypes = new Set(CALENDAR_TYPES.map((item) => item.id));
     state.calendarSelectedDate = "";
@@ -233,6 +250,7 @@
     }
     renderDashboard();
     window.DashboardCollab?.subscribe?.(eventId);
+    window.DashboardCollab?.refreshAccess?.({ notifyOnFailure: false }).then(() => renderDashboard()).catch(() => {});
   }
 
   function stagesFor(item) {
@@ -334,7 +352,10 @@
       website ? `<span><a href="${escapeHtml(website)}" target="_blank" rel="noopener noreferrer">Official Website / 官方网站</a></span>` : ""
     ].filter(Boolean).join("");
     $("hero-status").innerHTML = statusBadge(event.overallStatus);
-    $("hero-updated").innerHTML = `Last updated <b>${formatDate(data.meta.lastUpdated)}</b><br>Updated by <b>${safeText(data.meta.updatedBy)}</b>`;
+    const liveUpdate = latestCollaborationUpdate(data);
+    $("hero-updated").innerHTML = liveUpdate
+      ? `Live updated <b>${formatLiveTimestamp(liveUpdate.updatedAt)}</b><br>Updated by <b>${safeText(liveUpdate.updatedBy || "Member")}</b><br><small>Baseline updated ${formatDate(data.meta.lastUpdated)}</small>`
+      : `Last updated <b>${formatDate(data.meta.lastUpdated)}</b><br>Updated by <b>${safeText(data.meta.updatedBy)}</b>`;
 
     const resultMetrics = event.overallStatus === "Completed" && Array.isArray(event.resultMetrics)
       ? event.resultMetrics
@@ -769,7 +790,6 @@
     $("calendar-owner-select").innerHTML = `<option value="all">All Owners</option>` + owners.map((owner) =>
       `<option value="${escapeHtml(owner)}" ${owner === state.calendarOwner ? "selected" : ""}>${safeText(owner)}</option>`
     ).join("");
-    $("calendar-active-only").checked = state.calendarActiveOnly;
     $("calendar-include-completed").checked = state.calendarIncludeCompleted;
     $("calendar-type-filters").innerHTML = CALENDAR_TYPES.map((item) =>
       `<button type="button" class="filter-chip ${state.calendarTypes.has(item.id) ? "active" : ""}" data-calendar-type="${escapeHtml(item.id)}">${safeText(item.label)}</button>`
@@ -1183,7 +1203,6 @@
       renderCalendar(state.data);
     });
     $("calendar-owner-select").addEventListener("change", (event) => { state.calendarOwner = event.target.value; state.calendarSelectedDate = ""; renderCalendar(state.data); });
-    $("calendar-active-only").addEventListener("change", (event) => { state.calendarActiveOnly = event.target.checked; renderCalendar(state.data); });
     $("calendar-include-completed").addEventListener("change", (event) => { state.calendarIncludeCompleted = event.target.checked; renderCalendar(state.data); });
 
     $("final-document-filters").addEventListener("click", (event) => {
@@ -1201,7 +1220,7 @@
       window.DashboardCollab?.requestDownload?.(state.eventId, {
         id: item.id,
         fileName: item.nameEn || item.nameZh
-      });
+      }, button);
     });
 
     $("workstream-body").addEventListener("click", (event) => {

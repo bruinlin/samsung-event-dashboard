@@ -2,7 +2,7 @@
   ODX 2026 数据维护说明
   ====================
   1. 直接更新 event、keynote、workstreams、milestones 和 sessions 对应字段。
-  2. 普通任务使用 status 和 progress（0-100）；有 stages 的任务会由页面自动计算状态和进度。
+  2. 普通任务使用 status 和 progress（0-100）；有 stages 的任务Status由Stage派生，Workstream Progress由Editor/Admin人工维护，Stage completion仅作为参考。
   3. 未确认信息使用 "TBD"；未知日期保持空字符串，不要推测。
   4. 新增工作项时填写 categoryId、categoryNameCN、categoryNameEN；仅复杂任务配置 stages 和 currentStageId。
   5. workstreams[].dueDate 是任务 Final DDL；stages[].dueDate 是阶段计划 DDL。未知日期保持空字符串，不要用 completedDate 代替 dueDate。

@@ -11,11 +11,10 @@
      不填写 filePath、对象路径或下载链接。
   8. 活动结束后结果：在 event.resultMetrics 中增加或修改大标题栏结果数据。
   9. 展出产品：修改 event.showcasedProducts 数组。
-  10. 最终交付文件：将已确认可公开下载的 Final 文件放入 downloads/OCTS_2026/，
-      并在 finalDocuments 中登记相对路径、格式、大小和状态。
+  10. 最终交付文件：在 finalDocuments 中登记受控文件名称、格式、大小和状态；不要记录本地、Bucket或公开下载路径。
   11. 有效状态：Planning, In Progress, Under Review, Completed, Blocked。
   12. 阶段追踪：仅复杂任务添加 stages 和 currentStageId。阶段状态仅可使用
-      Planning, In Progress, Under Review, Completed, Blocked；页面会自动计算该任务的状态和进度。
+      Planning, In Progress, Under Review, Completed, Blocked；页面由Stage派生任务Status，Workstream Progress由Editor/Admin人工维护，Stage completion仅作为参考。
   13. DDL：workstreams[].dueDate 是任务 Final DDL；stages[].dueDate 是阶段计划 DDL。
       未确认日期保留空字符串，页面显示 Missing DDL；completedDate 仅记录实际完成日期，不能替代 dueDate。
 

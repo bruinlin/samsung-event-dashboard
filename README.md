@@ -22,10 +22,10 @@ Documents & Deliverables sits directly below Attention Needed in the side column
 
 ## Access and collaboration
 
-- Public viewer (anonymous or signed in without an approved assignment): full public Dashboard baseline, public status overlays and repository-hosted approved PDFs; no editing.
-- Viewer: the same public access plus authorized Realtime refresh for assigned events; no editing.
-- Editor: Viewer access plus Workstream Status, Progress, Task Final DDL, Stage DDL, Owner, Latest Update and Next Action editing for assigned events.
-- Admin: Editor access across all registered events.
+- Public Viewer: can anonymously view the full public Dashboard and public Overlay; cannot download controlled files or edit.
+- Viewer: can download controlled files for assigned events; cannot edit.
+- Editor: can download and edit assigned events.
+- Admin: can access and edit all registered events.
 
 The static activity files remain the reviewed public baseline. Supabase stores only field-level overrides, their version, updater and update time. The public read-only RPC returns no email, UUID, membership, credential or Storage-object data. A null/unset database field never replaces the static value. Workstream and Stage updates are saved separately: Stage status remains derived, while Workstream Progress is manually maintained. Planning always saves as 0%, Completed always saves as 100%, and the other three statuses accept whole-number values from 0 to 100. Stage completion is displayed as a reference only.
 
@@ -123,7 +123,7 @@ Review `git status` before committing. The backup folder and legacy Supabase hel
 
 ## Deployment
 
-The `main` branch is currently published through GitHub Pages and the existing Cloudflare Workers deployment. Final files use the same repository-relative paths on both hosts. Do not add Worker download logic or change the current Cloudflare deployment method merely to force downloads; PDF preview behavior is browser-dependent and expected.
+The `main` branch is published through GitHub Pages. Controlled PDFs are not served from repository-relative paths: eligible Viewer, Editor and Admin accounts receive short-lived signed links from the private `event-files` Bucket. Do not add a public static-file fallback for controlled downloads.
 
 ## Supabase status and security
 

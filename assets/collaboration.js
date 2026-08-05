@@ -24,7 +24,8 @@
     realtime: null,
     realtimeTimer: null,
     realtimeHeartbeat: null,
-    editContext: null
+    editContext: null,
+    accessRefreshPromise: null
   };
 
   const byId = (id) => document.getElementById(id);
@@ -153,7 +154,30 @@
     };
   }
 
-  async function loadAccess() {
+  function eventLabel(eventId) {
+    return (window.EVENT_INDEX?.events || []).find((event) => event.eventId === eventId)?.label || eventId || "Dashboard";
+  }
+
+  function roleLabel(eventId) {
+    if (!state.session) return "Public Viewer";
+    const role = effectiveRole(eventId);
+    return `${eventLabel(eventId)} · ${role === "authenticated" ? "No Access" : role[0].toUpperCase() + role.slice(1)}`;
+  }
+
+  function accessSummary() {
+    const entries = (window.EVENT_INDEX?.events || []).map((event) => {
+      const role = effectiveRole(event.eventId);
+      return role === "authenticated" || role === "guest" ? "" : `${event.label} · ${role[0].toUpperCase() + role.slice(1)}`;
+    }).filter(Boolean);
+    return entries.length ? entries.join("，") : "无活动权限";
+  }
+
+  function sessionIsInvalid(error) {
+    const message = String(error?.message || "");
+    return error?.status === 401 || (error?.status === 400 && /refresh[ _-]?token|invalid_grant/i.test(message));
+  }
+
+  async function loadAccess({ notifyOnFailure = false } = {}) {
     if (!state.session?.access_token) {
       state.access = { globalRole: "", eventRoles: {} };
       renderAccess();
@@ -166,11 +190,22 @@
         eventRoles: result?.event_roles || {}
       };
     } catch (error) {
-      if (error.status === 401) saveSession(null);
-      state.access = { globalRole: "", eventRoles: {} };
+      if (sessionIsInvalid(error)) {
+        saveSession(null);
+        state.access = { globalRole: "", eventRoles: {} };
+      } else if (notifyOnFailure) {
+        notify("权限刷新暂不可用，已保留上次权限。请稍后重试。");
+      }
     }
     renderAccess();
+    refreshAccessUi();
     return state.access;
+  }
+
+  function refreshAccess(options = {}) {
+    if (state.accessRefreshPromise) return state.accessRefreshPromise;
+    state.accessRefreshPromise = loadAccess(options).finally(() => { state.accessRefreshPromise = null; });
+    return state.accessRefreshPromise;
   }
 
   function effectiveRole(eventId) {
@@ -195,11 +230,12 @@
     const mode = byId("collaboration-mode");
     if (!authState || !authButton || !mode) return;
     const email = state.session?.user?.email || "";
-    authState.textContent = role === "guest" ? "Public viewer" : role === "authenticated" ? "Read only" : role;
+    authState.textContent = roleLabel(state.activeEventId);
     authState.dataset.role = role;
     authButton.textContent = state.session ? "Sign out" : "Sign in";
     authButton.dataset.authAction = state.session ? "sign-out" : "sign-in";
     if (passwordButton) passwordButton.hidden = !state.session;
+    if (byId("my-access-button")) byId("my-access-button").hidden = !state.session;
     mode.textContent = !configured
       ? "Local data · Read only"
       : state.connection === "online"
@@ -215,6 +251,24 @@
 
   function refreshAccessUi() {
     if (typeof state.hooks.refreshAccessUi === "function") state.hooks.refreshAccessUi();
+  }
+
+  function renderMyAccess() {
+    if (!state.session) return;
+    byId("my-access-email").textContent = state.session?.user?.email || "Signed-in member";
+    byId("my-access-list").innerHTML = (window.EVENT_INDEX?.events || []).map((event) => {
+      const role = effectiveRole(event.eventId);
+      const label = role === "authenticated" ? "No Access" : role[0].toUpperCase() + role.slice(1);
+      return `<div class="access-row"><b>${event.label}</b><span>${label}</span></div>`;
+    }).join("");
+  }
+
+  function openMyAccess() {
+    if (!state.session) return;
+    byId("my-access-error").textContent = "";
+    renderMyAccess();
+    const dialog = byId("my-access-dialog");
+    if (!dialog.open) dialog.showModal();
   }
 
   function applyPublicUpdates(baseData, overlay) {
@@ -320,7 +374,7 @@
 
   async function completeSignIn(payload, message) {
     saveSession(normalizeSession(payload));
-    await loadAccess();
+    await refreshAccess();
     state.connection = "online";
     renderAccess();
     refreshAccessUi();
@@ -386,11 +440,20 @@
       return false;
     }
     if (kind === "download" && !canDownload(eventId)) {
-      notify("当前账号未列入该活动成员名单，不能下载文件。");
+      const summary = accessSummary();
+      notify(summary === "无活动权限"
+        ? "当前账号已登录，但尚未分配任何活动权限。请联系Dashboard管理员。"
+        : `当前账号没有${eventLabel(eventId)}的文件下载权限。当前可访问：${summary}。`);
       return false;
     }
     if (kind === "edit" && !canEdit(eventId)) {
-      notify(effectiveRole(eventId) === "viewer" ? "Viewer仅可查看和下载，不能编辑。" : "当前账号没有该活动的编辑权限。");
+      const role = effectiveRole(eventId);
+      const summary = accessSummary();
+      notify(role === "viewer"
+        ? `当前账号在${eventLabel(eventId)}中的角色为Viewer，只能查看和下载，不能编辑。`
+        : summary === "无活动权限"
+          ? "当前账号已登录，但尚未分配任何活动权限。请联系Dashboard管理员。"
+          : `当前账号已登录，但尚未分配${eventLabel(eventId)}的编辑权限。当前可访问：${summary}。`);
       return false;
     }
     return true;
@@ -431,7 +494,8 @@
     }
   }
 
-  function requestEdit(context) {
+  async function requestEdit(context) {
+    if (state.session) await refreshAccess({ notifyOnFailure: true });
     if (!requireRole("edit", context.eventId, { kind: "edit", context })) return;
     state.editContext = context;
     const dialog = byId("edit-dialog");
@@ -530,10 +594,17 @@
     }
   }
 
-  async function requestDownload(eventId, documentRecord) {
-    if (!requireRole("download", eventId, { kind: "download", eventId, document: documentRecord })) return;
+  async function requestDownload(eventId, documentRecord, trigger) {
+    if (trigger?.disabled) return;
+    if (trigger) trigger.disabled = true;
+    if (state.session) await refreshAccess({ notifyOnFailure: true });
+    if (!requireRole("download", eventId, { kind: "download", eventId, document: documentRecord })) {
+      if (trigger) trigger.disabled = false;
+      return;
+    }
     if (!configured) {
       notify("Supabase Private Storage尚未配置，受控下载不可用。");
+      if (trigger) trigger.disabled = false;
       return;
     }
     try {
@@ -565,7 +636,11 @@
       anchor.remove();
       notify(`已生成${Number(config.signedUrlExpiresIn || 300) / 60}分钟有效的下载链接。`);
     } catch (error) {
-      notify(`下载失败：${error.message}`);
+      notify(/not authorized|permission|42501/i.test(error.message)
+        ? `当前账号没有${eventLabel(eventId)}的文件下载权限。当前可访问：${accessSummary()}。`
+        : "下载暂不可用，请稍后重试。");
+    } finally {
+      if (trigger) trigger.disabled = false;
     }
   }
 
@@ -641,6 +716,17 @@
     });
     byId("auth-close")?.addEventListener("click", () => closeDialog(byId("auth-dialog")));
     byId("change-password-button")?.addEventListener("click", openPasswordDialog);
+    byId("my-access-button")?.addEventListener("click", openMyAccess);
+    byId("my-access-close")?.addEventListener("click", () => closeDialog(byId("my-access-dialog")));
+    byId("my-access-done")?.addEventListener("click", () => closeDialog(byId("my-access-dialog")));
+    byId("my-access-refresh")?.addEventListener("click", async (event) => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      byId("my-access-error").textContent = "";
+      try { await refreshAccess({ notifyOnFailure: true }); renderMyAccess(); }
+      catch { byId("my-access-error").textContent = "权限刷新暂不可用，请稍后重试。"; }
+      finally { button.disabled = false; }
+    });
     byId("password-close")?.addEventListener("click", () => closeDialog(byId("password-dialog")));
     byId("password-cancel")?.addEventListener("click", () => closeDialog(byId("password-dialog")));
     byId("edit-cancel")?.addEventListener("click", () => closeDialog(byId("edit-dialog")));
@@ -710,11 +796,13 @@
     if (configured && state.session) {
       try {
         await ensureFreshSession();
-        await loadAccess();
+        await refreshAccess();
         state.connection = "online";
-      } catch {
-        saveSession(null);
-        state.access = { globalRole: "", eventRoles: {} };
+      } catch (error) {
+        if (sessionIsInvalid(error)) {
+          saveSession(null);
+          state.access = { globalRole: "", eventRoles: {} };
+        }
         state.connection = "degraded";
       }
     }
@@ -733,6 +821,8 @@
     mergeEventData,
     requestEdit,
     requestDownload,
+    refreshAccess,
+    setActiveEvent: (eventId) => { state.activeEventId = eventId || ""; renderAccess(); },
     subscribe,
     effectiveRole,
     canEdit,

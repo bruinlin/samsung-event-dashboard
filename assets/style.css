@@ -238,6 +238,7 @@ select {
 .collaboration-mode[data-connection="degraded"] { color: var(--amber); }
 .auth-state { padding: 5px 8px; border-radius: 999px; color: var(--grey); background: var(--grey-bg); font-size: 10px; font-weight: 750; text-transform: capitalize; }
 .auth-state[data-role="viewer"], .auth-state[data-role="editor"], .auth-state[data-role="admin"] { color: var(--blue-700); background: var(--blue-100); }
+.auth-state[data-role="authenticated"] { color: var(--amber); background: var(--amber-bg); }
 
 .dashboard-grid {
   display: grid;
@@ -731,6 +732,10 @@ footer { display: flex; justify-content: space-between; gap: 16px; padding: 4px 
 .modal-footer .button-primary, .modal-actions .button-primary { margin-left: 0; }
 .modal-error { min-height: 18px; margin-top: 11px; color: var(--red); font-size: 11px; line-height: 1.45; }
 .edit-meta { padding: 8px 10px; border-radius: 7px; background: var(--grey-bg); color: var(--ink-500); font-size: 10px; line-height: 1.4; }
+.access-list { display: grid; gap: 0; border-top: 1px solid var(--line-soft); }
+.access-row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line-soft); font-size: 12px; line-height: 1.4; }
+.access-row b { color: var(--ink-800); }
+.access-row span { color: var(--ink-500); text-align: right; }
 
 @media (max-width: 1280px) {
   .dashboard-grid { grid-template-columns: 1fr; }
@@ -761,6 +766,8 @@ footer { display: flex; justify-content: space-between; gap: 16px; padding: 4px 
   .toolbar { align-items: stretch; }
   .collaboration-controls { order: 5; width: 100%; margin-left: 0; flex-wrap: wrap; }
   .collaboration-mode { flex: 1 1 150px; }
+  .auth-state { flex: 1 1 145px; white-space: normal; }
+  .collaboration-controls .button { min-height: 36px; }
   .button-primary#print-button { margin-left: 0; }
   .hero-theme { margin-top: 8px; }
   .hero-theme b { font-size: 15px; }
@@ -850,6 +857,7 @@ footer { display: flex; justify-content: space-between; gap: 16px; padding: 4px 
   .stage-edit-button { grid-column: 2; justify-self: start; min-height: 40px; }
   .edit-button { min-height: 40px; }
   .modal-dialog { width: min(94vw, 480px); }
+  .access-row { align-items: flex-start; }
   .modal-heading, .modal-body, .modal-footer { padding-left: 15px; padding-right: 15px; }
   footer { flex-direction: column; }
 }

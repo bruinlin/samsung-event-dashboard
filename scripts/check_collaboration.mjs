@@ -86,13 +86,14 @@ if (collaboration.includes("email_redirect_to")) fail("OTP redirect target must 
 for (const required of ["signInWithPassword", "grant_type=password", "auth-password-form", "change-password-button", "/auth/v1/user"]) {
   if (!collaboration.includes(required)) fail(`Password sign-in or self-service password update is missing ${required}.`);
 }
-for (const required of ["edit-latest-update", "edit-next-action", "edit-progress", "p_progress", "p_latest_update", "p_next_action", "syncProgressControl"]) {
+for (const required of ["edit-latest-update", "edit-next-action", "edit-progress", "p_progress", "p_latest_update", "p_next_action", "syncProgressControl", "refreshAccess", "get_my_dashboard_access", "my-access-dialog"]) {
   if (!collaboration.includes(required)) fail(`Editable Workstream note support is missing ${required}.`);
 }
 const html = read("index.html");
-for (const required of ["auth-password-form", "auth-magic-link-legacy", "change-password-button", "password-form", "edit-progress", "edit-latest-update", "edit-next-action"]) {
+for (const required of ["auth-password-form", "auth-magic-link-legacy", "change-password-button", "password-form", "edit-progress", "edit-latest-update", "edit-next-action", "my-access-dialog", "my-access-button"]) {
   if (!html.includes(required)) fail(`Password sign-in UI is missing ${required}.`);
 }
+if (html.includes("calendar-active-only") || app.includes("calendarActiveOnly") || app.includes("calendar-active-only")) fail("Inactive Calendar Active Only filter remains.");
 const userManager = read("scripts/manage-auth-users.mjs");
 for (const required of ["SUPABASE_SERVICE_ROLE_KEY", "email_confirm: true", "set-approval", "assign-role", "promptHidden", "comma-separated", "requested.toLowerCase() === \"all\""]) {
   if (!userManager.includes(required)) fail(`Local member-management script is missing ${required}.`);

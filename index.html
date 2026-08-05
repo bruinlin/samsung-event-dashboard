@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <title>Samsung Event Dashboard</title>
-  <link rel="stylesheet" href="assets/style.css?v=1.6.6">
+  <link rel="stylesheet" href="assets/style.css?v=1.7.2">
 </head>
 <body>
   <div class="page-shell">
@@ -43,8 +43,9 @@
       </label>
       <div class="collaboration-controls" aria-label="登录与协作状态">
         <span class="collaboration-mode" id="collaboration-mode">Local data · Read only</span>
-        <span class="auth-state" id="auth-state" data-role="guest">Public viewer</span>
+        <span class="auth-state" id="auth-state" data-role="guest">Public Viewer</span>
         <button class="button" id="auth-button" type="button" data-auth-action="sign-in">Sign in</button>
+        <button class="button" id="my-access-button" type="button" hidden>My Access</button>
         <button class="button" id="change-password-button" type="button" hidden>Change Password</button>
       </div>
       <button class="button button-primary" id="print-button" type="button">打印页面</button>
@@ -88,7 +89,6 @@
             <div class="calendar-filter-panel" id="calendar-filter-panel" hidden>
               <div class="calendar-filter-group" id="calendar-category-filters" aria-label="按类别筛选"></div>
               <label class="calendar-select"><span>Owner</span><select id="calendar-owner-select" aria-label="按负责人筛选日历"></select></label>
-              <label class="check-control"><input type="checkbox" id="calendar-active-only" checked><span>Active Only</span></label>
               <label class="check-control"><input type="checkbox" id="calendar-include-completed"><span>Include Completed</span></label>
               <div class="calendar-filter-group" id="calendar-type-filters" aria-label="按日历类型筛选"></div>
             </div>
@@ -103,7 +103,7 @@
           <div class="panel-heading workstream-heading">
             <div>
               <h2 id="workstream-title">Workstream Progress</h2>
-              <p>按实际进展维护；待补充项不按 0% 处理</p>
+              <p>Status与Progress按实际进展维护；Stage完成比例仅供参考</p>
             </div>
             <div class="filter-chips no-print" id="quick-filters" aria-label="快速筛选"></div>
           </div>
@@ -168,7 +168,7 @@
     </div>
 
     <footer>
-      <span>Local static dashboard · Offline-ready</span>
+      <span>Samsung Event Dashboard · Live Collaboration</span>
       <span id="footer-event-id"></span>
     </footer>
   </div>
@@ -201,6 +201,24 @@
         </form>
       </div>
       <div class="modal-error" id="auth-error" role="alert"></div>
+    </div>
+  </dialog>
+
+  <dialog class="modal-dialog" id="my-access-dialog" aria-labelledby="my-access-dialog-title">
+    <div class="modal-heading">
+      <div>
+        <h2 id="my-access-dialog-title">My Access / 我的权限</h2>
+        <p id="my-access-email"></p>
+      </div>
+      <button class="modal-close" id="my-access-close" type="button" aria-label="Close">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="access-list" id="my-access-list"></div>
+      <div class="modal-error" id="my-access-error" role="alert"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="button" id="my-access-refresh" type="button">Refresh Access / 刷新权限</button>
+      <button class="button button-primary" id="my-access-done" type="button">Done / 完成</button>
     </div>
   </dialog>
 
@@ -255,8 +273,8 @@
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="config.js"></script>
-  <script src="event_data.js?v=1.7.1"></script>
-  <script src="assets/collaboration.js?v=1.7.0"></script>
-  <script src="assets/app.js?v=1.7.0"></script>
+  <script src="event_data.js?v=1.7.2"></script>
+  <script src="assets/collaboration.js?v=1.7.2"></script>
+  <script src="assets/app.js?v=1.7.2"></script>
 </body>
 </html>
