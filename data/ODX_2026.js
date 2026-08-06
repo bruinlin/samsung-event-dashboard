@@ -14,7 +14,7 @@ window.EVENT_DATASETS = window.EVENT_DATASETS || {};
 window.EVENT_DATASETS.ODX_2026 = {
   meta: {
     schemaVersion: "1.8",
-    lastUpdated: "2026-07-29",
+    lastUpdated: "2026-08-06",
     updatedBy: "Bruin"
   },
 
@@ -215,16 +215,10 @@ window.EVENT_DATASETS.ODX_2026 = {
 
   milestones: [
     { milestoneId: "ODX26-M-01", date: "2026-08-06", titleCN: "礼品方案确认", titleEN: "Gift Proposal Confirmation", status: "Planning", remarks: "" },
-    { milestoneId: "ODX26-M-02", date: "2026-08-10", titleCN: "活动基本信息、报价与 Keynote 初稿", titleEN: "Event Information, Quotation & Keynote Initial Draft", status: "Planning", remarks: "" },
-    { milestoneId: "ODX26-M-03", date: "2026-08-14", titleCN: "Booth 设计、产品信息与资产、Keynote 第一次 Washing", titleEN: "Booth, Product Assets & Keynote First Washing", status: "Planning", remarks: "" },
-    { milestoneId: "ODX26-M-04", date: "2026-08-19", titleCN: "Keynote 内部审核与社媒发布计划", titleEN: "Keynote Internal Review & Social Posting Plan", status: "Planning", remarks: "" },
-    { milestoneId: "ODX26-M-05", date: "2026-08-24", titleCN: "Keynote 第二次修改", titleEN: "Keynote Second Revision", status: "Planning", remarks: "" },
+    { milestoneId: "ODX26-M-03", date: "2026-08-14", titleCN: "产品信息与资产", titleEN: "Product Information & Assets", status: "Planning", remarks: "" },
     { milestoneId: "ODX26-M-06", date: "2026-08-25", titleCN: "活动议程与人员明细收集", titleEN: "Event Agenda & Personnel Details Collection", status: "Planning", remarks: "" },
-    { milestoneId: "ODX26-M-07", date: "2026-08-26", titleCN: "Keynote 最终确认", titleEN: "Keynote Final Approval", status: "Planning", remarks: "" },
     { milestoneId: "ODX26-M-08", date: "2026-08-31", titleCN: "会后报告初稿", titleEN: "Report Draft", status: "Planning", remarks: "" },
-    { milestoneId: "ODX26-M-09", date: "2026-09-02", titleCN: "PR 文章", titleEN: "PR Article", status: "Planning", remarks: "" },
-    { milestoneId: "ODX26-M-10", date: "2026-09-03", titleCN: "主论坛演讲与会后报告定稿", titleEN: "Main Forum Keynote & Report Final", status: "Planning", remarks: "" },
-    { milestoneId: "ODX26-M-11", date: "2026-09-20", titleCN: "合同", titleEN: "Contract", status: "Planning", remarks: "" }
+    { milestoneId: "ODX26-M-10", date: "2026-09-03", titleCN: "主论坛演讲与会后报告定稿", titleEN: "Main Forum Keynote & Report Final", status: "Planning", remarks: "" }
   ],
 
   sessions: [

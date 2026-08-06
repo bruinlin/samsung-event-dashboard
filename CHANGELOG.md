@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.7.3-web - 2026-08-06
+
+- Removed ODX Calendar Milestones that duplicated existing Task Final DDLs or Stage DDLs.
+- Retained only independent ODX cross-task milestones, including the distinct Product Information & Assets confirmation.
+- Completed ODX data consistency validation without changing unconfirmed project facts.
+
 ## 1.7.2-web - 2026-08-05
 
 - Improved Collaboration access UX with refresh-on-activity, refresh-before-edit/download, clear event-specific role labels, and a read-only My Access dialog.
