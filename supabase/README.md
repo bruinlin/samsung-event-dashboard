@@ -4,7 +4,7 @@ This folder enables the optional multi-user layer without replacing the public s
 
 ## 1. Database and browser configuration
 
-1. Run `migrations/001_collaboration_v1.sql`, followed by `migrations/002_public_dashboard_overlay_v1.sql`, `migrations/003_collaboration_v1_6_status_and_notes.sql`, and `migrations/004_progress_and_private_documents.sql`.
+1. Run `migrations/001_collaboration_v1.sql`, followed by `migrations/002_public_dashboard_overlay_v1.sql`, `migrations/003_collaboration_v1_6_status_and_notes.sql`, `migrations/004_progress_and_private_documents.sql`, and `migrations/005_odx_process_only.sql`.
 2. Run `seed_dashboard.sql` only when the database is not already seeded.
 3. Confirm that the `event-files` bucket remains **Private**.
 4. Keep the tracked browser `config.js` limited to the Supabase Project URL, Publishable Key and other browser-safe settings.

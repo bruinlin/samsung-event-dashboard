@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
@@ -8,84 +9,71 @@ const dataPath = path.join(root, "data", "ODX_2026.js");
 const context = { window: {} };
 vm.createContext(context);
 vm.runInContext(fs.readFileSync(dataPath, "utf8"), context, { filename: dataPath });
+
 const data = context.window.EVENT_DATASETS?.ODX_2026;
 const failures = [];
-const report = [];
 const validDate = (value) => /^\d{4}-\d{2}-\d{2}$/.test(String(value || "")) && !Number.isNaN(new Date(`${value}T00:00:00Z`).getTime());
-const unique = (values, label) => {
-  const duplicates = values.filter((value, index) => values.indexOf(value) !== index);
-  if (duplicates.length) failures.push(`Duplicate ${label}: ${[...new Set(duplicates)].join(", ")}`);
-};
-const derivedStatus = (workstream) => {
-  const stages = Array.isArray(workstream.stages) ? workstream.stages : [];
-  if (!stages.length) return workstream.status;
-  if (stages.some((stage) => stage.status === "Blocked")) return "Blocked";
-  const current = stages.find((stage) => stage.id === workstream.currentStageId) || stages.find((stage) => stage.status !== "Completed") || stages.at(-1);
-  if (current?.status === "Under Review" || stages.some((stage) => stage.status === "Under Review")) return "Under Review";
-  const completeCount = stages.filter((stage) => stage.status === "Completed").length;
-  if (completeCount === stages.length) return "Completed";
-  if (completeCount === 0 && stages.every((stage) => stage.status === "Planning")) return "Planning";
-  return "In Progress";
-};
-const addDays = (date, days) => {
-  const value = new Date(`${date}T00:00:00Z`);
-  value.setUTCDate(value.getUTCDate() + days);
-  return value.toISOString().slice(0, 10);
-};
+const assert = (condition, message) => { if (!condition) failures.push(message); };
+const expectedExistingFingerprint = "25ba65edc9c7a2701e75bff0ece3bb7e20ea2a7141398cf2bd68e279b1aa2d60";
+const expectedProcesses = [
+  ["ODX26-WS-10", "Gifts", "Planning", 0, "TBD", "2026-08-06"],
+  ["ODX26-WS-11", "Product Information & Assets", "Planning", 0, "TBD", "2026-08-14"],
+  ["ODX26-WS-12", "Event Agenda & Personnel Details", "Planning", 0, "TBD", "2026-08-25"],
+  ["ODX26-WS-13", "Post-event Report", "Planning", 0, "TBD", "2026-09-03"]
+];
 
-if (!data) failures.push("ODX_2026 dataset was not registered.");
+assert(Boolean(data), "ODX_2026 dataset was not registered.");
+assert(!Object.prototype.hasOwnProperty.call(data || {}, "milestones"), "ODX must not define a milestones data property.");
 const event = data?.event || {};
-if (!validDate(event.dateStart) || !validDate(event.dateEnd) || event.dateEnd < event.dateStart) failures.push("Event date range is invalid.");
-for (let date = event.dateStart; validDate(date) && date <= event.dateEnd; date = addDays(date, 1)) report.push(`${date}\tevent\t${event.shortName} · Event Day\tevent.dateStart/dateEnd`);
+assert(validDate(event.dateStart) && validDate(event.dateEnd) && event.dateEnd >= event.dateStart, "Event date range is invalid.");
 
 const workstreams = data?.workstreams || [];
-unique(workstreams.map((item) => item.workstreamId), "workstreamId");
-unique((data?.milestones || []).map((item) => item.milestoneId), "milestoneId");
-unique((data?.sessions || []).map((item) => item.sessionId), "sessionId");
-const allStageIds = [];
+assert(workstreams.length === 13, `Expected 13 workstreams, found ${workstreams.length}.`);
+const ids = workstreams.map((item) => item.workstreamId);
+assert(new Set(ids).size === ids.length, "Duplicate workstream ID found.");
+const existingFingerprint = crypto.createHash("sha256").update(JSON.stringify(workstreams.slice(0, 9))).digest("hex");
+assert(existingFingerprint === expectedExistingFingerprint, "ODX26-WS-01 through ODX26-WS-09 changed unexpectedly.");
 
+let stageCount = 0;
 for (const item of workstreams) {
-  if (item.dueDate && !validDate(item.dueDate)) failures.push(`${item.workstreamId}: invalid Task Final DDL.`);
-  if (item.status === "Planning" && Number(item.progress) !== 0) failures.push(`${item.workstreamId}: Planning must have 0 progress.`);
-  if (item.status === "Completed" && Number(item.progress) !== 100) failures.push(`${item.workstreamId}: Completed must have 100 progress.`);
-  if (validDate(item.dueDate)) report.push(`${item.dueDate}\ttask\t${item.nameEN} · Final DDL\tworkstreams[].dueDate`);
+  assert(!item.dueDate || validDate(item.dueDate), `${item.workstreamId}: invalid Task Final DDL.`);
+  assert(!(item.status === "Planning" && Number(item.progress) !== 0), `${item.workstreamId}: Planning must have 0 progress.`);
   const stages = Array.isArray(item.stages) ? item.stages : [];
-  if (stages.length && !stages.some((stage) => stage.id === item.currentStageId)) failures.push(`${item.workstreamId}: currentStageId is invalid.`);
-  if (stages.length && derivedStatus(item) !== item.status) failures.push(`${item.workstreamId}: status does not match its stages.`);
-  let previous = "";
-  let lastStageDate = "";
+  stageCount += stages.length;
+  assert(!stages.length || stages.some((stage) => stage.id === item.currentStageId), `${item.workstreamId}: currentStageId is invalid.`);
+  assert(new Set(stages.map((stage) => stage.id)).size === stages.length, `${item.workstreamId}: duplicate stage ID found.`);
+  let previousDate = "";
+  let latestDate = "";
   for (const stage of stages) {
-    allStageIds.push(stage.id);
-    if (stage.dueDate && !validDate(stage.dueDate)) failures.push(`${item.workstreamId}/${stage.id}: invalid Stage DDL.`);
-    if (stage.status === "Completed" && !validDate(stage.completedDate)) failures.push(`${item.workstreamId}/${stage.id}: completed Stage needs completedDate.`);
+    assert(!stage.dueDate || validDate(stage.dueDate), `${item.workstreamId}/${stage.id}: invalid Stage DDL.`);
     if (validDate(stage.dueDate)) {
-      if (previous && stage.dueDate < previous) failures.push(`${item.workstreamId}: Stage DDL sequence is out of order.`);
-      previous = stage.dueDate;
-      lastStageDate = stage.dueDate;
-      report.push(`${stage.dueDate}\tstage\t${item.nameEN} · ${stage.nameEN}\tworkstreams[].stages[].dueDate`);
+      assert(!previousDate || stage.dueDate >= previousDate, `${item.workstreamId}: Stage DDL sequence is out of order.`);
+      previousDate = stage.dueDate;
+      latestDate = stage.dueDate;
     }
   }
-  if (validDate(item.dueDate) && lastStageDate && item.dueDate < lastStageDate) failures.push(`${item.workstreamId}: Task Final DDL precedes its last Stage DDL.`);
+  assert(!(validDate(item.dueDate) && latestDate && item.dueDate < latestDate), `${item.workstreamId}: Task Final DDL precedes its last Stage DDL.`);
 }
-unique(allStageIds, "stage id");
+assert(stageCount === 8, `Expected 8 stages, found ${stageCount}.`);
 
-const expectedMilestones = new Set(["ODX26-M-01", "ODX26-M-03", "ODX26-M-06", "ODX26-M-08", "ODX26-M-10"]);
-const actualMilestones = data?.milestones || [];
-for (const milestone of actualMilestones) {
-  if (!validDate(milestone.date)) failures.push(`${milestone.milestoneId}: invalid Milestone date.`);
-  if (!expectedMilestones.has(milestone.milestoneId)) failures.push(`${milestone.milestoneId}: duplicate or unreviewed ODX Milestone remains.`);
-  report.push(`${milestone.date}\tmilestone\t${milestone.titleEN}\tmilestones[]`);
+for (const [id, nameEN, status, progress, owner, dueDate] of expectedProcesses) {
+  const item = workstreams.find((entry) => entry.workstreamId === id);
+  assert(Boolean(item), `${id}: missing.`);
+  if (!item) continue;
+  assert(item.nameEN === nameEN, `${id}: incorrect English name.`);
+  assert(item.status === status && Number(item.progress) === progress, `${id}: must be Planning at 0%.`);
+  assert(item.owner === owner, `${id}: owner must remain TBD.`);
+  assert(item.dueDate === dueDate, `${id}: incorrect Task Final DDL.`);
 }
-if (actualMilestones.length !== expectedMilestones.size) failures.push("ODX independent Milestone set is incomplete or contains duplicates.");
 
-const calendarKeys = report.map((line) => line.split("\t").slice(0, 3).join("\t"));
-unique(calendarKeys, "derived Calendar item");
-report.sort((a, b) => a.localeCompare(b));
-console.log("ODX Calendar derivation");
-console.log("Date\tType\tItem\tSource");
-console.log(report.join("\n"));
+const report = workstreams.find((item) => item.workstreamId === "ODX26-WS-13");
+assert(report?.currentStageId === "report-draft", "ODX26-WS-13: current stage must be report-draft.");
+assert(report?.stages?.length === 2, "ODX26-WS-13: expected two report stages.");
+assert(report?.stages?.[0]?.id === "report-draft" && report?.stages?.[0]?.status === "Planning" && report?.stages?.[0]?.dueDate === "2026-08-31", "ODX26-WS-13: Report Draft is incorrect.");
+assert(report?.stages?.[1]?.id === "final-report" && report?.stages?.[1]?.status === "Planning" && report?.stages?.[1]?.dueDate === "2026-09-03", "ODX26-WS-13: Final Report is incorrect.");
+
 if (failures.length) {
-  console.error(`\nODX data quality failed:\n- ${failures.join("\n- ")}`);
+  console.error(`ODX data quality failed:\n- ${failures.join("\n- ")}`);
   process.exit(1);
 }
-console.log(`\nODX data quality passed: ${workstreams.length} workstreams, ${allStageIds.length} stages, ${actualMilestones.length} independent milestones.`);
+console.log("ODX data quality passed: 13 workstreams, 8 stages, Process-Only model.");

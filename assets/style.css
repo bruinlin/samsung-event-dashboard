@@ -407,7 +407,6 @@ select {
 .calendar-item:hover, .calendar-item:focus-visible { border-color: #8eb8e8; background: var(--blue-50); outline: none; }
 .calendar-item.task { border-left-color: #2d82df; }
 .calendar-item.stage { border-left-color: #7d61ad; }
-.calendar-item.milestone { border-left-color: #528c83; }
 .calendar-item.event { border-left-color: #0b67d4; }
 .calendar-item.compact { display: block; padding: 4px 5px; border-radius: 5px; font-size: 10px; line-height: 1.35; overflow-wrap: anywhere; }
 .calendar-item.compact b { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
@@ -680,17 +679,6 @@ a.final-document-name:hover, a.final-document-name:focus-visible { color: var(--
 .session-role { margin-top: 3px; color: var(--ink-500); font-size: 11px; line-height: 1.5; }
 .session-topic { margin-top: 11px; color: var(--ink-700); font-size: 12px; line-height: 1.6; }
 .session-note { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line-soft); color: var(--ink-500); font-size: 11px; }
-
-.timeline { position: relative; padding-left: 2px; }
-.timeline::before { content: ""; position: absolute; left: 8px; top: 6px; bottom: 6px; width: 2px; background: #dce6f1; }
-.timeline-item { position: relative; padding: 0 0 18px 30px; }
-.timeline-item:last-child { padding-bottom: 0; }
-.timeline-dot { position: absolute; left: 1px; top: 3px; width: 16px; height: 16px; border: 4px solid var(--blue-600); border-radius: 50%; background: #fff; }
-.timeline-dot.grey { border-color: #8e9baa; }
-.timeline-dot.amber { border-color: #d19010; }
-.timeline-date { color: var(--ink-500); font-size: 11px; }
-.timeline-title { margin: 3px 0 6px; color: var(--ink-900); font-size: 13px; font-weight: 720; }
-.timeline-note { margin-top: 6px; color: var(--ink-500); font-size: 11px; line-height: 1.5; }
 
 .attention-list { display: grid; gap: 8px; }
 .attention-item { display: flex; align-items: flex-start; justify-content: space-between; gap: 9px; width: 100%; min-height: 76px; padding: 10px 11px; border: 1px solid var(--line-soft); border-left: 3px solid var(--amber); border-radius: 9px; background: #fffdf7; color: var(--ink-700); cursor: pointer; text-align: left; }

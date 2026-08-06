@@ -32,7 +32,6 @@ window.EVENT_DATASETS.ICCAD_2026 = {
     showcasedProducts: "TBD",
     overallStatus: "In Progress",
     reportStatus: "Planning",
-    nextMilestone: "TBD",
     resultMetrics: [],
     showEventCountdown: true,
     officialWebsite: "https://iccad.xmtexpo.com/"
@@ -265,8 +264,6 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       remarks: ""
     }
   ],
-
-  milestones: [],
 
   sessions: [
     {

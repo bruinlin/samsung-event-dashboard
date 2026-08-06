@@ -111,7 +111,7 @@ for (const file of ["data/OCTS_2026.js", "data/ODX_2026.js", "data/ICCAD_2026.js
   vm.createContext(dataContext);
   vm.runInContext(read(file), dataContext, { filename: file });
   const dataset = Object.values(dataContext.window.EVENT_DATASETS || {})[0];
-  for (const entry of [...(dataset?.workstreams || []), ...(dataset?.milestones || []), ...(dataset?.sessions || [])]) {
+  for (const entry of [...(dataset?.workstreams || []), ...(dataset?.sessions || [])]) {
     if (entry.status && !canonicalStatuses.has(entry.status)) fail(`${file} retains unsupported status ${entry.status}.`);
   }
   for (const workstream of dataset?.workstreams || []) {

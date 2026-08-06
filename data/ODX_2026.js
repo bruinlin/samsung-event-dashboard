@@ -1,7 +1,7 @@
 /*
   ODX 2026 数据维护说明
   ====================
-  1. 直接更新 event、keynote、workstreams、milestones 和 sessions 对应字段。
+  1. 直接更新 event、keynote、workstreams 和 sessions 对应字段。
   2. 普通任务使用 status 和 progress（0-100）；有 stages 的任务Status由Stage派生，Workstream Progress由Editor/Admin人工维护，Stage completion仅作为参考。
   3. 未确认信息使用 "TBD"；未知日期保持空字符串，不要推测。
   4. 新增工作项时填写 categoryId、categoryNameCN、categoryNameEN；仅复杂任务配置 stages 和 currentStageId。
@@ -37,7 +37,6 @@ window.EVENT_DATASETS.ODX_2026 = {
     detailedAgenda: "TBD",
     overallStatus: "In Progress",
     reportStatus: "Planning",
-    nextMilestone: "TBD",
     showcasedProducts: "TBD",
     resultMetrics: [],
     officialWebsite: "https://www.odx.top/",
@@ -210,15 +209,76 @@ window.EVENT_DATASETS.ODX_2026 = {
       latestUpdate: "TBD",
       nextAction: "TBD",
       remarks: ""
+    },
+    {
+      workstreamId: "ODX26-WS-10",
+      nameCN: "礼品",
+      nameEN: "Gifts",
+      categoryId: "event-operations-content",
+      categoryNameCN: "活动执行与内容交付",
+      categoryNameEN: "Event Operations & Content",
+      status: "Planning",
+      progress: 0,
+      owner: "TBD",
+      dueDate: "2026-08-06",
+      actualCompletionDate: "",
+      latestUpdate: "TBD",
+      nextAction: "TBD",
+      remarks: ""
+    },
+    {
+      workstreamId: "ODX26-WS-11",
+      nameCN: "产品信息与资产",
+      nameEN: "Product Information & Assets",
+      categoryId: "event-operations-content",
+      categoryNameCN: "活动执行与内容交付",
+      categoryNameEN: "Event Operations & Content",
+      status: "Planning",
+      progress: 0,
+      owner: "TBD",
+      dueDate: "2026-08-14",
+      actualCompletionDate: "",
+      latestUpdate: "TBD",
+      nextAction: "TBD",
+      remarks: ""
+    },
+    {
+      workstreamId: "ODX26-WS-12",
+      nameCN: "活动议程与人员明细收集",
+      nameEN: "Event Agenda & Personnel Details",
+      categoryId: "event-operations-content",
+      categoryNameCN: "活动执行与内容交付",
+      categoryNameEN: "Event Operations & Content",
+      status: "Planning",
+      progress: 0,
+      owner: "TBD",
+      dueDate: "2026-08-25",
+      actualCompletionDate: "",
+      latestUpdate: "TBD",
+      nextAction: "TBD",
+      remarks: ""
+    },
+    {
+      workstreamId: "ODX26-WS-13",
+      nameCN: "会后报告",
+      nameEN: "Post-event Report",
+      categoryId: "social-pr-reporting",
+      categoryNameCN: "传播、公关与报告",
+      categoryNameEN: "Social, PR & Reporting",
+      status: "Planning",
+      progress: 0,
+      stages: [
+        { id: "report-draft", nameCN: "报告初稿", nameEN: "Report Draft", status: "Planning", dueDate: "2026-08-31", completedDate: "" },
+        { id: "final-report", nameCN: "最终报告", nameEN: "Final Report", status: "Planning", dueDate: "2026-09-03", completedDate: "" }
+      ],
+      currentStageId: "report-draft",
+      owner: "TBD",
+      dueDate: "2026-09-03",
+      actualCompletionDate: "",
+      latestUpdate: "TBD",
+      nextAction: "TBD",
+      remarks: ""
     }
-  ],
-
-  milestones: [
-    { milestoneId: "ODX26-M-01", date: "2026-08-06", titleCN: "礼品方案确认", titleEN: "Gift Proposal Confirmation", status: "Planning", remarks: "" },
-    { milestoneId: "ODX26-M-03", date: "2026-08-14", titleCN: "产品信息与资产", titleEN: "Product Information & Assets", status: "Planning", remarks: "" },
-    { milestoneId: "ODX26-M-06", date: "2026-08-25", titleCN: "活动议程与人员明细收集", titleEN: "Event Agenda & Personnel Details Collection", status: "Planning", remarks: "" },
-    { milestoneId: "ODX26-M-08", date: "2026-08-31", titleCN: "会后报告初稿", titleEN: "Report Draft", status: "Planning", remarks: "" },
-    { milestoneId: "ODX26-M-10", date: "2026-09-03", titleCN: "主论坛演讲与会后报告定稿", titleEN: "Main Forum Keynote & Report Final", status: "Planning", remarks: "" }
   ],
 
   sessions: [

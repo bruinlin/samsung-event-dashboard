@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.8.0-web - 2026-08-06
+
+- Adopted the Process-Only model: every executable ODX item is now a Workstream or a Stage, and the Calendar is derived only from Event Day, Task Final DDL, and Stage DDL.
+- Replaced the five remaining ODX dated records with four editable ODX workstreams, including the two-stage Post-event Report process.
+- Removed the deprecated data, Calendar, documentation, SQL-check and runtime rendering paths while retaining the existing event, workstream, session and document structures.
+- Added the idempotent 005 baseline migration for the four new ODX workstreams and two new report stages without changing existing collaboration overlays.
+
 ## 1.7.3-web - 2026-08-06
 
 - Removed ODX Calendar Milestones that duplicated existing Task Final DDLs or Stage DDLs.

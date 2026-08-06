@@ -45,8 +45,7 @@
 
   const CALENDAR_TYPES = [
     { id: "task", label: "Task DDL" },
-    { id: "stage", label: "Stage DDL" },
-    { id: "milestone", label: "Milestone" }
+    { id: "stage", label: "Stage DDL" }
   ];
 
   const state = {
@@ -632,7 +631,7 @@
   }
 
   function calendarItemId(item) {
-    return [item.type, item.date, item.eventId, item.workstreamId || item.milestoneId || "event", item.stageId || ""].join(":");
+    return [item.type, item.date, item.eventId, item.workstreamId || "event", item.stageId || ""].join(":");
   }
 
   function isCompletedStatus(status) {
@@ -685,21 +684,6 @@
         });
       }
     }
-    (data.milestones || []).forEach((milestone) => {
-      if (!isValidDate(milestone.date)) return;
-      items.push({
-        type: "milestone",
-        date: milestone.date,
-        eventId: event.eventId,
-        milestoneId: milestone.milestoneId,
-        status: milestone.status || "Planning",
-        titleEN: "Milestone",
-        titleCN: milestone.titleCN || "Milestone",
-        owner: "",
-        categoryId: "",
-        categoryNameEN: ""
-      });
-    });
     (data.workstreams || []).forEach((item) => {
       const category = categoryFor(item);
       const status = workstreamStatus(item);
@@ -767,7 +751,7 @@
   }
 
   function calendarItemLabel(item, compact = false) {
-    const typeLabel = item.type === "task" ? "Task Final DDL" : item.type === "stage" ? "Stage DDL" : item.type === "milestone" ? "Milestone" : "Event Day";
+    const typeLabel = item.type === "task" ? "Task Final DDL" : item.type === "stage" ? "Stage DDL" : "Event Day";
     if (compact) return `<b>${safeText(item.titleEN)}</b>`;
     return `
       <div class="calendar-item-copy">
@@ -938,9 +922,6 @@
         target.scrollIntoView({ behavior: "smooth", block: "center" });
         window.setTimeout(() => target.classList.remove("calendar-target"), 2200);
       });
-    } else if (item.milestoneId) {
-      const target = document.querySelector(`[data-milestone-id="${CSS.escape(item.milestoneId)}"]`);
-      target?.scrollIntoView({ behavior: "smooth", block: "center" });
     } else {
       document.querySelector(".hero")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -1028,26 +1009,6 @@
         ${session.comments || session.remarks ? `<div class="session-note">${safeText(session.comments || session.remarks, "")}</div>` : ""}
       </article>
     `).join("");
-  }
-
-  function renderMilestones(data) {
-    const milestones = [...data.milestones].sort((a, b) => {
-      if (!a.date && !b.date) return 0;
-      if (!a.date) return 1;
-      if (!b.date) return -1;
-      return a.date.localeCompare(b.date);
-    });
-    $("timeline").innerHTML = milestones.map((item) => {
-      const dotClass = item.status === "Planning" ? "grey" : "";
-      return `
-        <div class="timeline-item" data-milestone-id="${escapeHtml(item.milestoneId || "")}">
-          <span class="timeline-dot ${dotClass}"></span>
-          <div class="timeline-date">${formatDate(item.date)}</div>
-          <div class="timeline-title">${safeText(item.titleCN)}</div>
-          ${statusBadge(item.status)}
-          ${item.comments || item.remarks ? `<div class="timeline-note">${safeText(item.comments || item.remarks, "")}</div>` : ""}
-        </div>`;
-    }).join("");
   }
 
   function renderFinalDocuments(data) {

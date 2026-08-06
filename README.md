@@ -29,7 +29,7 @@ Documents & Deliverables sits directly below Attention Needed in the side column
 
 The static activity files remain the reviewed public baseline. Supabase stores only field-level overrides, their version, updater and update time. The public read-only RPC returns no email, UUID, membership, credential or Storage-object data. A null/unset database field never replaces the static value. Workstream and Stage updates are saved separately: Stage status remains derived, while Workstream Progress is manually maintained. Planning always saves as 0%, Completed always saves as 100%, and the other three statuses accept whole-number values from 0 to 100. Stage completion is displayed as a reference only.
 
-The tracked production `config.js` contains only the Supabase Project URL and browser-safe Publishable Key, so GitHub Pages can load the public Overlay without a build step. Never add a `service_role` key, Secret Key, database password, access token or refresh token to it. Member sign-in uses the Supabase password grant; the legacy Magic Link code remains inactive for a future SMTP-enabled rollout. Run migrations `001` through `004` in order; run `supabase/seed_dashboard.sql` only when the database has not already been seeded. Follow `supabase/README.md` for member management, Storage and deployment setup.
+The tracked production `config.js` contains only the Supabase Project URL and browser-safe Publishable Key, so GitHub Pages can load the public Overlay without a build step. Never add a `service_role` key, Secret Key, database password, access token or refresh token to it. Member sign-in uses the Supabase password grant; the legacy Magic Link code remains inactive for a future SMTP-enabled rollout. Run migrations `001` through `005` in order; run `supabase/seed_dashboard.sql` only when the database has not already been seeded. Follow `supabase/README.md` for member management, Storage and deployment setup.
 
 ### Local member management
 
@@ -47,7 +47,7 @@ node scripts/manage-auth-users.mjs assign-role
 ## Update event data
 
 - `event_data.js` is the root event registry. Add each new event here and point `dataFile` to its local data file.
-- `data/OCTS_2026.js` contains the OCTS 2026 event details, workstreams, milestones, sessions, result metrics, and document references.
+- `data/OCTS_2026.js` contains the OCTS 2026 event details, workstreams, sessions, result metrics, and document references.
 - `data/ODX_2026.js` contains the independent ODX 2026 record. Update this file for ODX progress; do not copy or overwrite OCTS workstreams.
 - `data/ICCAD_2026.js` contains the independent ICCAD 2026 event. It uses the same Calendar, workstream, session, Attention Needed and final-document schema as ODX and OCTS; leave unconfirmed task and stage DDLs as empty strings and do not invent dates.
 - Hero displays optional `event.themeCN` and `event.themeEN` below the event name. When `event.dateEnd` differs from `dateStart`, Hero displays the confirmed event date range. Event Overview groups sponsorship and participation fields, `keynote` details, and Booth/product fields; add optional `keynote.date` only when the specific presentation date is confirmed. Keep unconfirmed values as `TBD` or empty; do not add an English theme unless it is confirmed.
@@ -90,7 +90,16 @@ dueDate: "2026-08-12"
 currentStageId: "first-washing"
 ```
 
-After a task has `stages`, do not manually set a conflicting task `status`: the Dashboard derives parent Status from the stage records. Workstream Progress remains a separate, manually maintained task value and Stage completion is shown as a reference. Calendar entries are generated from task Final DDLs, stage DDLs, milestones, and event dates; do not add a separate calendar data array. Use `milestones` only for independent cross-task decision points. Do not duplicate Event Day, ordinary task Final DDLs, or stage DDLs as milestones because the Calendar already derives those entries.
+After a task has `stages`, do not manually set a conflicting task `status`: the Dashboard derives parent Status from the stage records. Workstream Progress remains a separate, manually maintained task value and Stage completion is shown as a reference.
+
+## Process-Only model
+
+Every executable item must be a Workstream or a Stage. The Calendar is derived only from Event Day, Task Final DDL, and Stage DDL; do not create a separate calendar data array or standalone deadline records.
+
+- Create a Workstream when an item has an owner, status, progress, or an action that needs ongoing management.
+- Create a Stage when the item is a managed step within an existing Workstream.
+- Use Event Day only for the confirmed event date range.
+- Do not duplicate a Task Final DDL or Stage DDL as another dated item.
 
 ## Maintain Documents & Deliverables
 

@@ -42,7 +42,6 @@ window.EVENT_DATASETS.OCTS_2026 = {
     eventType: "行业技术峰会 / 钻石合作伙伴参展",
     overallStatus: "Completed",
     reportStatus: "Completed",
-    nextMilestone: "All workstreams completed",
     showcasedProducts: ["PM1763", "BM1773", "SOCAMM2"],
     officialWebsite: "https://ocpasia.org/",
     resultMetrics: [
@@ -331,21 +330,6 @@ window.EVENT_DATASETS.OCTS_2026 = {
       nextAction: "无；模块已完成。",
       remarks: ""
     }
-  ],
-
-  milestones: [
-    { milestoneId: "M-01", date: "2026-06-20", titleCN: "内部费用审批完成", status: "Completed", remarks: "" },
-    { milestoneId: "M-02", date: "2026-06-22", titleCN: "报价确认邮件", status: "Completed", remarks: "" },
-    { milestoneId: "M-03", date: "2026-07-02", titleCN: "执行手册版本归档", status: "Completed", remarks: "" },
-    { milestoneId: "M-04", date: "2026-07-06", titleCN: "Keynote 与分论坛最终材料归档", status: "Completed", remarks: "" },
-    { milestoneId: "M-05", date: "2026-07-08", titleCN: "Booth 搭建目标", status: "Completed", remarks: "" },
-    { milestoneId: "M-06", date: "2026-07-09", titleCN: "活动日 / 主论坛 / 分论坛 / 领奖", status: "Completed", remarks: "" },
-    { milestoneId: "M-07", date: "2026-07-09", titleCN: "会后报告数据截点", status: "Completed", remarks: "" },
-    { milestoneId: "M-08", date: "2026-07-10", titleCN: "Recap video 计划发布", status: "Completed", remarks: "" },
-    { milestoneId: "M-09", date: "", titleCN: "Speaker 确认日期", status: "Completed", remarks: "" },
-    { milestoneId: "M-10", date: "", titleCN: "合同签署", status: "Completed", remarks: "" },
-    { milestoneId: "M-11", date: "", titleCN: "Booth 设计冻结", status: "Completed", remarks: "" },
-    { milestoneId: "M-12", date: "", titleCN: "付款 / 报销完成", status: "Completed", remarks: "" }
   ],
 
   sessions: [
