@@ -999,13 +999,14 @@
       <article class="session-card">
         <div class="session-top">
           <div>
-            <div class="session-type">${safeText(session.type)} · ${safeText(session.time)}</div>
+            <div class="session-type">${[session.type, isValidDate(session.date) ? formatDate(session.date) : "", session.time].filter(Boolean).map((item) => safeText(item)).join(" · ")}</div>
             <div class="session-speaker">${safeText(session.speaker)}</div>
             <div class="session-role">${safeText(session.role)}</div>
           </div>
           ${statusBadge(session.status)}
         </div>
         <div class="session-topic"><b>${safeText(session.topicEN)}</b><br>${safeText(session.topicCN)}</div>
+        ${Array.isArray(session.subTopics) && session.subTopics.filter(Boolean).length ? `<div class="session-subtopics"><span>Topics</span><ul>${session.subTopics.filter(Boolean).map((topic) => `<li>${safeText(topic)}</li>`).join("")}</ul></div>` : ""}
         ${session.comments || session.remarks ? `<div class="session-note">${safeText(session.comments || session.remarks, "")}</div>` : ""}
       </article>
     `).join("");

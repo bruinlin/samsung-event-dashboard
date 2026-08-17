@@ -678,6 +678,9 @@ a.final-document-name:hover, a.final-document-name:focus-visible { color: var(--
 .session-speaker { margin-top: 5px; color: var(--ink-900); font-size: 15px; font-weight: 720; }
 .session-role { margin-top: 3px; color: var(--ink-500); font-size: 11px; line-height: 1.5; }
 .session-topic { margin-top: 11px; color: var(--ink-700); font-size: 12px; line-height: 1.6; }
+.session-subtopics { margin-top: 9px; padding-top: 8px; border-top: 1px solid var(--line-soft); }
+.session-subtopics > span { color: var(--ink-500); font-size: 10px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
+.session-subtopics ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 12px; margin: 6px 0 0; padding-left: 16px; color: var(--ink-700); font-size: 11px; line-height: 1.45; }
 .session-note { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line-soft); color: var(--ink-500); font-size: 11px; }
 
 .attention-list { display: grid; gap: 8px; }

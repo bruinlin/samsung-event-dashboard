@@ -14,7 +14,7 @@ window.EVENT_DATASETS = window.EVENT_DATASETS || {};
 window.EVENT_DATASETS.ODX_2026 = {
   meta: {
     schemaVersion: "1.8",
-    lastUpdated: "2026-08-06",
+    lastUpdated: "2026-08-17",
     updatedBy: "Bruin"
   },
 
@@ -29,11 +29,18 @@ window.EVENT_DATASETS.ODX_2026 = {
     venue: "北京国家会议中心二期",
     eventType: "行业技术大会",
     sponsorshipLevel: "Diamond Sponsor / 钻石赞助",
-    participationForms: ["主论坛", "分论坛", "Booth"],
+    participationForms: [
+      "Main Forum Keynote / 主论坛演讲",
+      "Official Breakout Session / 官方分论坛",
+      "On-site Tech Forum / 现场技术论坛",
+      "Hero Live Demo / Hero Live 演示",
+      "Tech Article / 技术文章",
+      "Booth"
+    ],
     showParticipationInHero: true,
     themeCN: "开放AI Infra，普惠算力赋能",
     boothArea: "36㎡",
-    boothNumber: "TBD",
+    boothNumber: "B9",
     detailedAgenda: "TBD",
     overallStatus: "In Progress",
     reportStatus: "Planning",
@@ -106,7 +113,7 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "Bruin & Leo",
       dueDate: "2026-08-26",
       actualCompletionDate: "",
-      latestUpdate: "TBD",
+      latestUpdate: "Keynote draft v0.2 under development. Current storyline covers Agentic AI, Token Economy, KV Cache, AI memory hierarchy, PCIe Gen6 / QLC SSD and zNAND-O.",
       nextAction: "TBD",
       remarks: ""
     },
@@ -285,12 +292,32 @@ window.EVENT_DATASETS.ODX_2026 = {
     {
       sessionId: "ODX-SESSION-01",
       type: "Breakout Session",
-      speaker: "TBD",
+      speaker: "何兴",
       role: "TBD",
       topicEN: "TBD",
-      topicCN: "TBD",
+      topicCN: "解耦·共享·增效：CXL内存池化的场景验证",
+      date: "2026-09-04",
       time: "TBD",
       status: "Planning",
+      remarks: ""
+    },
+    {
+      sessionId: "ODX-ONSITE-01",
+      type: "On-site Tech Forum",
+      speaker: "Michael Feng",
+      role: "TBD",
+      date: "2026-09-03",
+      topicEN: "TBD",
+      topicCN: "关于Server SSD在KV Cache Offloading场景下，应用FDP后所产生的效果",
+      time: "TBD",
+      status: "Planning",
+      subTopics: [
+        "CXL Memory Pooling",
+        "MoE offloading Project",
+        "MySQL+QLC project",
+        "KV Cache with Seemless FDP",
+        "AiSIO"
+      ],
       remarks: ""
     }
   ],

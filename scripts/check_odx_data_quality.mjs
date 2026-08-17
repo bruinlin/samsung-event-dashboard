@@ -14,7 +14,7 @@ const data = context.window.EVENT_DATASETS?.ODX_2026;
 const failures = [];
 const validDate = (value) => /^\d{4}-\d{2}-\d{2}$/.test(String(value || "")) && !Number.isNaN(new Date(`${value}T00:00:00Z`).getTime());
 const assert = (condition, message) => { if (!condition) failures.push(message); };
-const expectedExistingFingerprint = "25ba65edc9c7a2701e75bff0ece3bb7e20ea2a7141398cf2bd68e279b1aa2d60";
+const expectedExistingFingerprint = "43bc64115af793ee8f2e05d93963e5383a903974d6fe70d3d24d799982ebb2d4";
 const expectedProcesses = [
   ["ODX26-WS-10", "Gifts", "Planning", 0, "TBD", "2026-08-06"],
   ["ODX26-WS-11", "Product Information & Assets", "Planning", 0, "TBD", "2026-08-14"],

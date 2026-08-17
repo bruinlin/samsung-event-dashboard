@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.8.1-web - 2026-08-17
+
+- ODX 2026: updated booth number, participation forms, breakout session and on-site tech forum information.
+
 ## 1.8.0-web - 2026-08-06
 
 - Adopted the Process-Only model: every executable ODX item is now a Workstream or a Stage, and the Calendar is derived only from Event Day, Task Final DDL, and Stage DDL.
