@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.8.2-web - 2026-08-17
+
+- ODX 2026: refreshed all existing workstream progress, status, latest updates and next actions based on current project development.
+
 ## 1.8.1-web - 2026-08-17
 
 - ODX 2026: updated booth number, participation forms, breakout session and on-site tech forum information.

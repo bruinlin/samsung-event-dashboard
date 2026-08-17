@@ -283,14 +283,16 @@
       if (row.owner_set) item.owner = row.owner || "";
       if (row.latest_update_set) item.latestUpdate = row.latest_update || "";
       if (row.next_action_set) item.nextAction = row.next_action || "";
-      item._collaboration = {
-        version: Number(row.version || 1),
-        updatedAt: row.updated_at || "",
-        updatedBy: row.updated_by_name || "",
-        latestUpdateSet: Boolean(row.latest_update_set),
-        nextActionSet: Boolean(row.next_action_set),
-        progressSet: Boolean(row.progress_set)
-      };
+      if (row.status_set || row.progress_set || row.due_date_set || row.owner_set || row.latest_update_set || row.next_action_set) {
+        item._collaboration = {
+          version: Number(row.version || 1),
+          updatedAt: row.updated_at || "",
+          updatedBy: row.updated_by_name || "",
+          latestUpdateSet: Boolean(row.latest_update_set),
+          nextActionSet: Boolean(row.next_action_set),
+          progressSet: Boolean(row.progress_set)
+        };
+      }
     });
     (overlay?.stages || []).forEach((row) => {
       const item = workstreams.get(row.workstream_id);
@@ -300,11 +302,13 @@
       if (row.due_date_set) stage.dueDate = row.due_date || "";
       if (row.owner_set) stage.owner = row.owner || "";
       if (row.completed_date_set) stage.completedDate = row.completed_date || "";
-      stage._collaboration = {
-        version: Number(row.version || 1),
-        updatedAt: row.updated_at || "",
-        updatedBy: row.updated_by_name || ""
-      };
+      if (row.status_set || row.due_date_set || row.owner_set || row.completed_date_set) {
+        stage._collaboration = {
+          version: Number(row.version || 1),
+          updatedAt: row.updated_at || "",
+          updatedBy: row.updated_by_name || ""
+        };
+      }
     });
     return data;
   }

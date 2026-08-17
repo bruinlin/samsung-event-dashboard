@@ -57,7 +57,7 @@ window.EVENT_DATASETS.ODX_2026 = {
     time: "10:30-10:45",
     topicEN: "TBD",
     topicCN: "TBD",
-    status: "Planning"
+    status: "In Progress"
   },
 
   workstreams: [
@@ -69,12 +69,12 @@ window.EVENT_DATASETS.ODX_2026 = {
       categoryNameCN: "活动执行与内容交付",
       categoryNameEN: "Event Operations & Content",
       status: "In Progress",
-      progress: 50,
+      progress: 80,
       owner: "Bruin",
       dueDate: "2026-08-10",
       actualCompletionDate: "",
-      latestUpdate: "TBD",
-      nextAction: "Complete and confirm the detailed agenda by August 21.",
+      latestUpdate: "Event dates, venue, Diamond sponsorship, Booth B9 and participation structure confirmed. Main Forum Keynote, Official Breakout Session and On-site Tech Forum information are now available.",
+      nextAction: "Complete the remaining detailed agenda, booth program timing and other TBD event information.",
       remarks: ""
     },
     {
@@ -89,7 +89,7 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "Bruin & Leo",
       dueDate: "2026-07-22",
       actualCompletionDate: "2026-07-22",
-      latestUpdate: "Jay Hyun, CVP, NAND Product Planning, Samsung Electronics",
+      latestUpdate: "Jay Hyun confirmed for Main Forum Keynote; 何兴 confirmed for Official Breakout Session; Michael Feng confirmed for On-site Tech Forum.",
       nextAction: "/",
       remarks: ""
     },
@@ -100,21 +100,21 @@ window.EVENT_DATASETS.ODX_2026 = {
       categoryId: "event-operations-content",
       categoryNameCN: "活动执行与内容交付",
       categoryNameEN: "Event Operations & Content",
-      status: "Planning",
-      progress: 0,
+      status: "In Progress",
+      progress: 30,
       stages: [
-        { id: "initial-draft", nameCN: "初稿", nameEN: "Initial Draft", status: "Planning", dueDate: "2026-08-10", completedDate: "" },
-        { id: "first-washing", nameCN: "第一次 Washing", nameEN: "First Washing", status: "Planning", dueDate: "2026-08-14", completedDate: "" },
+        { id: "initial-draft", nameCN: "初稿", nameEN: "Initial Draft", status: "Completed", dueDate: "2026-08-10", completedDate: "" },
+        { id: "first-washing", nameCN: "第一次 Washing", nameEN: "First Washing", status: "In Progress", dueDate: "2026-08-14", completedDate: "" },
         { id: "internal-review", nameCN: "复审", nameEN: "Internal Review", status: "Planning", dueDate: "2026-08-19", completedDate: "" },
         { id: "second-revision", nameCN: "第二次修改", nameEN: "Second Revision", status: "Planning", dueDate: "2026-08-24", completedDate: "" },
         { id: "final-approval", nameCN: "最终确认", nameEN: "Final Approval", status: "Planning", dueDate: "2026-08-26", completedDate: "" }
       ],
-      currentStageId: "initial-draft",
+      currentStageId: "first-washing",
       owner: "Bruin & Leo",
       dueDate: "2026-08-26",
       actualCompletionDate: "",
-      latestUpdate: "Keynote draft v0.2 under development. Current storyline covers Agentic AI, Token Economy, KV Cache, AI memory hierarchy, PCIe Gen6 / QLC SSD and zNAND-O.",
-      nextAction: "TBD",
+      latestUpdate: "Keynote draft v0.2 is under development. Storyline currently covers Agentic AI, Token Economy, KV Cache, AI memory hierarchy, PCIe Gen6 / QLC SSD and zNAND-O. Multiple storyline, benchmark and animation revisions remain open.",
+      nextAction: "Complete current content washing and resolve storyline bridges, final title, Kimi K3 benchmark, video revisions and remaining technical comments before internal review.",
       remarks: ""
     },
     {
@@ -125,12 +125,12 @@ window.EVENT_DATASETS.ODX_2026 = {
       categoryNameCN: "商务与商业管理",
       categoryNameEN: "Business & Commercial",
       status: "In Progress",
-      progress: 30,
+      progress: 90,
       owner: "媛媛 & Dennis",
       dueDate: "2026-08-10",
       actualCompletionDate: "",
-      latestUpdate: "TBD",
-      nextAction: "TBD",
+      latestUpdate: "Quotation is nearly finalized based on the latest ODX booth and operation scope. Only DSK confirmation remains outstanding.",
+      nextAction: "Obtain final DSK confirmation and close the quotation.",
       remarks: ""
     },
     {
@@ -145,8 +145,8 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "媛媛 & Dennis",
       dueDate: "2026-09-20",
       actualCompletionDate: "",
-      latestUpdate: "TBD",
-      nextAction: "TBD",
+      latestUpdate: "Contract remains in progress. No newer confirmed signing milestone is available in the current project materials.",
+      nextAction: "Confirm current contract approval/signing status and validate the final contract DDL, especially the current 2026-09-20 date.",
       remarks: ""
     },
     {
@@ -157,12 +157,12 @@ window.EVENT_DATASETS.ODX_2026 = {
       categoryNameCN: "活动执行与内容交付",
       categoryNameEN: "Event Operations & Content",
       status: "In Progress",
-      progress: 30,
+      progress: 60,
       owner: "媛媛 & Dennis",
       dueDate: "2026-08-14",
       actualCompletionDate: "",
-      latestUpdate: "TBD",
-      nextAction: "TBD",
+      latestUpdate: "Booth Design V5 issued. Core 6m × 6m layout is established with central round showcase, 75-inch presentation screen, 65-inch signage, poster walls, reception and meeting/presentation area.",
+      nextAction: "Confirm final system demo list and physical showcase list, then integrate technical content, On-site Forum operation and final display assets into the next booth revision.",
       remarks: ""
     },
     {
@@ -172,17 +172,17 @@ window.EVENT_DATASETS.ODX_2026 = {
       categoryId: "social-pr-reporting",
       categoryNameCN: "传播、公关与报告",
       categoryNameEN: "Social, PR & Reporting",
-      status: "Planning",
-      progress: 0,
+      status: "In Progress",
+      progress: 20,
       stages: [
-        { id: "planning-draft", nameCN: "计划初稿", nameEN: "Planning Draft", status: "Planning", dueDate: "2026-08-19", completedDate: "" }
+        { id: "planning-draft", nameCN: "计划初稿", nameEN: "Planning Draft", status: "In Progress", dueDate: "2026-08-19", completedDate: "" }
       ],
       currentStageId: "planning-draft",
       owner: "Seloma",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "TBD",
-      nextAction: "TBD",
+      latestUpdate: "Initial booth social interaction mechanism has been proposed in the Operation Plan, including follow / like / comment interaction and gift incentive. Posting schedule remains pending Social team confirmation.",
+      nextAction: "Complete the social planning draft by Aug. 19; confirm platform/posting schedule, session promotion, onsite CTA, content capture and gift interaction mechanics.",
       remarks: ""
     },
     {
@@ -197,8 +197,8 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "Iris & Christy",
       dueDate: "2026-09-02",
       actualCompletionDate: "",
-      latestUpdate: "TBD",
-      nextAction: "TBD",
+      latestUpdate: "No confirmed PR / media execution plan has been identified in the current materials.",
+      nextAction: "Define PR and media scope, pre-event / onsite / post-event communication plan, approval flow and relationship with the planned Tech Article.",
       remarks: ""
     },
     {
@@ -208,13 +208,13 @@ window.EVENT_DATASETS.ODX_2026 = {
       categoryId: "event-operations-content",
       categoryNameCN: "活动执行与内容交付",
       categoryNameEN: "Event Operations & Content",
-      status: "Planning",
-      progress: 0,
+      status: "In Progress",
+      progress: 40,
       owner: "Bruin",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "TBD",
-      nextAction: "TBD",
+      latestUpdate: "Operation Plan draft is available, covering guest flow, booth interaction, materials, gift mechanics and initial Ogilvy onsite staffing. Michael Feng and five On-site Tech Forum topics are now confirmed.",
+      nextAction: "Update the Operation Plan with latest forum/session information; finalize forum schedule, demo operation, staffing duty matrix, equipment list, rehearsal plan and onsite SOP.",
       remarks: ""
     },
     {
@@ -224,13 +224,13 @@ window.EVENT_DATASETS.ODX_2026 = {
       categoryId: "event-operations-content",
       categoryNameCN: "活动执行与内容交付",
       categoryNameEN: "Event Operations & Content",
-      status: "Planning",
-      progress: 0,
+      status: "In Progress",
+      progress: 80,
       owner: "TBD",
       dueDate: "2026-08-06",
       actualCompletionDate: "",
-      latestUpdate: "TBD",
-      nextAction: "TBD",
+      latestUpdate: "Final gift selection has been confirmed. Gift plan and usage are defined; procurement remains outstanding.",
+      nextAction: "Complete gift procurement and confirm quantity, delivery schedule and onsite allocation.",
       remarks: ""
     },
     {
@@ -240,13 +240,13 @@ window.EVENT_DATASETS.ODX_2026 = {
       categoryId: "event-operations-content",
       categoryNameCN: "活动执行与内容交付",
       categoryNameEN: "Event Operations & Content",
-      status: "Planning",
-      progress: 0,
+      status: "In Progress",
+      progress: 20,
       owner: "TBD",
       dueDate: "2026-08-14",
       actualCompletionDate: "",
-      latestUpdate: "TBD",
-      nextAction: "TBD",
+      latestUpdate: "Physical showcase list is still under confirmation. Keynote content currently includes PM1763, 256TB QLC / BM1773 and zNAND-O technology, but the final booth display product list remains TBD.",
+      nextAction: "Confirm the final physical showcase list with HQ / technical teams and collect approved product names, key messages, samples or mockups, images and public-use assets.",
       remarks: ""
     },
     {
@@ -256,13 +256,13 @@ window.EVENT_DATASETS.ODX_2026 = {
       categoryId: "event-operations-content",
       categoryNameCN: "活动执行与内容交付",
       categoryNameEN: "Event Operations & Content",
-      status: "Planning",
-      progress: 0,
+      status: "In Progress",
+      progress: 50,
       owner: "TBD",
       dueDate: "2026-08-25",
       actualCompletionDate: "",
-      latestUpdate: "TBD",
-      nextAction: "TBD",
+      latestUpdate: "Main Forum Keynote is confirmed for Sep. 3 at 10:30–10:45. 何兴 is confirmed for the Sep. 4 Breakout Session and Michael Feng for the Sep. 3 On-site Tech Forum. Initial Ogilvy onsite staff list is available.",
+      nextAction: "Confirm Breakout and On-site Forum time slots, speaker roles/titles, Samsung onsite personnel, full three-day run sheet and technical/demo staffing details.",
       remarks: ""
     },
     {
@@ -282,8 +282,8 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "TBD",
       dueDate: "2026-09-03",
       actualCompletionDate: "",
-      latestUpdate: "TBD",
-      nextAction: "TBD",
+      latestUpdate: "Post-event reporting has not started. Current dashboard DDLs for report draft (Aug. 31) and final report (Sep. 3) occur before the event is completed and require confirmation.",
+      nextAction: "Reconfirm report DDLs, define report structure and metrics, and assign onsite data/photo/result collection responsibilities before the event.",
       remarks: ""
     }
   ],
