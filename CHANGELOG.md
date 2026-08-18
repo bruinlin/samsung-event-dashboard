@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.8.5-web - 2026-08-18
+
+- Hero Result Metrics use one five-card row on desktop, while retaining responsive wrapping on narrow screens.
+
 ## 1.8.4-web - 2026-08-18
 
 - ODX 2026: added five pre-event Hero result metric placeholders for booth traffic, onsite forum attendance, follower growth, PR coverage and tech article views.
