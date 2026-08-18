@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.8.4-web - 2026-08-18
+
+- ODX 2026: added five pre-event Hero result metric placeholders for booth traffic, onsite forum attendance, follower growth, PR coverage and tech article views.
+
+## 1.8.3-web - 2026-08-18
+
+- ODX 2026: added bilingual Main Forum Keynote speaker and title information.
+
 ## 1.8.2-web - 2026-08-17
 
 - ODX 2026: refreshed all existing workstream progress, status, latest updates and next actions based on current project development.

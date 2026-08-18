@@ -356,9 +356,7 @@
       ? `Live updated <b>${formatLiveTimestamp(liveUpdate.updatedAt)}</b><br>Updated by <b>${safeText(liveUpdate.updatedBy || "Member")}</b><br><small>Baseline updated ${formatDate(data.meta.lastUpdated)}</small>`
       : `Last updated <b>${formatDate(data.meta.lastUpdated)}</b><br>Updated by <b>${safeText(data.meta.updatedBy)}</b>`;
 
-    const resultMetrics = event.overallStatus === "Completed" && Array.isArray(event.resultMetrics)
-      ? event.resultMetrics
-      : [];
+    const resultMetrics = Array.isArray(event.resultMetrics) ? event.resultMetrics : [];
     $("hero-results").hidden = resultMetrics.length === 0;
     $("hero-results").innerHTML = resultMetrics.map((item) => `
       <div class="hero-result-item">
@@ -382,18 +380,22 @@
     const products = Array.isArray(event.showcasedProducts) ? event.showcasedProducts.filter(Boolean).join(" · ") : String(event.showcasedProducts || "").trim();
     const presentationLabelEN = String(keynote.labelEN || "Main Forum Keynote").trim();
     const presentationLabelCN = String(keynote.labelCN || "主论坛演讲").trim();
+    const speakerCN = String(keynote.speakerCN || "").trim();
+    const titleCN = String(keynote.titleCN || "").trim();
+    const speakerText = [keynote.speaker, speakerCN].filter(Boolean).join(" / ");
+    const titleText = [keynote.title, titleCN].filter(Boolean).join(" / ");
     const presenterMarkup = keynote.showFieldLabels
-      ? `<span><small>Presenter</small><b>${safeText(keynote.speaker)}</b></span>`
-      : (keynote.speaker ? `<b>${safeText(keynote.speaker)}</b>` : "");
+      ? `<span><small>Presenter</small><b>${safeText(speakerText)}</b></span>`
+      : (speakerText ? `<b>${safeText(speakerText)}</b>` : "");
     const titleMarkup = keynote.showFieldLabels
-      ? `<span><small>Title / Department</small><b>${safeText(keynote.title)}</b></span>`
-      : (keynote.title ? `<span>${safeText(keynote.title)}</span>` : "");
+      ? `<span><small>Title / Department</small><b>${safeText(titleText)}</b></span>`
+      : (titleText ? `<span>${safeText(titleText)}</span>` : "");
     const scheduleMarkup = keynoteSchedule
       ? (keynote.showFieldLabels ? `<span><small>Presentation Time</small><b>${safeText(keynoteSchedule)}</b></span>` : `<time>${safeText(keynoteSchedule)}</time>`)
       : "";
     const statusMarkup = keynote.showStatus ? `<span><small>Status</small>${statusBadge(keynote.status)}</span>` : "";
     const groups = [
-      (keynote.speaker || keynote.title || keynoteSchedule || topicCN || topicEN || keynote.showStatus) ? `<article class="overview-group keynote-group">
+      (speakerText || titleText || keynoteSchedule || topicCN || topicEN || keynote.showStatus) ? `<article class="overview-group keynote-group">
         <h3>${safeText(presentationLabelEN)} <span>/ ${safeText(presentationLabelCN)}</span></h3>
         ${(presenterMarkup || titleMarkup) ? `<div class="presentation-profile">${presenterMarkup}${titleMarkup}</div>` : ""}
         ${(scheduleMarkup || statusMarkup) ? `<div class="presentation-meta">${scheduleMarkup}${statusMarkup}</div>` : ""}

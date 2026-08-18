@@ -14,7 +14,7 @@ window.EVENT_DATASETS = window.EVENT_DATASETS || {};
 window.EVENT_DATASETS.ODX_2026 = {
   meta: {
     schemaVersion: "1.8",
-    lastUpdated: "2026-08-17",
+    lastUpdated: "2026-08-18",
     updatedBy: "Bruin"
   },
 
@@ -45,14 +45,42 @@ window.EVENT_DATASETS.ODX_2026 = {
     overallStatus: "In Progress",
     reportStatus: "Planning",
     showcasedProducts: "TBD",
-    resultMetrics: [],
+    resultMetrics: [
+      {
+        label: "Booth Visitors / 展位访问",
+        value: "TBD",
+        note: "Total booth visitors during the event"
+      },
+      {
+        label: "On-site Forum Attendees / 现场论坛参与人次",
+        value: "TBD",
+        note: "Total attendance across On-site Tech Forum sessions"
+      },
+      {
+        label: "New Followers / 新增粉丝",
+        value: "TBD",
+        note: "New social followers generated during the event"
+      },
+      {
+        label: "PR Article Coverage / PR文章覆盖数量",
+        value: "TBD",
+        note: "Number of published PR / media coverage articles"
+      },
+      {
+        label: "Tech Article Views / 技术文章阅读量",
+        value: "TBD",
+        note: "Total views of the ODX technical article"
+      }
+    ],
     officialWebsite: "https://www.odx.top/",
     currentSummary: "2026 ODX 计划于 2026 年 9 月 2 日至 4 日在北京国家会议中心二期举行。三星将以钻石赞助参与主论坛、分论坛及 Booth；分论坛、展出产品、展位号和详细议程等信息待确认。"
   },
 
   keynote: {
     speaker: "Jay Hyun",
+    speakerCN: "玄在雄",
     title: "CVP, NAND Product Planning, Samsung Electronics",
+    titleCN: "三星电子解决方案产品与开发团队副总裁",
     date: "2026-09-03",
     time: "10:30-10:45",
     topicEN: "TBD",
