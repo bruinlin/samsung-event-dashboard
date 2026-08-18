@@ -29,3 +29,8 @@ __pycache__/
 !.env.example
 !.env.admin.example
 *.log
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
