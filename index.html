@@ -270,11 +270,25 @@
     </form>
   </dialog>
 
+  <dialog class="modal-dialog calendar-overdue-dialog" id="calendar-overdue-dialog" aria-labelledby="calendar-overdue-title">
+    <div class="modal-heading">
+      <div>
+        <h2 id="calendar-overdue-title">Overdue DDLs / 已逾期截止事项</h2>
+        <p id="calendar-overdue-subtitle">仅显示当前筛选范围内未完成的任务与阶段。</p>
+      </div>
+      <button class="modal-close" id="calendar-overdue-close" type="button" aria-label="Close">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="calendar-overdue-list" id="calendar-overdue-list"></div>
+    </div>
+  </dialog>
+
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="config.js"></script>
   <script src="event_data.js?v=1.8.4"></script>
-  <script src="assets/collaboration.js?v=1.8.2"></script>
-  <script src="assets/app.js?v=1.8.4"></script>
+  <script src="assets/workflow-state.js?v=1.8.6"></script>
+  <script src="assets/collaboration.js?v=1.8.6"></script>
+  <script src="assets/app.js?v=1.8.6"></script>
 </body>
 </html>

@@ -202,8 +202,11 @@ window.EVENT_DATASETS.ODX_2026 = {
       categoryNameEN: "Social, PR & Reporting",
       status: "In Progress",
       progress: 20,
+      workflow: "social-publication",
       stages: [
-        { id: "planning-draft", nameCN: "计划初稿", nameEN: "Planning Draft", status: "In Progress", dueDate: "2026-08-19", completedDate: "" }
+        { id: "planning-draft", workflowStep: "planning", nameCN: "计划初稿", nameEN: "Planning Draft", status: "In Progress", dueDate: "2026-08-19", completedDate: "" },
+        { id: "draft", workflowStep: "draft", nameCN: "内容初稿", nameEN: "Content Draft", status: "Planning", dueDate: "", completedDate: "" },
+        { id: "publish", workflowStep: "publish", nameCN: "发布", nameEN: "Publish", status: "Planning", dueDate: "", completedDate: "" }
       ],
       currentStageId: "planning-draft",
       owner: "Seloma",

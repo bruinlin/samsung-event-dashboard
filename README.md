@@ -92,6 +92,8 @@ currentStageId: "first-washing"
 
 After a task has `stages`, do not manually set a conflicting task `status`: the Dashboard derives parent Status from the stage records. Workstream Progress remains a separate, manually maintained task value and Stage completion is shown as a reference.
 
+For the Social Communication workflow, retain the stable `planning-draft` stage ID and use its three ordered stages as `Planning Draft → Content Draft → Publish`. Parent completion is derived only when every stage is completed. A past, incomplete Task or Stage DDL is displayed as `Overdue` across the Workstream, Calendar and drill-down views; it is a calculated warning, not a new persisted status. Leave unconfirmed Draft or Publish DDLs blank.
+
 ## Process-Only model
 
 Every executable item must be a Workstream or a Stage. The Calendar is derived only from Event Day, Task Final DDL, and Stage DDL; do not create a separate calendar data array or standalone deadline records.

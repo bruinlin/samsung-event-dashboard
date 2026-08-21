@@ -8,7 +8,8 @@
     "In Progress": ["In Progress", "blue"],
     "Under Review": ["Under Review", "purple"],
     "Completed": ["Completed", "green"],
-    "Blocked": ["Blocked", "red"]
+    "Blocked": ["Blocked", "red"],
+    "Overdue": ["Overdue", "red"]
   };
 
   const STATUS_COUNT_LABELS = {
@@ -69,7 +70,8 @@
     calendarSelectedDate: "",
     calendarItems: [],
     calendarValidationSignature: "",
-    attentionItems: []
+    attentionItems: [],
+    calendarOverdueItems: []
   };
 
   const $ = (id) => document.getElementById(id);
@@ -253,7 +255,7 @@
   }
 
   function stagesFor(item) {
-    return Array.isArray(item.stages) && item.stages.length ? item.stages : [];
+    return window.DashboardWorkflow.stagesFor(item);
   }
 
   function defaultCalendarMonth(data) {
@@ -283,23 +285,19 @@
   }
 
   function currentStageFor(item) {
-    const stages = stagesFor(item);
-    if (!stages.length) return null;
-    const configured = stages.find((stage) => stage.id === item.currentStageId);
-    if (configured) return configured;
-    return stages.find((stage) => stage.status !== "Completed") || stages[stages.length - 1];
+    return window.DashboardWorkflow.currentStageFor(item);
   }
 
   function workstreamStatus(item) {
-    const stages = stagesFor(item);
-    if (!stages.length) return item.status;
-    if (stages.some((stage) => stage.status === "Blocked")) return "Blocked";
-    const currentStage = currentStageFor(item);
-    if (currentStage?.status === "Under Review" || stages.some((stage) => stage.status === "Under Review")) return "Under Review";
-    const completed = stages.filter((stage) => stage.status === "Completed").length;
-    if (completed === stages.length) return "Completed";
-    if (completed === 0 && stages.every((stage) => stage.status === "Planning")) return "Planning";
-    return "In Progress";
+    return window.DashboardWorkflow.workstreamStatus(item);
+  }
+
+  function workstreamDisplayStatus(item) {
+    return window.DashboardWorkflow.displayWorkstreamStatus(item, todayIso());
+  }
+
+  function stageDisplayStatus(stage) {
+    return window.DashboardWorkflow.displayStageStatus(stage, todayIso());
   }
 
   function workstreamProgress(item) {
@@ -532,6 +530,7 @@
         ${stages.map((stage) => {
           const isCurrent = stage.id === currentStageFor(item)?.id;
           const stageStatus = stage.status || "Planning";
+          const displayedStatus = stageDisplayStatus(stage);
           const symbol = stageStatus === "Completed" ? "✓" : isCurrent ? "●" : "○";
           return `<div class="stage-item ${escapeHtml(stageStatus.toLowerCase().replaceAll(" ", "-"))} ${isCurrent ? "current" : ""}">
             <span class="stage-symbol" aria-hidden="true">${symbol}</span>
@@ -539,7 +538,7 @@
               <b>${safeText(stage.nameEN)}</b>
               <span>${safeText(stage.nameCN)}</span>
               <div class="stage-meta">
-                <span>Status: <b>${safeText(stageStatus)}</b></span>
+                <span>Status: <b>${safeText(stageStatus)}${displayedStatus === "Overdue" ? " · Overdue" : ""}</b></span>
                 <span>DDL: <b>${formatDeadline(stage.dueDate)}</b></span>
                 ${stage.owner ? `<span>Owner: <b>${safeText(stage.owner)}</b></span>` : ""}
                 ${stage.completedDate ? `<span>Completed: <b>${formatDate(stage.completedDate)}</b></span>` : stageStatus === "Completed" ? `<span>Completed: <b>Missing Date</b></span>` : ""}
@@ -591,7 +590,7 @@
           <div class="workstream-en">${safeText(item.nameEN)}</div>
           <div class="workstream-id">${id}</div>
         </td>
-        <td data-label="Status">${statusBadge(workstreamStatus(item))}${currentStageMarkup}</td>
+        <td data-label="Status">${statusBadge(workstreamDisplayStatus(item))}${currentStageMarkup}</td>
         <td data-label="Progress">${progressCell(item)}</td>
         <td data-label="Owner / Final DDL">
           ${item.owner ? `<div class="date-stack"><span>${safeText(item.owner)}</span></div>` : ""}
@@ -696,6 +695,7 @@
           eventId: event.eventId,
           workstreamId: item.workstreamId,
           status,
+          displayStatus: workstreamDisplayStatus(item),
           titleEN: `${item.nameEN} · Final DDL`,
           titleCN: `${item.nameCN} · 最终截止`,
           taskNameEN: item.nameEN,
@@ -713,6 +713,7 @@
           workstreamId: item.workstreamId,
           stageId: stage.id,
           status: stage.status || "Planning",
+          displayStatus: stageDisplayStatus(stage),
           titleEN: `${item.nameEN} · ${stage.nameEN}`,
           titleCN: stage.nameCN || stage.nameEN,
           taskNameEN: item.nameEN,
@@ -761,7 +762,7 @@
         <span>${safeText(item.titleCN)}</span>
         <small>${safeText(typeLabel)}${item.categoryNameEN ? ` · ${safeText(item.categoryNameEN)}` : ""}${item.owner ? ` · ${safeText(item.owner)}` : ""}</small>
       </div>
-      ${statusBadge(item.status)}`;
+      ${statusBadge(item.displayStatus || item.status)}`;
   }
 
   function calendarItemButton(item, compact = false) {
@@ -788,20 +789,67 @@
     });
   }
 
+  function calendarDeadlineItems(items) {
+    return items.filter((item) => item.type === "task" || item.type === "stage");
+  }
+
+  function overdueCalendarItems(items) {
+    const today = todayIso();
+    return calendarDeadlineItems(items).filter((item) => window.DashboardWorkflow.isOverdue(item.status, item.date, today));
+  }
+
   function renderCalendarStats(scopedItems) {
     const today = todayIso();
     const nextWeek = addDays(today, 7);
-    const activeItems = scopedItems.filter((item) => !isCompletedStatus(item.status));
-    const overdue = activeItems.filter((item) => item.date < today).length;
+    const activeItems = calendarDeadlineItems(scopedItems).filter((item) => !isCompletedStatus(item.status));
+    const overdueItems = overdueCalendarItems(scopedItems);
+    const overdue = overdueItems.length;
     const dueToday = activeItems.filter((item) => item.date === today).length;
     const nextSeven = activeItems.filter((item) => item.date > today && item.date <= nextWeek).length;
     const missing = calendarMissingItems().length;
+    state.calendarOverdueItems = overdueItems;
     $("calendar-stats").innerHTML = [
-      ["Overdue", overdue, "red"],
+      ["Overdue", overdue, "red", "overdue"],
       ["Due Today", dueToday, "blue"],
       ["Next 7 Days", nextSeven, "blue"],
       ["Missing DDL", missing, "grey"]
-    ].map(([label, value, className]) => `<div class="calendar-stat ${className}"><span>${label}</span><b>${value}</b></div>`).join("");
+    ].map(([label, value, className, action]) => action
+      ? `<button type="button" class="calendar-stat ${className}" data-calendar-kpi="${action}" ${value ? "" : "disabled"}><span>${label}</span><b>${value}</b></button>`
+      : `<div class="calendar-stat ${className}"><span>${label}</span><b>${value}</b></div>`).join("");
+  }
+
+  function overdueDetail(item) {
+    const workstream = state.data.workstreams.find((entry) => entry.workstreamId === item.workstreamId);
+    const stage = item.stageId ? stagesFor(workstream).find((entry) => entry.id === item.stageId) : null;
+    const today = todayIso();
+    const daysOverdue = Math.max(1, Math.round((dateFromIso(today) - dateFromIso(item.date)) / 86400000));
+    return {
+      ...item,
+      project: state.data.event?.shortName || state.data.event?.eventId || "Event",
+      category: item.categoryNameEN || categoryFor(workstream || {}).nameEN,
+      itemName: stage ? `${workstream?.nameEN || item.taskNameEN} · ${stage.nameEN}` : (workstream?.nameEN || item.taskNameEN || item.titleEN),
+      itemNameCN: stage ? (stage.nameCN || stage.nameEN) : (workstream?.nameCN || item.titleCN || ""),
+      owner: item.owner || stage?.owner || workstream?.owner || "Unassigned",
+      currentStatus: stage?.status || workstreamStatus(workstream || {}),
+      daysOverdue
+    };
+  }
+
+  function openOverdueDialog(items) {
+    const dialog = $("calendar-overdue-dialog");
+    if (!dialog || !items.length) return;
+    state.calendarOverdueItems = items;
+    $("calendar-overdue-subtitle").textContent = `${state.data.event?.shortName || "Event"} · ${items.length} 个未完成任务或阶段 DDL 已逾期`;
+    $("calendar-overdue-list").innerHTML = items.map((item) => {
+      const detail = overdueDetail(item);
+      return `<button type="button" class="calendar-overdue-item" data-calendar-overdue-item-id="${escapeHtml(item.id)}">
+        <b>${safeText(detail.itemName)}</b>
+        ${detail.itemNameCN ? `<span>${safeText(detail.itemNameCN)}</span>` : ""}
+        <small>${safeText(detail.project)} · ${safeText(detail.category)} · ${item.type === "stage" ? "Stage DDL" : "Task Final DDL"}</small>
+        <small>${safeText(detail.owner)} · ${formatDate(item.date)} · ${detail.daysOverdue} day${detail.daysOverdue === 1 ? "" : "s"} overdue · ${safeText(detail.currentStatus)}</small>
+      </button>`;
+    }).join("");
+    if (!dialog.open) dialog.showModal();
   }
 
   function renderMonthView(items) {
@@ -1139,6 +1187,20 @@
       const moreButton = event.target.closest("button[data-calendar-date]");
       if (moreButton) { state.calendarSelectedDate = moreButton.dataset.calendarDate; renderCalendar(state.data); return; }
       if (event.target.closest("button[data-calendar-day-close]")) { state.calendarSelectedDate = ""; renderCalendar(state.data); }
+    });
+
+    $("calendar-stats").addEventListener("click", (event) => {
+      if (event.target.closest("button[data-calendar-kpi=\"overdue\"]")) openOverdueDialog(state.calendarOverdueItems);
+    });
+
+    $("calendar-overdue-close").addEventListener("click", () => $("calendar-overdue-dialog").close());
+    $("calendar-overdue-list").addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-calendar-overdue-item-id]");
+      if (!button) return;
+      const item = state.calendarOverdueItems.find((entry) => entry.id === button.dataset.calendarOverdueItemId);
+      if (!item) return;
+      $("calendar-overdue-dialog").close();
+      focusCalendarItem(item);
     });
 
     $("attention-list").addEventListener("click", (event) => {

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.6-web - 2026-08-21
+
+- Added a three-stage ODX Social Communication workflow (Planning Draft, Content Draft, Publish) without changing the confirmed existing progress, owner or DDL values; the new unconfirmed stage DDLs remain blank.
+- Made Calendar overdue counts task/stage-only, added an exact overdue-DDL drill-down with task focus, and unified derived overdue display across workstream, Calendar and stage detail views.
+- Added an idempotent Social-stage baseline migration for collaboration editing after database application.
+
 ## 1.8.5-web - 2026-08-18
 
 - Hero Result Metrics use one five-card row on desktop, while retaining responsive wrapping on narrow screens.

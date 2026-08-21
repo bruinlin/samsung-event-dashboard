@@ -5,7 +5,7 @@ const root = new URL("../", import.meta.url);
 const read = (path) => fs.readFileSync(new URL(path, root), "utf8");
 const fail = (message) => { throw new Error(message); };
 
-for (const file of ["assets/app.js", "assets/collaboration.js", "event_data.js", "data/OCTS_2026.js", "data/ODX_2026.js", "data/ICCAD_2026.js"]) {
+for (const file of ["assets/workflow-state.js", "assets/app.js", "assets/collaboration.js", "event_data.js", "data/OCTS_2026.js", "data/ODX_2026.js", "data/ICCAD_2026.js"]) {
   new vm.Script(read(file), { filename: file });
 }
 
@@ -90,7 +90,7 @@ for (const required of ["edit-latest-update", "edit-next-action", "edit-progress
   if (!collaboration.includes(required)) fail(`Editable Workstream note support is missing ${required}.`);
 }
 const html = read("index.html");
-for (const required of ["auth-password-form", "auth-magic-link-legacy", "change-password-button", "password-form", "edit-progress", "edit-latest-update", "edit-next-action", "my-access-dialog", "my-access-button"]) {
+for (const required of ["auth-password-form", "auth-magic-link-legacy", "change-password-button", "password-form", "edit-progress", "edit-latest-update", "edit-next-action", "my-access-dialog", "my-access-button", "calendar-overdue-dialog", "assets/workflow-state.js"]) {
   if (!html.includes(required)) fail(`Password sign-in UI is missing ${required}.`);
 }
 if (html.includes("calendar-active-only") || app.includes("calendarActiveOnly") || app.includes("calendar-active-only")) fail("Inactive Calendar Active Only filter remains.");
@@ -104,6 +104,16 @@ if (/service_role|sb_secret|SUPABASE_SERVICE_ROLE_KEY|database_password/i.test(c
 if (!collaboration.includes('rpc("get_public_dashboard_updates"')) fail("Anonymous public Overlay read is not wired into the client.");
 if (app.includes('href="${escapeHtml(item.filePath)}" download') || !app.includes("data-download-document-id")) fail("Controlled PDF download action is not wired into the client.");
 if (!app.includes("canEditCurrentEvent") || !/renderWorkstreams\(\);\s+renderFinalDocuments/.test(app)) fail("Edit controls are not gated and refreshed by the current event role.");
+if (!app.includes("calendarOverdueItems") || !app.includes("openOverdueDialog") || !app.includes("DashboardWorkflow.isOverdue")) fail("Calendar overdue drill-down is not wired to the shared workflow helper.");
+const workflow = read("assets/workflow-state.js");
+for (const required of ["displayWorkstreamStatus", "displayStageStatus", "overdueDeadlineFor", "currentStageFor"]) {
+  if (!workflow.includes(required)) fail(`Workflow state helper is missing ${required}.`);
+}
+const socialMigration = read("supabase/migrations/006_social_workflow_stages.sql");
+for (const required of ["ODX26-WS-07", "'draft'", "'publish'", "on conflict (event_id, workstream_id, stage_id) do nothing"]) {
+  if (!socialMigration.toLowerCase().includes(required.toLowerCase())) fail(`Social workflow migration is missing ${required}.`);
+}
+if (/\b(update|delete|alter|grant|revoke)\b/i.test(socialMigration)) fail("Social workflow migration must not alter existing records or permissions.");
 
 const canonicalStatuses = new Set(["Planning", "In Progress", "Under Review", "Completed", "Blocked"]);
 for (const file of ["data/OCTS_2026.js", "data/ODX_2026.js", "data/ICCAD_2026.js"]) {
