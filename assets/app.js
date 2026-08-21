@@ -535,8 +535,8 @@
           return `<div class="stage-item ${escapeHtml(stageStatus.toLowerCase().replaceAll(" ", "-"))} ${isCurrent ? "current" : ""}">
             <span class="stage-symbol" aria-hidden="true">${symbol}</span>
             <div class="stage-copy">
-              <b>${safeText(stage.nameEN)}</b>
-              <span>${safeText(stage.nameCN)}</span>
+              <b>${safeText(stage.nameCN || stage.nameEN)}</b>
+              <span>${safeText(stage.nameEN)}</span>
               <div class="stage-meta">
                 <span>Status: <b>${safeText(stageStatus)}${displayedStatus === "Overdue" ? " · Overdue" : ""}</b></span>
                 <span>DDL: <b>${formatDeadline(stage.dueDate)}</b></span>
@@ -559,7 +559,7 @@
     const completedStages = stages.filter((stage) => stage.status === "Completed").length;
     const currentStageMarkup = currentStage
       ? `<div class="current-stage">
-          <span>Current Stage</span><b>${safeText(currentStage.nameEN)} / ${safeText(currentStage.nameCN)}</b>
+          <span>Current Stage</span><b class="stage-bilingual"><span>${safeText(currentStage.nameCN || currentStage.nameEN)}</span><span>${safeText(currentStage.nameEN)}</span></b>
           <span>Stage Status</span><b>${safeText(currentStage.status || "Planning")}</b>
           <span>Stage DDL</span><b>${formatDeadline(currentStage.dueDate)}</b>
           <span>Workstream Progress</span><b>${workstreamProgress(item)}%</b>
@@ -755,11 +755,15 @@
 
   function calendarItemLabel(item, compact = false) {
     const typeLabel = item.type === "task" ? "Task Final DDL" : item.type === "stage" ? "Stage DDL" : "Event Day";
-    if (compact) return `<b>${safeText(item.titleEN)}</b>`;
+    const primaryTitle = item.type === "stage" ? item.titleCN : item.titleEN;
+    const secondaryTitle = item.type === "stage" ? item.titleEN : item.titleCN;
+    if (compact) return item.type === "stage"
+      ? `<b>${safeText(primaryTitle)}</b><span class="calendar-stage-en">${safeText(secondaryTitle)}</span>`
+      : `<b>${safeText(primaryTitle)}</b>`;
     return `
       <div class="calendar-item-copy">
-        <b>${safeText(item.titleEN)}</b>
-        <span>${safeText(item.titleCN)}</span>
+        <b>${safeText(primaryTitle)}</b>
+        <span>${safeText(secondaryTitle)}</span>
         <small>${safeText(typeLabel)}${item.categoryNameEN ? ` · ${safeText(item.categoryNameEN)}` : ""}${item.owner ? ` · ${safeText(item.owner)}` : ""}</small>
       </div>
       ${statusBadge(item.displayStatus || item.status)}`;
@@ -1034,8 +1038,8 @@
       ? items.map((item) => `
           <button type="button" class="attention-item" data-attention-id="${escapeHtml(item.id)}">
             <div class="attention-copy">
-              <b>${safeText(item.titleEN)}</b>
-              <span>${safeText(item.titleCN)}</span>
+              <b>${safeText(item.stageId ? item.titleCN : item.titleEN)}</b>
+              <span>${safeText(item.stageId ? item.titleEN : item.titleCN)}</span>
               <small>${safeText(item.reasonLabel || item.label)} · ${formatDeadline(item.dueDate)}</small>
               <small>${safeText(item.owner || "Unassigned")} · ${safeText(item.status)}</small>
             </div>
@@ -1261,7 +1265,7 @@
             workstreamId: item.workstreamId,
             stageId: stage.id,
             workstreamName: `${item.nameEN} / ${item.nameCN}`,
-            stageName: `${stage.nameEN} / ${stage.nameCN}`,
+            stageName: `${stage.nameCN || stage.nameEN} / ${stage.nameEN}`,
             status: stage.status || "Planning",
             dueDate: stage.dueDate || "",
             owner: stage.owner || item.owner || "",

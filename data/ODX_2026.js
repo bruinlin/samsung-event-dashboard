@@ -204,8 +204,8 @@ window.EVENT_DATASETS.ODX_2026 = {
       progress: 20,
       workflow: "social-publication",
       stages: [
-        { id: "planning-draft", workflowStep: "planning", nameCN: "计划初稿", nameEN: "Planning Draft", status: "In Progress", dueDate: "2026-08-19", completedDate: "" },
-        { id: "draft", workflowStep: "draft", nameCN: "内容初稿", nameEN: "Content Draft", status: "Planning", dueDate: "", completedDate: "" },
+        { id: "planning-draft", workflowStep: "planning", nameCN: "传播计划", nameEN: "Planning", status: "In Progress", dueDate: "2026-08-19", completedDate: "" },
+        { id: "draft", workflowStep: "draft", nameCN: "内容初稿", nameEN: "Draft", status: "Planning", dueDate: "", completedDate: "" },
         { id: "publish", workflowStep: "publish", nameCN: "发布", nameEN: "Publish", status: "Planning", dueDate: "", completedDate: "" }
       ],
       currentStageId: "planning-draft",
