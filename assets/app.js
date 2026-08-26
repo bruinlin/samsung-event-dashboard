@@ -376,6 +376,9 @@
     const keynoteSchedule = [keynoteDate, keynoteTime].filter(Boolean).join(" · ");
     const boothParts = [event.boothArea, event.boothNumber ? `Booth No. ${event.boothNumber}` : ""].filter(Boolean);
     const products = Array.isArray(event.showcasedProducts) ? event.showcasedProducts.filter(Boolean).join(" · ") : String(event.showcasedProducts || "").trim();
+    const showcaseLabel = String(event.showcaseLabel || "Showcased Products").trim();
+    const demoVideos = Array.isArray(event.systemDemoVideos) ? event.systemDemoVideos.filter(Boolean) : [];
+    const demoFormat = String(event.demoFormat || "").trim();
     const presentationLabelEN = String(keynote.labelEN || "Main Forum Keynote").trim();
     const presentationLabelCN = String(keynote.labelCN || "主论坛演讲").trim();
     const speakerCN = String(keynote.speakerCN || "").trim();
@@ -399,10 +402,12 @@
         ${(scheduleMarkup || statusMarkup) ? `<div class="presentation-meta">${scheduleMarkup}${statusMarkup}</div>` : ""}
         ${(topicCN || topicEN) ? `<div class="overview-topic"><span>中文主题</span><strong>${safeText(topicCN || topicEN)}</strong>${topicENMarkup}</div>` : ""}
       </article>` : "",
-      (boothParts.length || products) ? `<article class="overview-group booth-group">
+      (boothParts.length || products || demoVideos.length || demoFormat) ? `<article class="overview-group booth-group">
         <h3>Booth &amp; Products <span>/ 展位与展品</span></h3>
         ${boothParts.length ? `<div class="overview-detail"><span>Booth</span><b>${safeText(boothParts.join(" · "))}</b></div>` : ""}
-        ${products ? `<div class="overview-detail"><span>Showcased Products</span><b>${safeText(products)}</b></div>` : ""}
+        ${products ? `<div class="overview-detail"><span>${safeText(showcaseLabel)}</span><b>${safeText(products)}</b></div>` : ""}
+        ${demoVideos.length ? `<div class="overview-detail"><span>System Demo Videos</span><b>${demoVideos.map((item) => safeText(item)).join("<br>")}</b></div>` : ""}
+        ${demoFormat ? `<div class="overview-detail"><span>Demo Format</span><small>${safeText(demoFormat)}</small></div>` : ""}
       </article>` : ""
     ].filter(Boolean);
     $("overview-grid").innerHTML = `<div class="overview-groups overview-count-${groups.length}">${groups.join("")}</div>`;
@@ -1049,18 +1054,35 @@
   }
 
   function renderSessions(data) {
+    const participantMarkup = (participant) => {
+      const speaker = [participant.speaker, participant.speakerCN].filter(Boolean).join(" / ");
+      const topicEN = String(participant.topicEN || "").trim();
+      const topicCN = String(participant.topicCN || "").trim();
+      const hasTopicEN = topicEN && topicEN !== "TBD";
+      const hasTopicCN = topicCN && topicCN !== "TBD";
+      return `<div class="session-participant">
+        <div class="session-speaker">${safeText(speaker)}</div>
+        ${participant.role ? `<div class="session-role">${safeText(participant.role)}</div>` : ""}
+        ${(hasTopicEN || hasTopicCN) ? `<div class="session-topic">${hasTopicEN ? `<b>${safeText(topicEN)}</b>` : ""}${hasTopicEN && hasTopicCN ? "<br>" : ""}${hasTopicCN ? safeText(topicCN) : ""}</div>` : ""}
+        ${Array.isArray(participant.subTopics) && participant.subTopics.filter(Boolean).length ? `<div class="session-subtopics"><span>Topics</span><ul>${participant.subTopics.filter(Boolean).map((topic) => `<li>${safeText(topic)}</li>`).join("")}</ul></div>` : ""}
+      </div>`;
+    };
     $("sessions-grid").innerHTML = (data.sessions || []).map((session) => `
       <article class="session-card">
         <div class="session-top">
           <div>
             <div class="session-type">${[session.type, isValidDate(session.date) ? formatDate(session.date) : "", session.time].filter(Boolean).map((item) => safeText(item)).join(" · ")}</div>
-            <div class="session-speaker">${safeText(session.speaker)}</div>
-            <div class="session-role">${safeText(session.role)}</div>
+            ${session.duration ? `<div class="session-duration">${safeText(session.duration)}</div>` : ""}
           </div>
           ${statusBadge(session.status)}
         </div>
-        <div class="session-topic"><b>${safeText(session.topicEN)}</b><br>${safeText(session.topicCN)}</div>
-        ${Array.isArray(session.subTopics) && session.subTopics.filter(Boolean).length ? `<div class="session-subtopics"><span>Topics</span><ul>${session.subTopics.filter(Boolean).map((topic) => `<li>${safeText(topic)}</li>`).join("")}</ul></div>` : ""}
+        ${Array.isArray(session.participants) && session.participants.length
+          ? `<div class="session-participants">${session.participants.map(participantMarkup).join("")}</div>`
+          : `<div class="session-speaker">${safeText(session.speaker)}</div>
+             <div class="session-role">${safeText(session.role)}</div>
+             <div class="session-topic"><b>${safeText(session.topicEN)}</b><br>${safeText(session.topicCN)}</div>
+             ${Array.isArray(session.subTopics) && session.subTopics.filter(Boolean).length ? `<div class="session-subtopics"><span>Topics</span><ul>${session.subTopics.filter(Boolean).map((topic) => `<li>${safeText(topic)}</li>`).join("")}</ul></div>` : ""}`}
+        ${session.format ? `<div class="session-format">Format / 形式: ${safeText(session.format)}</div>` : ""}
         ${session.comments || session.remarks ? `<div class="session-note">${safeText(session.comments || session.remarks, "")}</div>` : ""}
       </article>
     `).join("");
@@ -1120,7 +1142,7 @@
     $("owner-column-label").textContent = "负责人 / Final DDL";
     $("update-column-label").textContent = "最新进展";
     $("sessions-title").textContent = "Sessions & Speakers";
-    $("sessions-subtitle").textContent = "主论坛、分论坛与领奖环节";
+    $("sessions-subtitle").textContent = data.event.sessionsSubtitle || "主论坛、分论坛与领奖环节";
     $("sessions-section").hidden = false;
     document.querySelector(".attention-panel .panel-heading p").textContent = "需要关注 · 自动根据当前任务、阶段与 DDL 派生";
     renderHero(data);

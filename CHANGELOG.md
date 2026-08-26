@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.8.8-web - 2026-08-26
+
+- ODX 2026: confirmed the physical / technology showcase and three pre-recorded system demo videos.
+- Confirmed the Main Forum keynote title and refreshed speaker information.
+- Restructured the Sep. 3 On-site Tech Forum as a shared 30-minute session with 何兴 and Micheal Feng / 冯方, retaining the final dialogue format as TBD.
+- Added Micheal Feng onsite PR interview and 智能纪元 KOL booth-tour information.
+- Refreshed related ODX workstream updates and data-quality validation.
+
 ## 1.8.7-web - 2026-08-26
 
 - ODX 2026: replaced tentative On-site Forum and Award information with the latest confirmed Samsung agenda, speakers and timing; retained the Award Ceremony time as tentative around 10:00.

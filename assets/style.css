@@ -681,9 +681,14 @@ a.final-document-name:hover, a.final-document-name:focus-visible { color: var(--
 .session-card { padding: 15px; border: 1px solid var(--line-soft); border-radius: 13px; background: #fbfdff; }
 .session-top { display: flex; align-items: start; justify-content: space-between; gap: 10px; }
 .session-type { color: var(--blue-600); font-size: 10px; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
+.session-duration { margin-top: 3px; color: var(--ink-500); font-size: 11px; font-weight: 650; }
 .session-speaker { margin-top: 5px; color: var(--ink-900); font-size: 15px; font-weight: 720; }
 .session-role { margin-top: 3px; color: var(--ink-500); font-size: 11px; line-height: 1.5; }
 .session-topic { margin-top: 11px; color: var(--ink-700); font-size: 12px; line-height: 1.6; }
+.session-participants { display: grid; gap: 12px; margin-top: 12px; }
+.session-participant + .session-participant { padding-top: 12px; border-top: 1px solid var(--line-soft); }
+.session-participant .session-speaker { margin-top: 0; }
+.session-format { margin-top: 9px; color: var(--ink-500); font-size: 11px; line-height: 1.5; }
 .session-subtopics { margin-top: 9px; padding-top: 8px; border-top: 1px solid var(--line-soft); }
 .session-subtopics > span { color: var(--ink-500); font-size: 10px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
 .session-subtopics ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 12px; margin: 6px 0 0; padding-left: 16px; color: var(--ink-700); font-size: 11px; line-height: 1.45; }
