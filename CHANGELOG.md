@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.8.7-web - 2026-08-26
+
+- ODX 2026: replaced tentative On-site Forum and Award information with the latest confirmed Samsung agenda, speakers and timing; retained the Award Ceremony time as tentative around 10:00.
+- Updated the ODX Main Forum Chinese speaker title to the confirmed current wording.
+
 ## 1.8.6-web - 2026-08-21
 
 - Added a three-stage ODX Social Communication workflow (Planning Draft, Content Draft, Publish) without changing the confirmed existing progress, owner or DDL values; the new unconfirmed stage DDLs remain blank.

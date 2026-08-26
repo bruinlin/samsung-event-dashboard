@@ -105,11 +105,17 @@ assert(JSON.stringify(social?.stages?.map((stage) => stage.id) || []) === JSON.s
 assert(social?.stages?.[1]?.status === "Planning" && social?.stages?.[1]?.dueDate === "" && social?.stages?.[2]?.status === "Planning" && social?.stages?.[2]?.dueDate === "", "ODX26-WS-07: unconfirmed Draft/Publish DDLs must remain blank.");
 
 const sessions = data?.sessions || [];
+const award = sessions.find((session) => session.sessionId === "ODX-AWARD-01");
 const breakout = sessions.find((session) => session.sessionId === "ODX-SESSION-01");
 const onsiteForum = sessions.find((session) => session.sessionId === "ODX-ONSITE-01");
-assert(breakout?.speaker === "何兴" && breakout?.date === "2026-09-04" && breakout?.time === "TBD" && breakout?.topicCN === "解耦·共享·增效：CXL内存池化的场景验证", "Breakout Session changed unexpectedly.");
-assert(onsiteForum?.speaker === "Michael Feng" && onsiteForum?.date === "2026-09-03" && onsiteForum?.topicCN === "关于Server SSD在KV Cache Offloading场景下，应用FDP后所产生的效果", "On-site Tech Forum changed unexpectedly.");
-assert(JSON.stringify(onsiteForum?.subTopics || []) === JSON.stringify(["CXL Memory Pooling", "MoE offloading Project", "MySQL+QLC project", "KV Cache with Seemless FDP", "AiSIO"]), "On-site Tech Forum subtopics changed unexpectedly.");
+const onsiteForumAisio = sessions.find((session) => session.sessionId === "ODX-ONSITE-02");
+assert(award?.type === "Award Ceremony / 颁奖" && award?.speaker === "Kevin Yoon" && award?.date === "2026-09-02" && award?.time === "Around 10:00" && award?.remarks === "Tentative time around 10:00.", "Award Ceremony information is incorrect.");
+assert(breakout?.speaker === "豆坤" && breakout?.date === "2026-09-04" && breakout?.time === "15:40-16:00" && breakout?.topicCN === "解耦·共享·增效：CXL 内存池化的场景验证", "Official Breakout Session information is incorrect.");
+assert(onsiteForum?.speaker === "何兴" && onsiteForum?.date === "2026-09-03" && onsiteForum?.time === "15:00" && onsiteForum?.topicEN === "AI Storage Solutions", "On-site Tech Forum information is incorrect.");
+assert(JSON.stringify(onsiteForum?.subTopics || []) === JSON.stringify(["CXL / KV Cache", "MoE Offloading", "FDP SSD", "QLC Atomic Write"]), "On-site Tech Forum subtopics are incorrect.");
+assert(onsiteForumAisio?.speaker === "冯方" && onsiteForumAisio?.date === "2026-09-03" && onsiteForumAisio?.time === "15:00" && onsiteForumAisio?.topicEN === "Feeding Storage to Accelerators: AiSIO", "AiSIO On-site Tech Forum information is incorrect.");
+assert(data?.keynote?.speaker === "Jay Hyun" && data?.keynote?.speakerCN === "玄在雄" && data?.keynote?.title === "CVP, NAND Product Planning, Samsung Electronics" && data?.keynote?.titleCN === "三星电子副总裁兼NAND闪存规划与赋能事业部负责人", "Main Forum speaker information is incorrect.");
+assert(workstreams.find((item) => item.workstreamId === "ODX26-WS-09")?.latestUpdate === "On-site Tech Forum scheduled for Sep 3 at 15:00, with 何兴 and 冯方 confirmed as speakers.", "ODX26-WS-09 On-site update is incorrect.");
 
 if (failures.length) {
   console.error(`ODX data quality failed:\n- ${failures.join("\n- ")}`);

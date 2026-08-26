@@ -14,7 +14,7 @@ window.EVENT_DATASETS = window.EVENT_DATASETS || {};
 window.EVENT_DATASETS.ODX_2026 = {
   meta: {
     schemaVersion: "1.8",
-    lastUpdated: "2026-08-18",
+    lastUpdated: "2026-08-26",
     updatedBy: "Bruin"
   },
 
@@ -80,7 +80,7 @@ window.EVENT_DATASETS.ODX_2026 = {
     speaker: "Jay Hyun",
     speakerCN: "玄在雄",
     title: "CVP, NAND Product Planning, Samsung Electronics",
-    titleCN: "三星电子解决方案产品与开发团队副总裁",
+    titleCN: "三星电子副总裁兼NAND闪存规划与赋能事业部负责人",
     date: "2026-09-03",
     time: "10:30-10:45",
     topicEN: "TBD",
@@ -117,7 +117,7 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "Bruin & Leo",
       dueDate: "2026-07-22",
       actualCompletionDate: "2026-07-22",
-      latestUpdate: "Jay Hyun confirmed for Main Forum Keynote; 何兴 confirmed for Official Breakout Session; Michael Feng confirmed for On-site Tech Forum.",
+      latestUpdate: "Jay Hyun / 玄在雄 confirmed for Main Forum Keynote; 豆坤 confirmed for Official Breakout Session; 何兴 and 冯方 confirmed for the On-site Tech Forum.",
       nextAction: "/",
       remarks: ""
     },
@@ -244,7 +244,7 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "Bruin",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "Operation Plan draft is available, covering guest flow, booth interaction, materials, gift mechanics and initial Ogilvy onsite staffing. Michael Feng and five On-site Tech Forum topics are now confirmed.",
+      latestUpdate: "On-site Tech Forum scheduled for Sep 3 at 15:00, with 何兴 and 冯方 confirmed as speakers.",
       nextAction: "Update the Operation Plan with latest forum/session information; finalize forum schedule, demo operation, staffing duty matrix, equipment list, rehearsal plan and onsite SOP.",
       remarks: ""
     },
@@ -292,8 +292,8 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "TBD",
       dueDate: "2026-08-25",
       actualCompletionDate: "",
-      latestUpdate: "Main Forum Keynote is confirmed for Sep. 3 at 10:30–10:45. 何兴 is confirmed for the Sep. 4 Breakout Session and Michael Feng for the Sep. 3 On-site Tech Forum. Initial Ogilvy onsite staff list is available.",
-      nextAction: "Confirm Breakout and On-site Forum time slots, speaker roles/titles, Samsung onsite personnel, full three-day run sheet and technical/demo staffing details.",
+      latestUpdate: "Award Ceremony is scheduled for Sep. 2 around 10:00 with Kevin Yoon as Samsung Representative. Main Forum Keynote is confirmed for Sep. 3 at 10:30–10:45; 何兴 and 冯方 are confirmed for the Sep. 3 On-site Tech Forum at 15:00; 豆坤 is confirmed for the Sep. 4 Official Breakout Session at 15:40–16:00.",
+      nextAction: "Confirm remaining speaker roles/titles, Samsung onsite personnel, full three-day run sheet and technical/demo staffing details.",
       remarks: ""
     },
     {
@@ -321,34 +321,57 @@ window.EVENT_DATASETS.ODX_2026 = {
 
   sessions: [
     {
+      sessionId: "ODX-AWARD-01",
+      type: "Award Ceremony / 颁奖",
+      speaker: "Kevin Yoon",
+      role: "Award Recipient / Samsung Representative",
+      topicEN: "Award Ceremony",
+      topicCN: "颁奖",
+      date: "2026-09-02",
+      time: "Around 10:00",
+      status: "Planning",
+      remarks: "Tentative time around 10:00."
+    },
+    {
       sessionId: "ODX-SESSION-01",
       type: "Breakout Session",
-      speaker: "何兴",
+      speaker: "豆坤",
       role: "TBD",
       topicEN: "TBD",
-      topicCN: "解耦·共享·增效：CXL内存池化的场景验证",
+      topicCN: "解耦·共享·增效：CXL 内存池化的场景验证",
       date: "2026-09-04",
-      time: "TBD",
+      time: "15:40-16:00",
       status: "Planning",
       remarks: ""
     },
     {
       sessionId: "ODX-ONSITE-01",
       type: "On-site Tech Forum",
-      speaker: "Michael Feng",
+      speaker: "何兴",
       role: "TBD",
       date: "2026-09-03",
-      topicEN: "TBD",
-      topicCN: "关于Server SSD在KV Cache Offloading场景下，应用FDP后所产生的效果",
-      time: "TBD",
+      topicEN: "AI Storage Solutions",
+      topicCN: "TBD",
+      time: "15:00",
       status: "Planning",
       subTopics: [
-        "CXL Memory Pooling",
-        "MoE offloading Project",
-        "MySQL+QLC project",
-        "KV Cache with Seemless FDP",
-        "AiSIO"
+        "CXL / KV Cache",
+        "MoE Offloading",
+        "FDP SSD",
+        "QLC Atomic Write"
       ],
+      remarks: ""
+    },
+    {
+      sessionId: "ODX-ONSITE-02",
+      type: "On-site Tech Forum",
+      speaker: "冯方",
+      role: "TBD",
+      date: "2026-09-03",
+      topicEN: "Feeding Storage to Accelerators: AiSIO",
+      topicCN: "TBD",
+      time: "15:00",
+      status: "Planning",
       remarks: ""
     }
   ],
