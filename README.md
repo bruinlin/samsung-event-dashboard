@@ -18,7 +18,7 @@ When the URL has no event hash, the Dashboard opens the nearest upcoming event t
 
 Project Calendar opens in `2 Weeks` view for every screen size. It shows the current 14-day period in two week groups and lists the next five filtered, unfinished items under Later Deadlines. Use Previous, Today, and Next to move by 14 days; select `Month` for the full month grid. Calendar filters are collapsed by default and continue to apply to both views.
 
-Documents & Deliverables sits directly below Attention Needed in the side column. File names and status remain public. Download actions require an authenticated Viewer, Editor or Admin with access to that event and obtain a short-lived private Storage URL; Guest users are prompted to sign in. No Storage object path is exposed to public viewers.
+Documents & Deliverables sits directly below Attention Needed in the side column. Events with `resourceLinks` display those external cards alongside—not instead of—private PDF Documents. Safe document metadata may be visible publicly, but Preview and Download actions require an authenticated Viewer, Editor or Admin with event access and obtain a short-lived private Storage URL. No Storage object path is exposed to public viewers.
 
 ## Access and collaboration
 
@@ -29,7 +29,7 @@ Documents & Deliverables sits directly below Attention Needed in the side column
 
 The static activity files remain the reviewed public baseline. Supabase stores only field-level overrides, their version, updater and update time. The public read-only RPC returns no email, UUID, membership, credential or Storage-object data. A null/unset database field never replaces the static value. Workstream and Stage updates are saved separately: Stage status remains derived, while Workstream Progress is manually maintained. Planning always saves as 0%, Completed always saves as 100%, and the other three statuses accept whole-number values from 0 to 100. Stage completion is displayed as a reference only.
 
-The tracked production `config.js` contains only the Supabase Project URL and browser-safe Publishable Key, so GitHub Pages can load the public Overlay without a build step. Never add a `service_role` key, Secret Key, database password, access token or refresh token to it. Member sign-in uses the Supabase password grant; the legacy Magic Link code remains inactive for a future SMTP-enabled rollout. Run migrations `001` through `005` in order; run `supabase/seed_dashboard.sql` only when the database has not already been seeded. Follow `supabase/README.md` for member management, Storage and deployment setup.
+The tracked production `config.js` contains only the Supabase Project URL and browser-safe Publishable Key, so GitHub Pages can load the public Overlay without a build step. Never add a `service_role` key, Secret Key, database password, access token or refresh token to it. Member sign-in uses the Supabase password grant; the legacy Magic Link code remains inactive for a future SMTP-enabled rollout. Run migrations `001` through `007` in order; run `supabase/seed_dashboard.sql` only when the database has not already been seeded. Follow `supabase/README.md` for member management, Storage and deployment setup.
 
 ### Local member management
 
@@ -51,7 +51,7 @@ node scripts/manage-auth-users.mjs assign-role
 - `data/ODX_2026.js` contains the independent ODX 2026 record. Update this file for ODX progress; do not copy or overwrite OCTS workstreams.
 - `data/ICCAD_2026.js` contains the independent ICCAD 2026 event. It uses the same Calendar, workstream, session, Attention Needed and final-document schema as ODX and OCTS; leave unconfirmed task and stage DDLs as empty strings and do not invent dates.
 - Hero displays optional `event.themeCN` and `event.themeEN` below the event name. When `event.dateEnd` differs from `dateStart`, Hero displays the confirmed event date range. Event Overview groups sponsorship and participation fields, `keynote` details, and Booth/product fields; add optional `keynote.date` only when the specific presentation date is confirmed. Keep unconfirmed values as `TBD` or empty; do not add an English theme unless it is confirmed.
-- `data/OCTS_2026.js` also contains `finalDocuments`, which controls the unified Documents & Deliverables list, file metadata, category filters, download links, and status-only records.
+- `data/OCTS_2026.js` contains the legacy `finalDocuments` baseline. The unified Documents & Deliverables list can also show runtime Supabase Preview / Final versions; keep private object paths and signed URLs out of all `data/*.js` files.
 - Keep the data structure consistent with the existing event file. Use only the supported status values documented at the top of the data file.
 - Each workstream belongs to one of three categories: `business-commercial`, `event-operations-content`, or `social-pr-reporting`. Add `categoryId`, `categoryNameCN`, and `categoryNameEN` to every new workstream.
 - Use `stages` and `currentStageId` only for tasks that have meaningful multi-step tracking. Workstream and Stage statuses use one five-status model: `Planning`, `In Progress`, `Under Review`, `Completed`, and `Blocked`. Do not add legacy labels such as `Not Started`, `Confirmed`, or `Pending Review`.
@@ -105,11 +105,12 @@ Every executable item must be a Workstream or a Stage. The Calendar is derived o
 
 ## Maintain Documents & Deliverables
 
-1. Confirm that the source is an approved Final file and is suitable for controlled sharing.
-2. Inspect the file content, properties, comments/notes, contacts, amounts, local paths, private links, and embedded content before upload.
-3. Place the reviewed local PDF in the approved migration input location, then run `node scripts/migrate-private-documents.mjs` from a machine with the Git-ignored `.env.admin.local`. It verifies the fixed `document_files` mapping, object bytes, PDF MIME type and a five-minute signed URL before any repository copy is removed.
-4. Keep only non-sensitive document metadata in `finalDocuments`; do not add `filePath`, a Storage object path, or an external private link.
-5. Run `scripts/check_download_safety.ps1` after a controlled-download change. Removing the latest copy does not remove an earlier public Git history copy.
+1. Preview is a private working or review PDF; Final is a private approved/archive PDF. Neither lifecycle is uploaded to GitHub or a public Storage bucket.
+2. Editors and Admins use `Upload PDF / 上传 PDF` in the Dashboard. Select a PDF, enter the document name, category, version and lifecycle; a new version receives its own private object and never silently overwrites an older version.
+3. Viewer can Preview and Download assigned-event files; Editor/Admin can Preview, Download and upload. Public and unapproved viewers can see only the safe metadata and cannot obtain a signed URL.
+4. Inspect any source for sensitive content, comments/notes, contacts, amounts, local paths, private links and embedded content before uploading. Keep only safe metadata in the public document list; do not add `filePath`, a Storage object path or an external private link to event data.
+5. Legacy OCTS Final mappings remain managed by `document_files`; use `node scripts/migrate-private-documents.mjs` only for those fixed legacy mappings. New Preview/Final versions use the browser flow after migration `007` is applied.
+6. Run `scripts/check_download_safety.ps1` after a controlled-download change. Removing the latest copy does not remove an earlier public Git history copy.
 
 The safety script uses Python with `pypdf` to inspect PDF text, metadata, annotations and embedded content, and fails closed when reliable inspection is unavailable. If Python is not on `PATH`, pass its executable with `-PythonPath`. Non-PDF formats are reported as requiring manual review before publication. Historical and working versions belong in the internal archive, not the public download directory.
 

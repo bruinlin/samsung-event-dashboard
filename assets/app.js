@@ -57,6 +57,9 @@
     owner: "all",
     hideCompleted: false,
     documentCategory: "all",
+    dynamicDocuments: [],
+    expandedDocumentGroups: new Set(),
+    documentUploadContext: null,
     collapsedCategories: new Set(),
     calendarView: "fortnight",
     calendarMonth: null,
@@ -208,7 +211,13 @@
     const source = item ? window.EVENT_DATASETS?.[item.dataKey] : null;
     if (!source) return;
     state.data = await mergeCollaborativeData(cloneEventData(source));
+    state.dynamicDocuments = await loadDynamicDocuments(state.eventId);
     renderDashboard();
+  }
+
+  async function loadDynamicDocuments(eventId) {
+    const documents = await window.DashboardCollab?.getPublicEventDocuments?.(eventId);
+    return Array.isArray(documents) ? documents : [];
   }
 
   async function loadEvent(eventId, { historyMode = "push" } = {}) {
@@ -225,12 +234,14 @@
 
     state.data = data;
     state.eventId = eventId;
+    state.dynamicDocuments = await loadDynamicDocuments(eventId);
     window.DashboardCollab?.setActiveEvent?.(eventId);
     state.quickFilter = "all";
     state.status = "all";
     state.owner = "all";
     state.hideCompleted = false;
     state.documentCategory = "all";
+    state.expandedDocumentGroups = new Set();
     state.collapsedCategories = new Set();
     state.calendarView = "fortnight";
     state.calendarMonth = defaultCalendarMonth(data);
@@ -1088,91 +1099,157 @@
     `).join("");
   }
 
+  function formatFileSize(bytes) {
+    const value = Number(bytes);
+    if (!Number.isFinite(value) || value <= 0) return "";
+    if (value < 1048576) return `${Math.round(value / 1024)} KB`;
+    return `${(value / 1048576).toFixed(value >= 10485760 ? 1 : 2)} MB`;
+  }
+
+  function renderResourceLinks(resourceLinks) {
+    $("resource-links-section").hidden = resourceLinks.length === 0;
+    $("resource-link-list").innerHTML = resourceLinks.map((item) => {
+      const url = String(item.url || "").trim();
+      const enabled = /^https?:\/\//i.test(url);
+      const isPhotoLive = item.id === "ODX-LINK-002";
+      const icon = isPhotoLive
+        ? `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5h3l1.2-2h7.6l1.2 2h3v11H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg>`
+        : `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 6.5h6l1.7 2H20.5v10.8a1.2 1.2 0 0 1-1.2 1.2H4.7a1.2 1.2 0 0 1-1.2-1.2zM8.3 14.7l2.2 2.2 5.2-5.2"/></svg>`;
+      const action = enabled
+        ? `<a class="resource-link-action" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${isPhotoLive ? "Open Photo Live / 打开图片直播" : "Open Attachments / 打开附件"}</a>`
+        : `<button class="resource-link-action unavailable" type="button" disabled aria-disabled="true">Link TBD / 链接待补充</button>`;
+      const accessCode = String(item.accessCode || "").trim();
+      return `<article class="resource-link-card ${enabled ? "is-available" : "is-pending"}">
+        <div class="resource-link-icon">${icon}</div><div class="resource-link-content">
+          <div class="resource-link-name">${safeText(item.nameCN)}</div><div class="resource-link-name-en">${safeText(item.nameEN)}</div>
+          <p class="resource-link-description">${safeText(item.descriptionCN, "")} ${item.descriptionEN ? `<span>${safeText(item.descriptionEN, "")}</span>` : ""}</p>
+          <div class="resource-link-provider">${safeText(item.provider)}</div>
+          ${accessCode ? `<div class="resource-link-code"><span>提取码: <b>${safeText(accessCode)}</b></span><button type="button" data-copy-resource-code="${escapeHtml(accessCode)}">Copy Code / 复制提取码</button></div>` : ""}
+        </div>${action}</article>`;
+    }).join("");
+  }
+
+  function documentRecord(staticRecord) {
+    if (!staticRecord._dynamic) return staticRecord;
+    return {
+      id: staticRecord.document_id,
+      logicalDocumentId: staticRecord.logical_document_id || staticRecord.document_id,
+      nameZh: staticRecord.name_cn,
+      nameEn: staticRecord.name_en,
+      category: staticRecord.category || "Other",
+      subcategory: staticRecord.subcategory || "",
+      version: staticRecord.version_label || "TBD",
+      lifecycle: staticRecord.lifecycle || "Preview",
+      finalDate: staticRecord.uploaded_at || "",
+      format: "PDF",
+      fileSize: formatFileSize(staticRecord.file_size_bytes),
+      status: "Available",
+      downloadable: true,
+      _dynamic: true
+    };
+  }
+
+  function eventDocuments(data = state.data) {
+    return [
+      ...(Array.isArray(data?.finalDocuments) ? data.finalDocuments : []),
+      ...(state.dynamicDocuments || []).map((item) => ({ ...item, _dynamic: true }))
+    ].map(documentRecord);
+  }
+
   function renderFinalDocuments(data) {
     const resourceLinks = Array.isArray(data.resourceLinks) ? data.resourceLinks : [];
-    const hasResourceLinks = resourceLinks.length > 0;
     const heading = $("final-deliverables-title");
     const subtitle = document.querySelector(".final-deliverables-panel .panel-heading p");
-    $("final-document-filters").hidden = hasResourceLinks;
-    $("final-document-stats").hidden = hasResourceLinks;
+    heading.textContent = resourceLinks.length ? "Resources & Documents" : "Documents & Deliverables";
+    subtitle.textContent = resourceLinks.length ? "资料与链接 · Event Materials & On-site Media" : "文件与交付物";
+    renderResourceLinks(resourceLinks);
 
-    if (hasResourceLinks) {
-      heading.textContent = "Resources & Links";
-      subtitle.textContent = "资料与链接 · Event Materials & On-site Media";
-      $("final-document-empty").hidden = true;
-      $("final-document-list").classList.add("resource-link-list");
-      $("final-document-list").innerHTML = resourceLinks.map((item) => {
-        const url = String(item.url || "").trim();
-        const enabled = /^https?:\/\//i.test(url);
-        const isPhotoLive = item.id === "ODX-LINK-002";
-        const icon = isPhotoLive
-          ? `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5h3l1.2-2h7.6l1.2 2h3v11H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg>`
-          : `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 6.5h6l1.7 2H20.5v10.8a1.2 1.2 0 0 1-1.2 1.2H4.7a1.2 1.2 0 0 1-1.2-1.2zM8.3 14.7l2.2 2.2 5.2-5.2"/></svg>`;
-        const action = enabled
-          ? `<a class="resource-link-action" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${isPhotoLive ? "Open Photo Live / 打开图片直播" : "Open Attachments / 打开附件"}</a>`
-          : `<button class="resource-link-action unavailable" type="button" disabled aria-disabled="true">Link TBD / 链接待补充</button>`;
-        const accessCode = String(item.accessCode || "").trim();
-        return `<article class="resource-link-card ${enabled ? "is-available" : "is-pending"}">
-          <div class="resource-link-icon">${icon}</div>
-          <div class="resource-link-content">
-            <div class="resource-link-name">${safeText(item.nameCN)}</div>
-            <div class="resource-link-name-en">${safeText(item.nameEN)}</div>
-            <p class="resource-link-description">${safeText(item.descriptionCN, "")} ${item.descriptionEN ? `<span>${safeText(item.descriptionEN, "")}</span>` : ""}</p>
-            <div class="resource-link-provider">${safeText(item.provider)}</div>
-            ${accessCode ? `<div class="resource-link-code"><span>提取码: <b>${safeText(accessCode)}</b></span><button type="button" data-copy-resource-code="${escapeHtml(accessCode)}">Copy Code / 复制提取码</button></div>` : ""}
-          </div>
-          ${action}
-        </article>`;
-      }).join("");
-      return;
-    }
-
-    heading.textContent = "Documents & Deliverables";
-    subtitle.textContent = "文件与交付物";
-    $("final-document-list").classList.remove("resource-link-list");
-    const documents = Array.isArray(data.finalDocuments) ? data.finalDocuments : [];
-    const filtered = state.documentCategory === "all"
-      ? documents
-      : documents.filter((item) => item.category === state.documentCategory);
-    const downloadableCount = documents.filter((item) => item.downloadable === true && item.status === "Available").length;
+    const documents = eventDocuments(data);
+    const filtered = state.documentCategory === "all" ? documents : documents.filter((item) => item.category === state.documentCategory);
     const canDownload = window.DashboardCollab?.canDownload?.(state.eventId) === true;
-    const currentRole = window.DashboardCollab?.effectiveRole?.(state.eventId) || "guest";
-
-    $("final-document-filters").innerHTML = FINAL_DOCUMENT_CATEGORIES.map((item) =>
+    const canEdit = window.DashboardCollab?.canEdit?.(state.eventId) === true;
+    const categories = [...new Set(documents.map((item) => item.category).filter(Boolean))];
+    $("final-document-filters").hidden = documents.length === 0;
+    $("final-document-filters").innerHTML = FINAL_DOCUMENT_CATEGORIES.filter((item) => item.id === "all" || categories.includes(item.id)).map((item) =>
       `<button type="button" class="filter-chip ${item.id === state.documentCategory ? "active" : ""}" data-document-category="${escapeHtml(item.id)}">${safeText(item.label)}</button>`
     ).join("");
+    $("final-document-stats").hidden = documents.length === 0;
+    $("final-document-stats").innerHTML = `<span>${documents.length} Files · ${documents.filter((item) => item._dynamic).length} Uploaded Versions</span>`;
+    $("document-upload-control").innerHTML = canEdit ? `<button class="button button-primary document-upload-button" type="button" data-upload-document>Upload PDF / 上传 PDF</button>` : "";
 
-    $("final-document-stats").innerHTML = `<span>${safeText(documents.length)} Files · ${safeText(downloadableCount)} Controlled Downloads</span>`;
-
-    $("final-document-empty").hidden = filtered.length !== 0;
-    $("final-document-list").innerHTML = filtered.map((item) => {
-      const canRequestDownload = item.downloadable === true && item.status === "Available";
-      const fileName = `<div class="final-document-name">${safeText(item.nameZh)}</div>`;
-      const action = canRequestDownload
-        ? `<button class="download-button" type="button" data-download-document-id="${escapeHtml(item.id)}">${canDownload ? "Download / 下载" : currentRole === "guest" ? "Sign in to download / 登录下载" : "Access required / 需要授权"}</button>`
-        : `<span class="download-button unavailable" aria-disabled="true">Status only / 仅状态</span>`;
-      return `
-        <article class="final-document-card">
-          <div class="final-document-content">
-            <div class="final-document-labels">
-              ${badge(item.category, "blue")}
-              ${badge(item.version, "grey")}
-              ${badge(item.status, item.status === "Available" ? "green" : "grey")}
-            </div>
-            ${fileName}
-            <div class="final-document-name-en">${safeText(item.nameEn)}</div>
-            <div class="final-document-meta">
-              <span>${safeText(item.subcategory)}</span>
-              <span>${formatDate(item.finalDate)}</span>
-              <span>${safeText(item.format)}</span>
-              <span>${safeText(item.fileSize)}</span>
-            </div>
-            <p class="final-document-description">${safeText(item.descriptionZh)} · ${safeText(item.descriptionEn)}</p>
-            ${item.speaker ? `<div class="final-document-speaker">Speaker: ${safeText(item.speaker)}</div>` : ""}
-          </div>
-          <div class="final-document-action">${action}</div>
-        </article>`;
+    const groups = new Map();
+    filtered.forEach((item) => {
+      const groupId = item.logicalDocumentId || item.id;
+      groups.set(groupId, [...(groups.get(groupId) || []), item]);
+    });
+    $("final-document-empty").hidden = groups.size !== 0;
+    $("final-document-list").innerHTML = [...groups.entries()].map(([groupId, items]) => {
+      const sorted = [...items].sort((left, right) => String(right.finalDate || "").localeCompare(String(left.finalDate || "")) || String(right.id).localeCompare(String(left.id)));
+      const item = sorted[0];
+      const previous = sorted.slice(1);
+      const accessActions = canDownload && item.downloadable
+        ? `<div class="document-action-row"><button class="download-button" type="button" data-preview-document-id="${escapeHtml(item.id)}">Preview / 预览</button><button class="download-button" type="button" data-download-document-id="${escapeHtml(item.id)}">Download / 下载</button></div>`
+        : `<span class="download-button unavailable" aria-disabled="true">${item.downloadable ? "Member access required / 需要成员权限" : "Status only / 仅状态"}</span>`;
+      const versionMarkup = previous.length && state.expandedDocumentGroups.has(groupId)
+        ? `<div class="document-version-list">${previous.map((version) => `<div class="document-version-item"><span>${safeText(version.version)} · ${safeText(version.lifecycle || "Final")} · ${safeText(version.fileSize || "")}</span>${canDownload ? `<span class="document-version-actions"><button type="button" data-preview-document-id="${escapeHtml(version.id)}">Preview</button><button type="button" data-download-document-id="${escapeHtml(version.id)}">Download</button></span>` : ""}</div>`).join("")}</div>`
+        : "";
+      return `<article class="final-document-card"><div class="final-document-content"><div class="final-document-labels">${badge(item.category, "blue")}${badge(item.version, "grey")}${badge(item.lifecycle || "Final", item.lifecycle === "Final" ? "green" : "purple")}</div><div class="final-document-name">${safeText(item.nameZh)}</div><div class="final-document-name-en">${safeText(item.nameEn, "")}</div><div class="final-document-meta"><span>${safeText(item.subcategory, "")}</span><span>${formatLiveTimestamp(item.finalDate) || formatDate(item.finalDate)}</span><span>PDF</span><span>${safeText(item.fileSize, "")}</span></div>${previous.length ? `<button class="document-version-toggle" type="button" data-document-history="${escapeHtml(groupId)}">${state.expandedDocumentGroups.has(groupId) ? "Hide previous versions / 收起历史版本" : `${previous.length} previous version${previous.length > 1 ? "s" : ""} / 查看历史版本`}</button>` : ""}${versionMarkup}</div><div class="final-document-action">${accessActions}${canEdit ? `<button class="button document-upload-button" type="button" data-upload-new-version="${escapeHtml(item.id)}">Upload New Version / 上传新版本</button>` : ""}</div></article>`;
     }).join("");
+  }
+
+  function openDocumentUpload(documentId = "") {
+    if (window.DashboardCollab?.canEdit?.(state.eventId) !== true) return;
+    const existing = eventDocuments().find((item) => item.id === documentId);
+    state.documentUploadContext = {
+      logicalDocumentId: existing?.logicalDocumentId || existing?.id || "",
+      nameCN: existing?.nameZh || "",
+      nameEN: existing?.nameEn || "",
+      category: existing?.category || "Presentation",
+      subcategory: existing?.subcategory || "",
+      version: existing ? "v0.2" : "v0.1",
+      lifecycle: "Preview"
+    };
+    $("document-upload-title").textContent = existing ? "Upload New Version / 上传新版本" : "Upload PDF / 上传 PDF";
+    $("document-upload-context").textContent = existing ? `${existing.nameZh} · prior versions remain available` : "Private event-files storage · Preview by default";
+    $("document-upload-file").value = "";
+    $("document-upload-name-cn").value = state.documentUploadContext.nameCN;
+    $("document-upload-name-en").value = state.documentUploadContext.nameEN;
+    $("document-upload-category").value = state.documentUploadContext.category;
+    $("document-upload-subcategory").value = state.documentUploadContext.subcategory;
+    $("document-upload-version").value = state.documentUploadContext.version;
+    $("document-upload-lifecycle").value = state.documentUploadContext.lifecycle;
+    $("document-upload-error").textContent = "";
+    $("document-upload-dialog").showModal();
+  }
+
+  async function saveDocumentUpload() {
+    const context = state.documentUploadContext || {};
+    const file = $("document-upload-file").files?.[0];
+    const submit = $("document-upload-submit");
+    const errorBox = $("document-upload-error");
+    submit.disabled = true;
+    submit.textContent = "Uploading…";
+    errorBox.textContent = "";
+    try {
+      await window.DashboardCollab?.uploadDocument?.(state.eventId, {
+        logicalDocumentId: context.logicalDocumentId,
+        nameCN: $("document-upload-name-cn").value.trim(),
+        nameEN: $("document-upload-name-en").value.trim(),
+        category: $("document-upload-category").value,
+        subcategory: $("document-upload-subcategory").value.trim(),
+        versionLabel: $("document-upload-version").value.trim(),
+        lifecycle: $("document-upload-lifecycle").value
+      }, file);
+      $("document-upload-dialog").close();
+      state.dynamicDocuments = await loadDynamicDocuments(state.eventId);
+      renderFinalDocuments(state.data);
+      showToast("PDF uploaded and version recorded / PDF 已上传并登记版本。");
+    } catch (error) {
+      errorBox.textContent = `上传失败：${error.message}`;
+    } finally {
+      submit.disabled = false;
+      submit.textContent = "Upload PDF / 上传 PDF";
+    }
   }
 
   function renderDashboard() {
@@ -1312,15 +1389,43 @@
         if (navigator.clipboard?.writeText) navigator.clipboard.writeText(code).then(() => showToast("Access code copied / 提取码已复制")).catch(() => showToast("Unable to copy code / 无法复制提取码"));
         return;
       }
+      const historyButton = event.target.closest("button[data-document-history]");
+      if (historyButton) {
+        const id = historyButton.dataset.documentHistory;
+        if (state.expandedDocumentGroups.has(id)) state.expandedDocumentGroups.delete(id); else state.expandedDocumentGroups.add(id);
+        renderFinalDocuments(state.data);
+        return;
+      }
+      const newVersionButton = event.target.closest("button[data-upload-new-version]");
+      if (newVersionButton) { openDocumentUpload(newVersionButton.dataset.uploadNewVersion); return; }
+      const previewButton = event.target.closest("button[data-preview-document-id]");
+      if (previewButton) {
+        const item = eventDocuments().find((entry) => entry.id === previewButton.dataset.previewDocumentId);
+        if (item) window.DashboardCollab?.requestDocumentAccess?.(state.eventId, item, "preview", previewButton);
+        return;
+      }
       const button = event.target.closest("button[data-download-document-id]");
       if (!button) return;
-      const item = (state.data.finalDocuments || []).find((entry) => entry.id === button.dataset.downloadDocumentId);
+      const item = eventDocuments().find((entry) => entry.id === button.dataset.downloadDocumentId);
       if (!item) return;
       window.DashboardCollab?.requestDownload?.(state.eventId, {
         id: item.id,
         fileName: item.nameEn || item.nameZh
       }, button);
     });
+
+    $("document-upload-control").addEventListener("click", (event) => {
+      if (event.target.closest("button[data-upload-document]")) openDocumentUpload();
+    });
+    $("resource-link-list").addEventListener("click", (event) => {
+      const copyButton = event.target.closest("button[data-copy-resource-code]");
+      if (!copyButton) return;
+      const code = copyButton.dataset.copyResourceCode || "";
+      if (navigator.clipboard?.writeText) navigator.clipboard.writeText(code).then(() => showToast("Access code copied / 提取码已复制")).catch(() => showToast("Unable to copy code / 无法复制提取码"));
+    });
+    $("document-upload-close").addEventListener("click", () => $("document-upload-dialog").close());
+    $("document-upload-cancel").addEventListener("click", () => $("document-upload-dialog").close());
+    $("document-upload-form").addEventListener("submit", (event) => { event.preventDefault(); saveDocumentUpload(); });
 
     $("workstream-body").addEventListener("click", (event) => {
       const stageEditButton = event.target.closest("button[data-edit-stage]");
@@ -1398,6 +1503,11 @@
       refreshAccessUi: () => {
         if (!state.data) return;
         renderWorkstreams();
+        renderFinalDocuments(state.data);
+      },
+      documentsChanged: async (eventId) => {
+        if (state.eventId !== eventId) return;
+        state.dynamicDocuments = await loadDynamicDocuments(eventId);
         renderFinalDocuments(state.data);
       }
     });

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.0-web - 2026-08-27
+
+- Added a shared private PDF version model for Preview and Final documents, with authorized browser upload, signed preview and download flows after the incremental Supabase migration is applied.
+- ODX Resources and Documents now coexist in the same panel; ODX retains All Attachments and Photo Live external link cards.
+- Fixed the duplicate ODX Booth Design `latestUpdate` property without changing its confirmed content.
+
 ## 1.8.9-web - 2026-08-27
 
 - Added external Resource Links mode for ODX 2026.

@@ -332,6 +332,17 @@
     }
   }
 
+  async function getPublicEventDocuments(eventId) {
+    if (!configured || !eventId) return [];
+    try {
+      const documents = await rpc("get_public_event_documents", { p_event_id: eventId }, false);
+      return Array.isArray(documents) ? documents : [];
+    } catch {
+      // The static baseline remains usable until the document-version migration is applied.
+      return [];
+    }
+  }
+
   function openAuthDialog(message = "") {
     const dialog = byId("auth-dialog");
     if (!dialog) return;
@@ -598,7 +609,28 @@
     }
   }
 
-  async function requestDownload(eventId, documentRecord, trigger) {
+  async function signedDocumentUrl(eventId, documentRecord) {
+    const file = await rpc("get_document_file", {
+      p_event_id: eventId,
+      p_document_id: documentRecord.id || documentRecord.document_id
+    }, true);
+    if (!file?.bucket_id || !file?.object_path) throw new Error("该文件尚未迁移到Private Storage。");
+    const encodedPath = file.object_path.split("/").map(encodeURIComponent).join("/");
+    const signed = await request(`/storage/v1/object/sign/${encodeURIComponent(file.bucket_id)}/${encodedPath}`, {
+      method: "POST",
+      body: JSON.stringify({ expiresIn: Number(config.signedUrlExpiresIn || 300) })
+    }, true);
+    const path = signed?.signedURL || signed?.signedUrl || signed?.signed_url;
+    if (!path) throw new Error("未能生成受控文件链接。");
+    const projectUrl = String(config.supabaseUrl).replace(/\/$/, "");
+    return /^https?:\/\//i.test(path)
+      ? path
+      : path.startsWith("/storage/v1/")
+        ? `${projectUrl}${path}`
+        : `${projectUrl}/storage/v1${path.startsWith("/") ? path : `/${path}`}`;
+  }
+
+  async function requestDocumentAccess(eventId, documentRecord, mode = "download", trigger) {
     if (trigger?.disabled) return;
     if (trigger) trigger.disabled = true;
     if (state.session) await refreshAccess({ notifyOnFailure: true });
@@ -612,33 +644,18 @@
       return;
     }
     try {
-      const file = await rpc("get_document_file", {
-        p_event_id: eventId,
-        p_document_id: documentRecord.id
-      }, true);
-      if (!file?.bucket_id || !file?.object_path) throw new Error("该文件尚未迁移到Private Storage。");
-      const encodedPath = file.object_path.split("/").map(encodeURIComponent).join("/");
-      const signed = await request(`/storage/v1/object/sign/${encodeURIComponent(file.bucket_id)}/${encodedPath}`, {
-        method: "POST",
-        body: JSON.stringify({ expiresIn: Number(config.signedUrlExpiresIn || 300) })
-      }, true);
-      const path = signed?.signedURL || signed?.signedUrl || signed?.signed_url;
-      if (!path) throw new Error("未能生成下载链接。");
-      const projectUrl = String(config.supabaseUrl).replace(/\/$/, "");
-      const href = /^https?:\/\//i.test(path)
-        ? path
-        : path.startsWith("/storage/v1/")
-          ? `${projectUrl}${path}`
-          : `${projectUrl}/storage/v1${path.startsWith("/") ? path : `/${path}`}`;
+      const href = await signedDocumentUrl(eventId, documentRecord);
       const anchor = window.document.createElement("a");
       anchor.href = href;
-      anchor.rel = "noopener";
+      anchor.rel = "noopener noreferrer";
       anchor.target = "_blank";
-      anchor.download = documentRecord.fileName || file.file_name || "";
+      if (mode === "download") anchor.download = documentRecord.fileName || documentRecord.original_file_name || "";
       window.document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();
-      notify(`已生成${Number(config.signedUrlExpiresIn || 300) / 60}分钟有效的下载链接。`);
+      notify(mode === "preview"
+        ? `已生成${Number(config.signedUrlExpiresIn || 300) / 60}分钟有效的预览链接。`
+        : `已生成${Number(config.signedUrlExpiresIn || 300) / 60}分钟有效的下载链接。`);
     } catch (error) {
       notify(/not authorized|permission|42501/i.test(error.message)
         ? `当前账号没有${eventLabel(eventId)}的文件下载权限。当前可访问：${accessSummary()}。`
@@ -646,6 +663,47 @@
     } finally {
       if (trigger) trigger.disabled = false;
     }
+  }
+
+  function requestDownload(eventId, documentRecord, trigger) {
+    return requestDocumentAccess(eventId, documentRecord, "download", trigger);
+  }
+
+  async function uploadDocument(eventId, metadata, file) {
+    if (state.session) await refreshAccess({ notifyOnFailure: true });
+    if (!state.session) throw new Error("请先登录后上传受控文件。");
+    if (!canEdit(eventId)) throw new Error("DOCUMENT_UPLOAD_NOT_AUTHORIZED");
+    if (!configured) throw new Error("Supabase Private Storage尚未配置，无法上传文件。");
+    const fileName = String(file?.name || "").trim();
+    const maxBytes = 52428800;
+    if (!file || file.type !== "application/pdf" || !/\.pdf$/i.test(fileName)) throw new Error("只能上传 PDF 文件。");
+    if (!Number.isFinite(file.size) || file.size <= 0 || file.size > maxBytes) throw new Error("PDF 文件必须大于 0 且不超过 50 MB。");
+    const created = await rpc("create_document_upload", {
+      p_event_id: eventId,
+      p_logical_document_id: metadata.logicalDocumentId || "",
+      p_display_name_cn: metadata.nameCN || "",
+      p_display_name_en: metadata.nameEN || "",
+      p_category: metadata.category || "",
+      p_subcategory: metadata.subcategory || "",
+      p_version_label: metadata.versionLabel || "",
+      p_lifecycle: metadata.lifecycle || "Preview",
+      p_original_file_name: fileName,
+      p_mime_type: file.type,
+      p_file_size_bytes: file.size
+    }, true);
+    if (!created?.document_id || !created?.object_path) throw new Error("未能创建文件版本记录。");
+    const encodedPath = String(created.object_path).split("/").map(encodeURIComponent).join("/");
+    await request(`/storage/v1/object/event-files/${encodedPath}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/pdf", "x-upsert": "false" },
+      body: file
+    }, true);
+    const finalized = await rpc("finalize_document_upload", {
+      p_event_id: eventId,
+      p_document_id: created.document_id
+    }, true);
+    if (typeof state.hooks.documentsChanged === "function") await state.hooks.documentsChanged(eventId);
+    return finalized;
   }
 
   function stopRealtime() {
@@ -825,6 +883,9 @@
     mergeEventData,
     requestEdit,
     requestDownload,
+    requestDocumentAccess,
+    uploadDocument,
+    getPublicEventDocuments,
     refreshAccess,
     setActiveEvent: (eventId) => { state.activeEventId = eventId || ""; renderAccess(); },
     subscribe,

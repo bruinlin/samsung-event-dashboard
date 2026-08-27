@@ -6,7 +6,7 @@
   3. 未确认信息使用 "TBD"；未知日期保持空字符串，不要推测。
   4. 新增工作项时填写 categoryId、categoryNameCN、categoryNameEN；仅复杂任务配置 stages 和 currentStageId。
   5. workstreams[].dueDate 是任务 Final DDL；stages[].dueDate 是阶段计划 DDL。未知日期保持空字符串，不要用 completedDate 代替 dueDate。
-  6. finalDocuments 仅登记已确认可公开下载的文件；当前没有文件时保持空数组。
+  6. finalDocuments 仅保留公开安全的静态文件元数据；私有 Preview / Final PDF 运行时由 Supabase 提供，数据文件中不得写入私有路径或签名链接。
 */
 
 window.EVENT_DATASETS = window.EVENT_DATASETS || {};
@@ -193,8 +193,7 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "媛媛 & Dennis",
       dueDate: "2026-08-14",
       actualCompletionDate: "",
-      latestUpdate: "Booth Design V5 issued. Core 6m × 6m layout is established with central round showcase, 75-inch presentation screen, 65-inch signage, poster walls, reception and meeting/presentation area.",
-      latestUpdate: "Physical / technology showcase is confirmed: PM1763, BM1773, CMM-D and zNAND-O stand card. Three pre-recorded system demo videos are confirmed: FDP on LMCache, NVMe Large Atomic in QLC SSDs and a CXL-related system demo.",
+      latestUpdate: "Booth Design V5 issued. Core 6m × 6m layout is established with central round showcase, 75-inch presentation screen, 65-inch signage, poster walls, reception and meeting/presentation area. Physical / technology showcase is confirmed: PM1763, BM1773, CMM-D and zNAND-O stand card. Three pre-recorded system demo videos are confirmed: FDP on LMCache, NVMe Large Atomic in QLC SSDs and a CXL-related system demo.",
       nextAction: "Finalize booth graphics, product / technology copy, zNAND-O stand card production, demo playback assets and On-site Tech Forum integration.",
       remarks: ""
     },

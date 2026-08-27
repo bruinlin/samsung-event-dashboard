@@ -640,7 +640,7 @@ a.final-document-name:hover, a.final-document-name:focus-visible { color: var(--
 .side-deliverables-panel .panel-heading { align-items: flex-start; padding: 16px; }
 .side-deliverables-panel .panel-heading h2 { font-size: 16px; }
 .side-deliverables-panel .panel-heading p { font-size: 11px; }
-.side-deliverables-panel .final-deliverables-heading { display: block; }
+.side-deliverables-panel .final-deliverables-heading { display: flex; gap: 10px; }
 .side-deliverables-panel .final-document-filters { margin-top: 10px; justify-content: flex-start; }
 .side-deliverables-panel .filter-chip { padding: 5px 7px; font-size: 10px; }
 .side-deliverables-panel .final-document-stats { display: block; padding: 8px 16px; color: var(--ink-500); border-bottom: 1px solid var(--line-soft); font-size: 11px; }
@@ -655,6 +655,21 @@ a.final-document-name:hover, a.final-document-name:focus-visible { color: var(--
 .side-deliverables-panel .final-document-description, .side-deliverables-panel .final-document-speaker { display: none; }
 .side-deliverables-panel .final-document-action { width: 100%; }
 .side-deliverables-panel .download-button { min-height: 34px; width: 100%; padding: 7px 9px; font-size: 11px; }
+
+.document-panel-actions { margin-left: auto; }
+.document-upload-button { min-height: 34px; padding: 7px 9px; white-space: nowrap; }
+.resource-links-section { padding: 0 16px 14px; border-bottom: 1px solid var(--line-soft); }
+.resource-links-section h3, .document-records-heading h3 { margin: 0; color: var(--ink-700); font-size: 11px; font-weight: 750; letter-spacing: .05em; text-transform: uppercase; }
+.resource-links-section h3 { padding: 12px 0 9px; }
+.document-records-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 16px 0; }
+.document-records-heading .final-document-filters { margin-top: 0; }
+.document-version-list { display: grid; gap: 7px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line-soft); }
+.document-version-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--ink-700); font-size: 11px; }
+.document-version-item .document-version-actions { display: inline-flex; gap: 5px; flex: 0 0 auto; }
+.document-action-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.document-action-row .download-button { min-width: 0; }
+.document-version-toggle { margin-top: 8px; padding: 0; border: 0; background: transparent; color: var(--blue-700); font-size: 11px; font-weight: 700; text-align: left; cursor: pointer; }
+.document-version-toggle:hover, .document-version-toggle:focus-visible { text-decoration: underline; outline: none; }
 
 .download-button {
   display: inline-flex;
@@ -677,7 +692,7 @@ a.final-document-name:hover, a.final-document-name:focus-visible { color: var(--
 .download-button:hover, .download-button:focus-visible { border-color: #095bbd; background: #095bbd; outline: none; }
 .download-button.unavailable { border-color: var(--line); background: var(--grey-bg); color: var(--grey); }
 
-.resource-link-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 16px; }
+.resource-link-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .resource-link-card { display: flex; flex-direction: column; min-width: 0; padding: 16px; border: 1px solid var(--line-soft); border-radius: 13px; background: #fff; }
 .resource-link-card.is-available { transition: border-color .16s ease, box-shadow .16s ease; }
 .resource-link-card.is-available:hover { border-color: #a9cbed; box-shadow: 0 4px 12px rgba(22, 81, 143, .08); }
@@ -833,7 +848,7 @@ footer { display: flex; justify-content: space-between; gap: 16px; padding: 4px 
   .calendar-fortnight .calendar-item-copy small, .calendar-later-item .calendar-item-copy small { font-size: 10px; }
   .calendar-day-detail { margin-left: 15px; margin-right: 15px; }
   .side-deliverables-panel .final-document-list { padding-left: 15px; padding-right: 15px; }
-  .side-deliverables-panel .resource-link-list { grid-template-columns: 1fr; padding: 12px 15px 15px; }
+  .side-deliverables-panel .resource-link-list { grid-template-columns: 1fr; }
   .resource-link-description { min-height: 0; }
   .table-wrap { overflow: visible; }
   .workstream-table, .workstream-table tbody { display: block; min-width: 0; }

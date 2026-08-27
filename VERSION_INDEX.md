@@ -2,6 +2,7 @@
 
 | Version | Date | Primary Deliverable | Lifecycle Status | Purpose |
 |---|---|---|---|---|
+| 1.9.0-web | 2026-08-27 | `007_private_document_versions_and_uploads.sql` + shared document UI | Working | Adds private Preview/Final PDF version metadata, authorized browser upload and signed preview/download, while keeping legacy controlled OCTS files and ODX external links compatible. |
 | 1.8.8-web | 2026-08-26 | `data/ODX_2026.js` + `assets/app.js` | Working | Refreshes the confirmed ODX technical program, shared On-site Forum session, physical/technology showcase, recorded system demos, PR/KOL information and compatible Overview/Session rendering. |
 | 1.7.0-web | 2026-08-01 | `004_progress_and_private_documents.sql` + collaboration assets | Working | Adds controlled Workstream Progress overlays, multi-event local role assignment, and private authorized document delivery. |
 | 1.6.7-web | 2026-07-30 | `index.html` + `event_data.js` | Working | Refreshes event-data cache keys for the canonical-status GitHub Pages rollout. |
