@@ -656,8 +656,6 @@ a.final-document-name:hover, a.final-document-name:focus-visible { color: var(--
 .side-deliverables-panel .final-document-action { width: 100%; }
 .side-deliverables-panel .download-button { min-height: 34px; width: 100%; padding: 7px 9px; font-size: 11px; }
 
-.document-panel-actions { margin-left: auto; }
-.document-upload-button { min-height: 34px; padding: 7px 9px; white-space: nowrap; }
 .resource-links-section { padding: 0 16px 14px; border-bottom: 1px solid var(--line-soft); }
 .resource-links-section h3, .document-records-heading h3 { margin: 0; color: var(--ink-700); font-size: 11px; font-weight: 750; letter-spacing: .05em; text-transform: uppercase; }
 .resource-links-section h3 { padding: 12px 0 9px; }

@@ -6,7 +6,7 @@
   3. 未确认信息使用 "TBD"；未知日期保持空字符串，不要推测。
   4. 新增工作项时填写 categoryId、categoryNameCN、categoryNameEN；仅复杂任务配置 stages 和 currentStageId。
   5. workstreams[].dueDate 是任务 Final DDL；stages[].dueDate 是阶段计划 DDL。未知日期保持空字符串，不要用 completedDate 代替 dueDate。
-  6. finalDocuments 仅保留公开安全的静态文件元数据；私有 Preview / Final PDF 运行时由 Supabase 提供，数据文件中不得写入私有路径或签名链接。
+  6. finalDocuments 仅保留公开安全的静态文件元数据；私有 Preview / Final PDF 由本地管理员脚本上传至 Supabase，数据文件中不得写入私有路径或签名链接。
 */
 
 window.EVENT_DATASETS = window.EVENT_DATASETS || {};
@@ -380,7 +380,98 @@ window.EVENT_DATASETS.ODX_2026 = {
     }
   ],
 
-  finalDocuments: [],
+  finalDocuments: [
+    {
+      id: "ODX-DOC-001",
+      nameZh: "ODX 2026 现场技术论坛 CXL 演示材料",
+      nameEn: "ODX 2026 On-site Tech Forum · CXL",
+      category: "Presentation",
+      subcategory: "On-site Tech Forum",
+      version: "Current",
+      lifecycle: "Preview",
+      finalDate: "",
+      format: "PDF",
+      fileSize: "1.6 MB",
+      fileSizeBytes: 1647913,
+      status: "Available",
+      downloadable: true
+    },
+    {
+      id: "ODX-DOC-002",
+      nameZh: "ODX 2026 官方分论坛演讲材料",
+      nameEn: "ODX 2026 Official Breakout Session · CXL Memory Pooling",
+      category: "Presentation",
+      subcategory: "Official Breakout Session",
+      version: "Current",
+      lifecycle: "Preview",
+      finalDate: "",
+      format: "PDF",
+      fileSize: "3.0 MB",
+      fileSizeBytes: 3193087,
+      status: "Available",
+      downloadable: true
+    },
+    {
+      id: "ODX-DOC-003",
+      nameZh: "ODX 2026 现场技术论坛 AiSIO 演示材料",
+      nameEn: "ODX 2026 On-site Tech Forum · AiSIO",
+      category: "Presentation",
+      subcategory: "On-site Tech Forum",
+      version: "Current",
+      lifecycle: "Preview",
+      finalDate: "",
+      format: "PDF",
+      fileSize: "2.7 MB",
+      fileSizeBytes: 2817926,
+      status: "Available",
+      downloadable: true
+    },
+    {
+      id: "ODX-DOC-004",
+      nameZh: "Samsung @ ODX 2026 执行方案",
+      nameEn: "Samsung @ ODX 2026 Operation Plan",
+      category: "Event Plan",
+      subcategory: "Operations",
+      version: "Current",
+      lifecycle: "Preview",
+      finalDate: "",
+      format: "PDF",
+      fileSize: "10.5 MB",
+      fileSizeBytes: 11052026,
+      status: "Available",
+      downloadable: true
+    },
+    {
+      id: "ODX-DOC-005",
+      nameZh: "ODX 2026 主论坛演讲中文稿 v0.8",
+      nameEn: "ODX 2026 Main Forum Keynote · Chinese v0.8",
+      category: "Presentation",
+      subcategory: "Main Forum",
+      version: "v0.8",
+      lifecycle: "Preview",
+      finalDate: "",
+      format: "PDF",
+      fileSize: "5.8 MB",
+      fileSizeBytes: 6074742,
+      status: "Available",
+      downloadable: true
+    },
+    {
+      id: "ODX-DOC-006",
+      nameZh: "ODX 2026 主论坛演讲稿 v0.8",
+      nameEn: "ODX 2026 Main Forum Keynote Script · v0.8",
+      category: "Presentation",
+      subcategory: "Main Forum",
+      version: "v0.8",
+      lifecycle: "Preview",
+      finalDate: "",
+      format: "PDF",
+      fileSize: "109.7 KB",
+      fileSizeBytes: 112292,
+      status: "Available",
+      downloadable: true
+    }
+  ],
 
   // 外部资料入口：后续只需填写 url 和（如适用）accessCode，无需修改前端或 Supabase。
   resourceLinks: [

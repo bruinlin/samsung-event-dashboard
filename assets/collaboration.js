@@ -25,6 +25,7 @@
     realtimeTimer: null,
     realtimeHeartbeat: null,
     editContext: null,
+    editOpening: false,
     accessRefreshPromise: null
   };
 
@@ -332,17 +333,6 @@
     }
   }
 
-  async function getPublicEventDocuments(eventId) {
-    if (!configured || !eventId) return [];
-    try {
-      const documents = await rpc("get_public_event_documents", { p_event_id: eventId }, false);
-      return Array.isArray(documents) ? documents : [];
-    } catch {
-      // The static baseline remains usable until the document-version migration is applied.
-      return [];
-    }
-  }
-
   function openAuthDialog(message = "") {
     const dialog = byId("auth-dialog");
     if (!dialog) return;
@@ -509,44 +499,84 @@
     }
   }
 
-  async function requestEdit(context) {
-    if (state.session) await refreshAccess({ notifyOnFailure: true });
-    if (!requireRole("edit", context.eventId, { kind: "edit", context })) return;
-    state.editContext = context;
+  function resetEditDialog() {
+    const form = byId("edit-form");
+    form?.reset();
+    state.editContext = null;
+    fillSelect(byId("edit-status"), WORKSTREAM_STATUSES, "Planning");
+    byId("edit-status").disabled = false;
+    byId("edit-status-note").hidden = true;
+    byId("edit-progress-field").hidden = false;
+    byId("edit-progress").value = "";
+    byId("edit-progress").disabled = false;
+    byId("edit-progress-note").textContent = "0–100%";
+    byId("edit-ddl").value = "";
+    byId("edit-owner").value = "";
+    byId("edit-latest-update-field").hidden = false;
+    byId("edit-next-action-field").hidden = false;
+    byId("edit-latest-update").value = "";
+    byId("edit-next-action").value = "";
+    byId("owner-options").replaceChildren();
+    byId("edit-meta").textContent = "";
+    byId("edit-error").textContent = "";
+  }
+
+  function hydrateEditDialog(context) {
     const dialog = byId("edit-dialog");
     const isStage = context.entityType === "stage";
     const statusLocked = context.entityType === "workstream" && context.hasStages;
+    state.editContext = context;
     byId("edit-dialog-title").textContent = isStage ? "Edit Stage / 编辑阶段" : "Edit Workstream / 编辑任务";
     byId("edit-entity-name").textContent = [context.workstreamName, context.stageName].filter(Boolean).join(" · ");
     fillSelect(byId("edit-status"), isStage ? STAGE_STATUSES : WORKSTREAM_STATUSES, context.status || "Planning");
     byId("edit-status").disabled = statusLocked;
     byId("edit-status-note").hidden = !statusLocked;
     byId("edit-progress-field").hidden = isStage;
-    if (!isStage) {
-      byId("edit-progress").value = String(normalizeProgress(context.progress));
-      syncProgressControl(context.status || "Planning");
-    }
-    byId("edit-ddl").value = context.dueDate || "";
-    byId("edit-owner").value = context.owner || "";
     byId("edit-latest-update-field").hidden = isStage;
     byId("edit-next-action-field").hidden = isStage;
     if (!isStage) {
+      byId("edit-progress").value = String(normalizeProgress(context.progress));
+      syncProgressControl(context.status || "Planning");
       byId("edit-latest-update").value = context.latestUpdate || "";
       byId("edit-next-action").value = context.nextAction || "";
     }
-    const ownerList = byId("owner-options");
-    ownerList.replaceChildren();
+    byId("edit-ddl").value = context.dueDate || "";
+    byId("edit-owner").value = context.owner || "";
     (context.ownerOptions || []).forEach((owner) => {
       const option = document.createElement("option");
       option.value = owner;
-      ownerList.appendChild(option);
+      byId("owner-options").appendChild(option);
     });
     const meta = context.collaboration || {};
     byId("edit-meta").textContent = meta.updatedAt
       ? `Version ${meta.version || 1} · ${meta.updatedAt}${meta.updatedBy ? ` · ${meta.updatedBy}` : ""}`
       : `Local baseline · Version ${meta.version || 1}`;
-    byId("edit-error").textContent = "";
     dialog.showModal();
+  }
+
+  async function requestEdit(identity) {
+    if (!identity?.eventId || !identity?.workstreamId || state.editOpening) return;
+    if (state.session) await refreshAccess({ notifyOnFailure: true });
+    if (!requireRole("edit", identity.eventId, { kind: "edit", context: identity })) return;
+    state.editOpening = true;
+    resetEditDialog();
+    try {
+      if (typeof state.hooks.reloadCurrentEvent === "function") await state.hooks.reloadCurrentEvent();
+      const context = state.hooks.resolveEditContext?.(identity);
+      if (!context || !canEdit(context.eventId)) throw new Error("当前任务已变更或不再可编辑，请刷新后重试。");
+      hydrateEditDialog(context);
+    } catch (error) {
+      notify(error.message || "无法读取当前任务数据。");
+    } finally {
+      state.editOpening = false;
+    }
+  }
+
+  function progressForSave(status, value) {
+    if (status === "Planning") return 0;
+    if (status === "Completed") return 100;
+    if (!/^\d+$/.test(String(value || "").trim())) throw new Error("Progress must be a whole number from 0 to 100.");
+    return normalizeProgress(value);
   }
 
   async function saveEdit() {
@@ -560,11 +590,17 @@
     const status = byId("edit-status").value;
     const progressInput = byId("edit-progress");
     const rawProgress = context.entityType === "workstream" ? progressInput.value.trim() : "0";
-    if (context.entityType === "workstream" && !/^\d+$/.test(rawProgress)) {
-      setEditError("Progress must be a whole number from 0 to 100.");
-      return;
+    let progress = 0;
+    if (context.entityType === "workstream") {
+      try {
+        progress = progressForSave(status, rawProgress);
+      } catch (error) {
+        setEditError(error.message);
+        saveButton.disabled = false;
+        saveButton.textContent = "Save / 保存";
+        return;
+      }
     }
-    const progress = context.entityType === "workstream" ? normalizeProgress(rawProgress) : 0;
     const dueDate = byId("edit-ddl").value.trim();
     const owner = byId("edit-owner").value.trim();
     const latestUpdate = context.entityType === "workstream" ? byId("edit-latest-update").value.trim() : "";
@@ -596,8 +632,9 @@
         }, true);
       }
       closeDialog(byId("edit-dialog"));
-      notify("保存成功，页面已更新。");
+      state.editContext = null;
       if (typeof state.hooks.reloadCurrentEvent === "function") await state.hooks.reloadCurrentEvent();
+      notify("保存成功，页面已更新。");
     } catch (error) {
       const conflict = error.code === "40001" || /COLLAB_CONFLICT|conflict/i.test(error.message);
       errorBox.textContent = conflict
@@ -667,43 +704,6 @@
 
   function requestDownload(eventId, documentRecord, trigger) {
     return requestDocumentAccess(eventId, documentRecord, "download", trigger);
-  }
-
-  async function uploadDocument(eventId, metadata, file) {
-    if (state.session) await refreshAccess({ notifyOnFailure: true });
-    if (!state.session) throw new Error("请先登录后上传受控文件。");
-    if (!canEdit(eventId)) throw new Error("DOCUMENT_UPLOAD_NOT_AUTHORIZED");
-    if (!configured) throw new Error("Supabase Private Storage尚未配置，无法上传文件。");
-    const fileName = String(file?.name || "").trim();
-    const maxBytes = 52428800;
-    if (!file || file.type !== "application/pdf" || !/\.pdf$/i.test(fileName)) throw new Error("只能上传 PDF 文件。");
-    if (!Number.isFinite(file.size) || file.size <= 0 || file.size > maxBytes) throw new Error("PDF 文件必须大于 0 且不超过 50 MB。");
-    const created = await rpc("create_document_upload", {
-      p_event_id: eventId,
-      p_logical_document_id: metadata.logicalDocumentId || "",
-      p_display_name_cn: metadata.nameCN || "",
-      p_display_name_en: metadata.nameEN || "",
-      p_category: metadata.category || "",
-      p_subcategory: metadata.subcategory || "",
-      p_version_label: metadata.versionLabel || "",
-      p_lifecycle: metadata.lifecycle || "Preview",
-      p_original_file_name: fileName,
-      p_mime_type: file.type,
-      p_file_size_bytes: file.size
-    }, true);
-    if (!created?.document_id || !created?.object_path) throw new Error("未能创建文件版本记录。");
-    const encodedPath = String(created.object_path).split("/").map(encodeURIComponent).join("/");
-    await request(`/storage/v1/object/event-files/${encodedPath}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/pdf", "x-upsert": "false" },
-      body: file
-    }, true);
-    const finalized = await rpc("finalize_document_upload", {
-      p_event_id: eventId,
-      p_document_id: created.document_id
-    }, true);
-    if (typeof state.hooks.documentsChanged === "function") await state.hooks.documentsChanged(eventId);
-    return finalized;
   }
 
   function stopRealtime() {
@@ -884,8 +884,6 @@
     requestEdit,
     requestDownload,
     requestDocumentAccess,
-    uploadDocument,
-    getPublicEventDocuments,
     refreshAccess,
     setActiveEvent: (eventId) => { state.activeEventId = eventId || ""; renderAccess(); },
     subscribe,
@@ -899,6 +897,6 @@
       role: effectiveRole(state.activeEventId),
       activeEventId: state.activeEventId
     }),
-    __test: { applyPublicUpdates, effectiveRole }
+    __test: { applyPublicUpdates, effectiveRole, progressForSave }
   };
 })();

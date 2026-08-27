@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.9.1-web - 2026-08-27
+
+- Removed browser-side PDF upload and its uninstalled migration dependency; private PDF delivery now uses the established mapping and signed Preview / Download flow.
+- Added the trusted local `upload-private-document.mjs` workflow for administrator-managed Preview and Final versions.
+- Registered six controlled ODX 2026 Preview PDF records and uploaded their private objects through the local administrator workflow.
+- Reinitialized edit dialogs from refreshed effective records by ID and normalized Planning/Completed progress before every save.
+- Fixed date-only document metadata so `YYYY-MM-DD` renders without a timezone-derived time.
+
 ## 1.9.0-web - 2026-08-27
 
 - Added a shared private PDF version model for Preview and Final documents, with authorized browser upload, signed preview and download flows after the incremental Supabase migration is applied.

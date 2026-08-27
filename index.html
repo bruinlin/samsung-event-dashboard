@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <title>Samsung Event Dashboard</title>
-  <link rel="stylesheet" href="assets/style.css?v=1.9.0">
+  <link rel="stylesheet" href="assets/style.css?v=1.9.1">
 </head>
 <body>
   <div class="page-shell">
@@ -157,7 +157,6 @@
               <h2 id="final-deliverables-title">Documents &amp; Deliverables</h2>
               <p>文件与交付物</p>
             </div>
-            <div class="document-panel-actions no-print" id="document-upload-control"></div>
           </div>
           <section class="resource-links-section" id="resource-links-section" hidden aria-labelledby="resource-links-title">
             <h3 id="resource-links-title">Resource Links / 外部资料链接</h3>
@@ -277,32 +276,6 @@
     </form>
   </dialog>
 
-  <dialog class="modal-dialog" id="document-upload-dialog" aria-labelledby="document-upload-title">
-    <form id="document-upload-form">
-      <div class="modal-heading">
-        <div>
-          <h2 id="document-upload-title">Upload PDF / 上传 PDF</h2>
-          <p id="document-upload-context">Private event-files storage · Preview by default</p>
-        </div>
-        <button class="modal-close" id="document-upload-close" type="button" aria-label="Close">×</button>
-      </div>
-      <div class="modal-body modal-form-grid">
-        <label class="modal-field"><span>PDF File / PDF 文件</span><input id="document-upload-file" type="file" accept="application/pdf,.pdf" required></label>
-        <label class="modal-field"><span>Document Name / 文件名称</span><input id="document-upload-name-cn" maxlength="200" required></label>
-        <label class="modal-field"><span>English Name / 英文名称</span><input id="document-upload-name-en" maxlength="200"></label>
-        <label class="modal-field"><span>Category / 分类</span><select id="document-upload-category"><option value="Presentation">Presentation</option><option value="Report">Report</option><option value="Photos">Photos</option><option value="Other">Other</option></select></label>
-        <label class="modal-field"><span>Subcategory / 子分类</span><input id="document-upload-subcategory" maxlength="120"></label>
-        <label class="modal-field"><span>Version / 版本</span><input id="document-upload-version" value="v0.1" maxlength="60" required></label>
-        <label class="modal-field"><span>Lifecycle / 生命周期</span><select id="document-upload-lifecycle"><option value="Preview" selected>Preview / 工作与审核版本</option><option value="Final">Final / 正式归档版本</option></select></label>
-        <div class="modal-error" id="document-upload-error" role="alert"></div>
-      </div>
-      <div class="modal-footer">
-        <button class="button" id="document-upload-cancel" type="button">Cancel / 取消</button>
-        <button class="button button-primary" id="document-upload-submit" type="submit">Upload PDF / 上传 PDF</button>
-      </div>
-    </form>
-  </dialog>
-
   <dialog class="modal-dialog calendar-overdue-dialog" id="calendar-overdue-dialog" aria-labelledby="calendar-overdue-title">
     <div class="modal-heading">
       <div>
@@ -319,9 +292,9 @@
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="config.js"></script>
-  <script src="event_data.js?v=1.9.0"></script>
+  <script src="event_data.js?v=1.9.1"></script>
   <script src="assets/workflow-state.js?v=1.8.6"></script>
-  <script src="assets/collaboration.js?v=1.9.0"></script>
-  <script src="assets/app.js?v=1.9.0"></script>
+  <script src="assets/collaboration.js?v=1.9.1"></script>
+  <script src="assets/app.js?v=1.9.1"></script>
 </body>
 </html>
