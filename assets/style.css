@@ -677,6 +677,24 @@ a.final-document-name:hover, a.final-document-name:focus-visible { color: var(--
 .download-button:hover, .download-button:focus-visible { border-color: #095bbd; background: #095bbd; outline: none; }
 .download-button.unavailable { border-color: var(--line); background: var(--grey-bg); color: var(--grey); }
 
+.resource-link-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 16px; }
+.resource-link-card { display: flex; flex-direction: column; min-width: 0; padding: 16px; border: 1px solid var(--line-soft); border-radius: 13px; background: #fff; }
+.resource-link-card.is-available { transition: border-color .16s ease, box-shadow .16s ease; }
+.resource-link-card.is-available:hover { border-color: #a9cbed; box-shadow: 0 4px 12px rgba(22, 81, 143, .08); }
+.resource-link-icon { display: grid; place-items: center; width: 30px; height: 30px; margin-bottom: 11px; border-radius: 8px; background: var(--blue-50); color: var(--blue-700); }
+.resource-link-icon svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.resource-link-name { color: var(--ink-900); font-size: 15px; font-weight: 740; line-height: 1.35; }
+.resource-link-name-en { margin-top: 2px; color: var(--ink-500); font-size: 11px; line-height: 1.4; }
+.resource-link-description { min-height: 3.2em; margin: 10px 0; color: var(--ink-700); font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+.resource-link-description span { color: var(--ink-500); }
+.resource-link-provider { margin-top: auto; color: var(--blue-700); font-size: 10px; font-weight: 720; letter-spacing: .05em; text-transform: uppercase; }
+.resource-link-action { display: inline-flex; align-items: center; justify-content: center; width: 100%; min-height: 36px; margin-top: 13px; padding: 7px 9px; border: 1px solid var(--blue-600); border-radius: 9px; background: var(--blue-600); color: #fff; font-size: 11px; font-weight: 700; line-height: 1.3; text-align: center; text-decoration: none; }
+.resource-link-action:hover, .resource-link-action:focus-visible { border-color: #095bbd; background: #095bbd; outline: none; }
+.resource-link-action.unavailable { border-color: var(--line); background: var(--grey-bg); color: var(--grey); cursor: default; }
+.resource-link-code { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 9px; color: var(--ink-700); font-size: 11px; }
+.resource-link-code button { padding: 0; border: 0; background: transparent; color: var(--blue-700); font: inherit; font-weight: 700; cursor: pointer; }
+.resource-link-code button:hover, .resource-link-code button:focus-visible { text-decoration: underline; outline: none; }
+
 .session-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 18px 20px; }
 .session-card { padding: 15px; border: 1px solid var(--line-soft); border-radius: 13px; background: #fbfdff; }
 .session-top { display: flex; align-items: start; justify-content: space-between; gap: 10px; }
@@ -815,6 +833,8 @@ footer { display: flex; justify-content: space-between; gap: 16px; padding: 4px 
   .calendar-fortnight .calendar-item-copy small, .calendar-later-item .calendar-item-copy small { font-size: 10px; }
   .calendar-day-detail { margin-left: 15px; margin-right: 15px; }
   .side-deliverables-panel .final-document-list { padding-left: 15px; padding-right: 15px; }
+  .side-deliverables-panel .resource-link-list { grid-template-columns: 1fr; padding: 12px 15px 15px; }
+  .resource-link-description { min-height: 0; }
   .table-wrap { overflow: visible; }
   .workstream-table, .workstream-table tbody { display: block; min-width: 0; }
   .workstream-table thead { display: none; }

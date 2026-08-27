@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.9-web - 2026-08-27
+
+- Added external Resource Links mode for ODX 2026.
+- ODX resources are organized into All Attachments and Photo Live; links can be populated later directly in event data.
+- Existing controlled document downloads remain unchanged for other events.
+
 ## 1.8.8-web - 2026-08-26
 
 - ODX 2026: confirmed the physical / technology showcase and three pre-recorded system demo videos.

@@ -1089,6 +1089,47 @@
   }
 
   function renderFinalDocuments(data) {
+    const resourceLinks = Array.isArray(data.resourceLinks) ? data.resourceLinks : [];
+    const hasResourceLinks = resourceLinks.length > 0;
+    const heading = $("final-deliverables-title");
+    const subtitle = document.querySelector(".final-deliverables-panel .panel-heading p");
+    $("final-document-filters").hidden = hasResourceLinks;
+    $("final-document-stats").hidden = hasResourceLinks;
+
+    if (hasResourceLinks) {
+      heading.textContent = "Resources & Links";
+      subtitle.textContent = "资料与链接 · Event Materials & On-site Media";
+      $("final-document-empty").hidden = true;
+      $("final-document-list").classList.add("resource-link-list");
+      $("final-document-list").innerHTML = resourceLinks.map((item) => {
+        const url = String(item.url || "").trim();
+        const enabled = /^https?:\/\//i.test(url);
+        const isPhotoLive = item.id === "ODX-LINK-002";
+        const icon = isPhotoLive
+          ? `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5h3l1.2-2h7.6l1.2 2h3v11H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg>`
+          : `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 6.5h6l1.7 2H20.5v10.8a1.2 1.2 0 0 1-1.2 1.2H4.7a1.2 1.2 0 0 1-1.2-1.2zM8.3 14.7l2.2 2.2 5.2-5.2"/></svg>`;
+        const action = enabled
+          ? `<a class="resource-link-action" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${isPhotoLive ? "Open Photo Live / 打开图片直播" : "Open Attachments / 打开附件"}</a>`
+          : `<button class="resource-link-action unavailable" type="button" disabled aria-disabled="true">Link TBD / 链接待补充</button>`;
+        const accessCode = String(item.accessCode || "").trim();
+        return `<article class="resource-link-card ${enabled ? "is-available" : "is-pending"}">
+          <div class="resource-link-icon">${icon}</div>
+          <div class="resource-link-content">
+            <div class="resource-link-name">${safeText(item.nameCN)}</div>
+            <div class="resource-link-name-en">${safeText(item.nameEN)}</div>
+            <p class="resource-link-description">${safeText(item.descriptionCN, "")} ${item.descriptionEN ? `<span>${safeText(item.descriptionEN, "")}</span>` : ""}</p>
+            <div class="resource-link-provider">${safeText(item.provider)}</div>
+            ${accessCode ? `<div class="resource-link-code"><span>提取码: <b>${safeText(accessCode)}</b></span><button type="button" data-copy-resource-code="${escapeHtml(accessCode)}">Copy Code / 复制提取码</button></div>` : ""}
+          </div>
+          ${action}
+        </article>`;
+      }).join("");
+      return;
+    }
+
+    heading.textContent = "Documents & Deliverables";
+    subtitle.textContent = "文件与交付物";
+    $("final-document-list").classList.remove("resource-link-list");
     const documents = Array.isArray(data.finalDocuments) ? data.finalDocuments : [];
     const filtered = state.documentCategory === "all"
       ? documents
@@ -1265,6 +1306,12 @@
     });
 
     $("final-document-list").addEventListener("click", (event) => {
+      const copyButton = event.target.closest("button[data-copy-resource-code]");
+      if (copyButton) {
+        const code = copyButton.dataset.copyResourceCode || "";
+        if (navigator.clipboard?.writeText) navigator.clipboard.writeText(code).then(() => showToast("Access code copied / 提取码已复制")).catch(() => showToast("Unable to copy code / 无法复制提取码"));
+        return;
+      }
       const button = event.target.closest("button[data-download-document-id]");
       if (!button) return;
       const item = (state.data.finalDocuments || []).find((entry) => entry.id === button.dataset.downloadDocumentId);

@@ -381,5 +381,31 @@ window.EVENT_DATASETS.ODX_2026 = {
     }
   ],
 
-  finalDocuments: []
+  finalDocuments: [],
+
+  // 外部资料入口：后续只需填写 url 和（如适用）accessCode，无需修改前端或 Supabase。
+  resourceLinks: [
+    {
+      id: "ODX-LINK-001",
+      nameCN: "全部附件",
+      nameEN: "All Attachments",
+      provider: "Baidu Netdisk",
+      descriptionCN: "ODX 2026 项目附件汇总，包括 Main Forum Keynote、On-site Tech Forum、Official Breakout Session、System Demo 及 Operation Plan。",
+      descriptionEN: "ODX 2026 consolidated event materials.",
+      url: "",
+      accessCode: "",
+      status: "TBD"
+    },
+    {
+      id: "ODX-LINK-002",
+      nameCN: "图片直播",
+      nameEN: "Photo Live",
+      provider: "Photo Live",
+      descriptionCN: "ODX 2026 活动现场图片直播。",
+      descriptionEN: "ODX 2026 onsite photo live gallery.",
+      url: "",
+      accessCode: "",
+      status: "TBD"
+    }
+  ]
 };
