@@ -14,7 +14,7 @@ window.EVENT_DATASETS = window.EVENT_DATASETS || {};
 window.EVENT_DATASETS.ODX_2026 = {
   meta: {
     schemaVersion: "1.8",
-    lastUpdated: "2026-08-26",
+    lastUpdated: "2026-08-28",
     updatedBy: "Bruin"
   },
 
@@ -27,6 +27,8 @@ window.EVENT_DATASETS.ODX_2026 = {
     dateEnd: "2026-09-04",
     city: "北京",
     venue: "北京国家会议中心二期",
+    organizer: "ODCC / Open Data Center Committee",
+    eventScale: "25 Keynotes · 184 Sessions · 3-day event",
     eventType: "行业技术大会",
     sponsorshipLevel: "Diamond Sponsor / 钻石赞助",
     participationForms: [
@@ -45,9 +47,9 @@ window.EVENT_DATASETS.ODX_2026 = {
     overallStatus: "In Progress",
     reportStatus: "Planning",
     showcaseLabel: "Physical / Technology Showcase / 实物与技术展示",
-    showcasedProducts: ["PM1763", "BM1773", "CMM-D", "zNAND-O stand card"],
-    systemDemoVideos: ["FDP on LMCache", "NVMe Large Atomic in QLC SSDs", "CXL-related System Demo"],
-    demoFormat: "Pre-recorded video playback · No onsite explanation / 预录视频播放 · 不安排现场讲解",
+    showcasedProducts: ["PM1763", "BM1773", "CMM-D"],
+    systemDemoVideos: ["CXL Memory Pooling", "MoE Offloading Project", "MySQL + QLC Project", "KV Cache with Seamless FDP"],
+    demoFormat: "Pre-recorded video playback / 预录视频播放",
     resultMetrics: [
       {
         label: "Booth Visitors / 展位访问",
@@ -77,7 +79,7 @@ window.EVENT_DATASETS.ODX_2026 = {
     ],
     officialWebsite: "https://www.odx.top/",
     sessionsSubtitle: "主论坛、官方分论坛、现场技术论坛与领奖环节",
-    currentSummary: "2026 ODX 将于 2026 年 9 月 2 日至 4 日在北京国家会议中心二期举行。三星将以 Diamond Sponsor 身份参与 Main Forum Keynote、Official Breakout Session、On-site Tech Forum、Booth、System Demo Videos 及 Tech Article。Samsung Booth B9（36㎡）将展示 PM1763、BM1773、CMM-D 及 zNAND-O stand card，并播放 FDP on LMCache、NVMe Large Atomic in QLC SSDs 和 CXL-related 三项预录系统 Demo。"
+    currentSummary: "2026 ODX 将于 2026 年 9 月 2 日至 4 日在北京国家会议中心二期举行，共设置 25 场 Keynote 和 184 场 Session。三星将以 Diamond Sponsor 身份参与 Main Forum Keynote、Official Breakout Session、On-site Tech Forum、Booth、System Demo Videos 及 Tech Article。Samsung Booth B9（36㎡）将展示 PM1763、BM1773 及 CMM-D / CXL，并播放 CXL Memory Pooling、MoE Offloading Project、MySQL + QLC Project 和 KV Cache with Seamless FDP 预录系统 Demo。zNAND-O 仅作为 Main Forum Keynote 技术内容呈现，不安排 Booth 展示。"
   },
 
   keynote: {
@@ -193,8 +195,8 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "媛媛 & Dennis",
       dueDate: "2026-08-14",
       actualCompletionDate: "",
-      latestUpdate: "Booth Design V5 issued. Core 6m × 6m layout is established with central round showcase, 75-inch presentation screen, 65-inch signage, poster walls, reception and meeting/presentation area. Physical / technology showcase is confirmed: PM1763, BM1773, CMM-D and zNAND-O stand card. Three pre-recorded system demo videos are confirmed: FDP on LMCache, NVMe Large Atomic in QLC SSDs and a CXL-related system demo.",
-      nextAction: "Finalize booth graphics, product / technology copy, zNAND-O stand card production, demo playback assets and On-site Tech Forum integration.",
+      latestUpdate: "Booth Design V5 issued. Core 6m × 6m layout is established with central round showcase, 75-inch presentation screen, 65-inch signage, poster walls, reception and meeting/presentation area. Physical / technology showcase is confirmed: PM1763, BM1773 and CMM-D / CXL. Pre-recorded system demo videos are confirmed: CXL Memory Pooling, MoE Offloading Project, MySQL + QLC Project and KV Cache with Seamless FDP.",
+      nextAction: "Finalize booth graphics, PM1763 / BM1773 / CMM-D showcase assets, demo playback assets and On-site Tech Forum integration.",
       remarks: ""
     },
     {
@@ -216,9 +218,9 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "Seloma",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "Booth social interaction mechanism is planned, and KOL booth tour with 智能纪元 is confirmed for ODX 2026.",
-      nextAction: "Finalize social posting schedule, KOL booth-tour coordination, onsite content capture, CTA and gift interaction execution.",
-      remarks: "KOL: 智能纪元. Final platform, onsite timing, content angle and publishing timing remain to be coordinated."
+      latestUpdate: "KOL booth exploration with 智能纪元AGI is confirmed for ODX 2026.",
+      nextAction: "Finalize social posting schedule, KOL booth-exploration coordination, onsite content capture, CTA and gift interaction execution.",
+      remarks: "KOL: 智能纪元AGI\nFormat: Booth Exploration / 探展\nOnsite timing, publishing timing, platform details, content angle and final metrics remain TBD."
     },
     {
       workstreamId: "ODX26-WS-08",
@@ -232,9 +234,9 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "Iris & Christy",
       dueDate: "2026-09-02",
       actualCompletionDate: "",
-      latestUpdate: "Onsite PR interview with Micheal Feng / 冯方, Samsung Semiconductor Memory Strategy Planning Director, is confirmed. Detailed media, interview timing, questions and output format are under internal coordination.",
-      nextAction: "Complete internal interview coordination and confirm media, timing, interview angle, onsite capture and follow-up coverage.",
-      remarks: "Confirmed PR activity: onsite interview with Micheal Feng / 冯方. Execution details TBD."
+      latestUpdate: "Onsite PR interview by TMTPost / 钛媒体 with Micheal Feng / 冯方 is confirmed.",
+      nextAction: "Complete TMTPost / 钛媒体 interview coordination, including timing, interview angle, questions, onsite capture and follow-up coverage.",
+      remarks: "Confirmed PR: TMTPost / 钛媒体 × Micheal Feng / 冯方\nRole: Samsung Semiconductor Memory Strategy Planning Director / 三星半导体 Memory 战略规划总监\nExact interview time, questions, angle, output format, publication timing and coverage result remain TBD."
     },
     {
       workstreamId: "ODX26-WS-09",
@@ -248,7 +250,7 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "Bruin",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "On-site Tech Forum is scheduled for Sep. 3, 15:00–15:30 (30 minutes), with 何兴 and Micheal Feng / 冯方 confirmed. The final format may be a technical dialogue and remains TBD. 何兴 will cover CXL Optimized KV Cache Solution; Micheal Feng will cover AiSIO. System demos are pre-recorded video playback with no dedicated onsite explanation.",
+      latestUpdate: "On-site Tech Forum is scheduled for Sep. 3, 15:00–15:30 (30 minutes), with 何兴 and Micheal Feng / 冯方 confirmed. The final format may be a technical dialogue and remains TBD. 何兴 will cover CXL Optimized KV Cache Solution; Micheal Feng will cover AiSIO. Booth system demos are pre-recorded video playback and align with the On-site presentation content by 何兴.",
       nextAction: "Confirm the final dialogue / presentation format, speaker flow or moderator arrangement, finalize demo-video playback setup, staffing, equipment, rehearsal and onsite SOP.",
       remarks: ""
     },
@@ -280,8 +282,8 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "TBD",
       dueDate: "2026-08-14",
       actualCompletionDate: "",
-      latestUpdate: "Physical / technology showcase is confirmed: PM1763, BM1773, CMM-D and zNAND-O stand card. System demo videos are confirmed for FDP on LMCache, NVMe Large Atomic in QLC SSDs and a CXL-related solution.",
-      nextAction: "Complete approved product / technology copy and assets, CMM-D messaging, zNAND-O stand-card artwork and the three final demo video files.",
+      latestUpdate: "Physical / technology showcase is confirmed: PM1763, BM1773 and CMM-D / CXL. System demo videos are confirmed for CXL Memory Pooling, MoE Offloading Project, MySQL + QLC Project and KV Cache with Seamless FDP.",
+      nextAction: "Complete approved product / technology copy and assets, CMM-D messaging and the four final demo video files.",
       remarks: ""
     },
     {
@@ -296,8 +298,8 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "TBD",
       dueDate: "2026-08-25",
       actualCompletionDate: "",
-      latestUpdate: "Kevin Yoon is confirmed as Samsung representative for the Award Ceremony; exact award name and time remain TBD. Main Forum Keynote is confirmed for Sep. 3 at 10:30–10:45. The On-site Tech Forum is scheduled for Sep. 3 at 15:00–15:30 with 何兴 and Micheal Feng / 冯方. 豆坤 is confirmed for the Sep. 4 Official Breakout Session at 15:40–16:00.",
-      nextAction: "Confirm Award name / timing, final On-site interaction format, final organizer agenda, Samsung onsite personnel and the complete three-day run sheet.",
+      latestUpdate: "Sep. 2 Opening Ceremony includes three confirmed Samsung awards; exact Samsung award presentation timing remains TBD. Main Forum Keynote is confirmed for Sep. 3 at 10:30–10:45. The On-site Tech Forum is scheduled for Sep. 3 at 15:00–15:30 with 何兴 and Micheal Feng / 冯方. 豆坤 is confirmed for the Sep. 4 Official Breakout Session at 15:40–16:00.",
+      nextAction: "Confirm exact Award presentation timing, final On-site interaction format, final organizer agenda, Samsung onsite personnel and the complete three-day run sheet.",
       remarks: ""
     },
     {
@@ -317,16 +319,16 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "TBD",
       dueDate: "2026-09-03",
       actualCompletionDate: "",
-      latestUpdate: "Pre-event post-event-report skeleton has been prepared based on the OCTS format. The reporting narrative will prioritize Samsung's Technical Leadership across keynote, CXL / KV Cache, AiSIO, zNAND-O, CMM-D, SSD products, system demo videos and technical communications.",
+      latestUpdate: "Pre-event post-event-report skeleton has been prepared based on the OCTS format. The reporting narrative will prioritize Samsung's Technical Leadership across the Main Forum Keynote, zNAND-O storyline inside the keynote, On-site Tech Forum, Official Breakout, PM1763 / BM1773 / CMM-D Booth Showcase, pre-recorded system demos, TMTPost / 钛媒体 interview, 智能纪元AGI booth exploration and Tech Article.",
       nextAction: "Reconfirm report DDLs and assign onsite evidence collection for Technical Leadership, including audience response, technical questions, demo / product interest, media interview, KOL coverage and final KPI results.",
-      remarks: "Key Technical Leadership evidence to track onsite: zNAND-O first China industry-event/forum appearance after FMS 2026 global debut; Main Forum Keynote; On-site technical session; Official Breakout; product / technology showcase; recorded system demos; Micheal Feng interview; KOL booth tour."
+      remarks: "Reporting logic: zNAND-O is Keynote-only technical content. Booth showcase: PM1763 / BM1773 / CMM-D. System Demo: CXL Memory Pooling / MoE Offloading Project / MySQL + QLC Project / KV Cache with Seamless FDP. Key Technical Leadership evidence to track onsite: Main Forum Keynote; zNAND-O storyline inside keynote; On-site Tech Forum; Official Breakout; PM1763 / BM1773 / CMM-D Booth Showcase; pre-recorded system demos; TMTPost / 钛媒体 interview with Micheal Feng / 冯方; 智能纪元AGI booth exploration; Tech Article."
     }
   ],
 
   sessions: [
     {
       sessionId: "ODX-AWARD-01",
-      type: "Award Ceremony / 颁奖",
+      type: "ODX Opening Ceremony / Award Ceremony",
       speaker: "Kevin Yoon",
       role: "Samsung Representative",
       topicEN: "TBD",
@@ -334,7 +336,12 @@ window.EVENT_DATASETS.ODX_2026 = {
       date: "2026-09-02",
       time: "TBD",
       status: "Planning",
-      remarks: "Kevin Yoon confirmed as Samsung representative. Exact award name and time remain TBD."
+      awards: [
+        { category: "Annual Leading Figure", recipient: "CVP Kevin Yoon" },
+        { category: "Annual Breakthrough Project", recipient: "PM1763 PCIe Gen6 SSD" },
+        { category: "Annual Pioneer Enterprise", recipient: "Shanghai Samsung Semiconductor" }
+      ],
+      remarks: "Samsung will receive three confirmed awards during the Sep. 2 AM Opening Ceremony. Exact Samsung award presentation timing remains TBD."
     },
     {
       sessionId: "ODX-SESSION-01",
@@ -356,6 +363,13 @@ window.EVENT_DATASETS.ODX_2026 = {
       duration: "30 min",
       format: "TBD — Possible dialogue format / 形式待定，可能采用对话形式",
       status: "Planning",
+      overallTopics: [
+        "CXL Memory Pooling",
+        "MoE Offloading Project",
+        "MySQL + QLC Project",
+        "KV Cache with Seamless FDP",
+        "AiSIO"
+      ],
       participants: [
         {
           speaker: "何兴",
@@ -376,7 +390,7 @@ window.EVENT_DATASETS.ODX_2026 = {
           topicCN: "TBD"
         }
       ],
-      remarks: "Shared 30-minute onsite technical session. Final interaction format remains TBD."
+      remarks: "Shared 30-minute onsite technical session. Overall technical scope: CXL Memory Pooling; MoE Offloading Project; MySQL + QLC Project; KV Cache with Seamless FDP; AiSIO. Final interaction format remains TBD."
     }
   ],
 

@@ -1057,6 +1057,9 @@
   }
 
   function renderSessions(data) {
+    const awardsMarkup = (awards) => Array.isArray(awards) && awards.filter((award) => award?.category || award?.recipient).length
+      ? `<div class="session-subtopics"><span>Awards / 奖项</span><ul>${awards.filter((award) => award?.category || award?.recipient).map((award) => `<li>${safeText([award.category, award.recipient].filter(Boolean).join(" · "))}</li>`).join("")}</ul></div>`
+      : "";
     const participantMarkup = (participant) => {
       const speaker = [participant.speaker, participant.speakerCN].filter(Boolean).join(" / ");
       const topicEN = String(participant.topicEN || "").trim();
@@ -1085,6 +1088,7 @@
              <div class="session-role">${safeText(session.role)}</div>
              <div class="session-topic"><b>${safeText(session.topicEN)}</b><br>${safeText(session.topicCN)}</div>
              ${Array.isArray(session.subTopics) && session.subTopics.filter(Boolean).length ? `<div class="session-subtopics"><span>Topics</span><ul>${session.subTopics.filter(Boolean).map((topic) => `<li>${safeText(topic)}</li>`).join("")}</ul></div>` : ""}`}
+        ${awardsMarkup(session.awards)}
         ${session.format ? `<div class="session-format">Format / 形式: ${safeText(session.format)}</div>` : ""}
         ${session.comments || session.remarks ? `<div class="session-note">${safeText(session.comments || session.remarks, "")}</div>` : ""}
       </article>

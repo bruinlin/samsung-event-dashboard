@@ -2,6 +2,7 @@
 
 | Version | Date | Primary Deliverable | Lifecycle Status | Purpose |
 |---|---|---|---|---|
+| 1.9.2-web | 2026-08-28 | `data/ODX_2026.js` + minimal Session Award renderer | Working | Refreshes confirmed ODX pre-event facts, Booth/demo scope, awards, PR/KOL and reporting guidance without changing collaboration overlays. |
 | 1.9.1-web | 2026-08-27 | shared edit workflow + local PDF uploader | Working | Removes browser PDF upload, restores the established private mapping flow, prevents stale edit-form data and normalizes Planning/Completed progress. |
 | 1.9.0-web | 2026-08-27 | browser PDF upload experiment | Superseded | Replaced before production migration by 1.9.1's trusted local administrator upload workflow. |
 | 1.8.8-web | 2026-08-26 | `data/ODX_2026.js` + `assets/app.js` | Working | Refreshes the confirmed ODX technical program, shared On-site Forum session, physical/technology showcase, recorded system demos, PR/KOL information and compatible Overview/Session rendering. |

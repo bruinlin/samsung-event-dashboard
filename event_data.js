@@ -24,7 +24,7 @@ window.EVENT_INDEX = {
       label: "ODX 2026",
       dateStart: "2026-09-02",
       overallStatus: "In Progress",
-    dataFile: "data/ODX_2026.js?v=1.9.1",
+    dataFile: "data/ODX_2026.js?v=1.9.2",
       dataKey: "ODX_2026"
     },
     {

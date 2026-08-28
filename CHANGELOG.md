@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.9.2-web - 2026-08-28
+
+- Updated ODX 2026 award information with three confirmed Samsung award categories while retaining the exact presentation timing as TBD.
+- Removed zNAND-O from the Booth showcase; zNAND-O is now Keynote-only.
+- Refreshed Booth showcase and pre-recorded system demo scope.
+- Confirmed TMTPost / 钛媒体 interview with Micheal Feng / 冯方.
+- Updated KOL activity to 智能纪元AGI Booth Exploration.
+- Refreshed related ODX static descriptive content without changing Collaboration workstream/stage state.
+
 ## 1.9.1-web - 2026-08-27
 
 - Removed browser-side PDF upload and its uninstalled migration dependency; private PDF delivery now uses the established mapping and signed Preview / Download flow.

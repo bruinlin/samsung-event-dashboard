@@ -39,11 +39,13 @@ assert(Boolean(data), "ODX_2026 dataset was not registered.");
 assert(!Object.prototype.hasOwnProperty.call(data || {}, "milestones"), "ODX must not define a milestones data property.");
 const event = data?.event || {};
 assert(validDate(event.dateStart) && validDate(event.dateEnd) && event.dateEnd >= event.dateStart, "Event date range is invalid.");
-assert(JSON.stringify(event.showcasedProducts) === JSON.stringify(["PM1763", "BM1773", "CMM-D", "zNAND-O stand card"]), "Physical / technology showcase is incorrect.");
-assert(JSON.stringify(event.systemDemoVideos) === JSON.stringify(["FDP on LMCache", "NVMe Large Atomic in QLC SSDs", "CXL-related System Demo"]), "System Demo Videos are incorrect.");
-assert(event.demoFormat === "Pre-recorded video playback · No onsite explanation / 预录视频播放 · 不安排现场讲解", "Demo format is incorrect.");
+assert(JSON.stringify(event.showcasedProducts) === JSON.stringify(["PM1763", "BM1773", "CMM-D"]), "Physical / technology showcase is incorrect.");
+assert(JSON.stringify(event.systemDemoVideos) === JSON.stringify(["CXL Memory Pooling", "MoE Offloading Project", "MySQL + QLC Project", "KV Cache with Seamless FDP"]), "System Demo Videos are incorrect.");
+assert(event.demoFormat === "Pre-recorded video playback / 预录视频播放", "Demo format is incorrect.");
 assert(!event.participationForms?.includes("Hero Live Demo / Hero Live 演示") && event.participationForms?.includes("System Demo Videos / 系统 Demo 视频"), "Participation Forms must use System Demo Videos, not Hero Live Demo.");
-assert(event.currentSummary?.includes("Booth B9") && event.currentSummary?.includes("zNAND-O stand card") && event.currentSummary?.includes("CXL-related"), "Current Summary is missing confirmed ODX facts.");
+assert(event.organizer === "ODCC / Open Data Center Committee" && event.eventScale === "25 Keynotes · 184 Sessions · 3-day event" && event.currentSummary?.includes("Booth B9") && event.currentSummary?.includes("zNAND-O 仅作为 Main Forum Keynote") && event.currentSummary?.includes("KV Cache with Seamless FDP"), "Current Summary is missing confirmed ODX facts.");
+const boothWorkstreams = (data?.workstreams || []).filter((item) => ["ODX26-WS-06", "ODX26-WS-11"].includes(item.workstreamId));
+assert(!/zNAND-O/i.test(JSON.stringify([event.showcasedProducts, ...boothWorkstreams])), "zNAND-O must not be a Booth showcase item.");
 assert(data?.keynote?.status === "In Progress", "Keynote status must be In Progress.");
 assert(data?.keynote?.topicEN === "Beyond the Memory Wall: Rearchitecting the Data Path for Agentic AI" && data?.keynote?.topicCN === "突破内存墙：重构智能体 AI 数据路径", "Formal Keynote topics are incorrect.");
 
@@ -112,9 +114,14 @@ const award = sessions.find((session) => session.sessionId === "ODX-AWARD-01");
 const breakout = sessions.find((session) => session.sessionId === "ODX-SESSION-01");
 const onsiteForum = sessions.find((session) => session.sessionId === "ODX-ONSITE-01");
 assert(!sessions.some((session) => session.sessionId === "ODX-ONSITE-02"), "On-site Tech Forum must be a single shared Session Card.");
-assert(award?.type === "Award Ceremony / 颁奖" && award?.speaker === "Kevin Yoon" && award?.date === "2026-09-02" && award?.time === "TBD" && award?.topicEN === "TBD" && award?.topicCN === "TBD" && award?.remarks === "Kevin Yoon confirmed as Samsung representative. Exact award name and time remain TBD.", "Award Ceremony information is incorrect.");
+assert(award?.type === "ODX Opening Ceremony / Award Ceremony" && award?.speaker === "Kevin Yoon" && award?.date === "2026-09-02" && award?.time === "TBD" && award?.topicEN === "TBD" && award?.topicCN === "TBD" && JSON.stringify(award?.awards) === JSON.stringify([
+  { category: "Annual Leading Figure", recipient: "CVP Kevin Yoon" },
+  { category: "Annual Breakthrough Project", recipient: "PM1763 PCIe Gen6 SSD" },
+  { category: "Annual Pioneer Enterprise", recipient: "Shanghai Samsung Semiconductor" }
+]) && award?.remarks?.includes("three confirmed awards") && award?.remarks?.includes("timing remains TBD"), "Award Ceremony information is incorrect.");
 assert(breakout?.type === "Official Breakout Session / 官方分论坛" && breakout?.speaker === "豆坤" && breakout?.role === "三星（中国）半导体有限公司高级项目经理" && breakout?.date === "2026-09-04" && breakout?.time === "15:40-16:00" && breakout?.topicCN === "解耦·共享·增效：CXL 内存池化的场景验证", "Official Breakout Session information is incorrect.");
 assert(onsiteForum?.type === "On-site Tech Forum / 现场技术论坛" && onsiteForum?.date === "2026-09-03" && onsiteForum?.time === "15:00-15:30" && onsiteForum?.duration === "30 min" && onsiteForum?.format?.includes("TBD") && onsiteForum?.format?.includes("Possible dialogue format"), "Shared On-site Tech Forum information is incorrect.");
+assert(JSON.stringify(onsiteForum?.overallTopics) === JSON.stringify(["CXL Memory Pooling", "MoE Offloading Project", "MySQL + QLC Project", "KV Cache with Seamless FDP", "AiSIO"]), "On-site Tech Forum overall topics are incorrect.");
 assert(onsiteForum?.participants?.length === 2, "On-site Tech Forum must contain two participants.");
 const heXing = onsiteForum?.participants?.[0];
 const michealFeng = onsiteForum?.participants?.[1];
@@ -123,7 +130,11 @@ assert(JSON.stringify(heXing?.subTopics || []) === JSON.stringify(["Samsung CMM-
 assert(michealFeng?.speaker === "Micheal Feng" && michealFeng?.speakerCN === "冯方" && michealFeng?.role === "三星半导体 Memory 战略规划总监" && michealFeng?.topicEN === "Feeding Storage to Accelerators: AiSIO" && michealFeng?.topicCN === "TBD", "Micheal Feng On-site participant information is incorrect.");
 assert(!JSON.stringify(data).includes("Michael Feng"), "Incorrect Michael Feng spelling found.");
 assert(data?.keynote?.speaker === "Jay Hyun" && data?.keynote?.speakerCN === "玄在雄" && data?.keynote?.title === "CVP, NAND Product Planning, Samsung Electronics" && data?.keynote?.titleCN === "三星电子副总裁兼NAND闪存规划与赋能事业部负责人", "Main Forum speaker information is incorrect.");
-assert(workstreams.find((item) => item.workstreamId === "ODX26-WS-09")?.latestUpdate === "On-site Tech Forum is scheduled for Sep. 3, 15:00–15:30 (30 minutes), with 何兴 and Micheal Feng / 冯方 confirmed. The final format may be a technical dialogue and remains TBD. 何兴 will cover CXL Optimized KV Cache Solution; Micheal Feng will cover AiSIO. System demos are pre-recorded video playback with no dedicated onsite explanation.", "ODX26-WS-09 On-site update is incorrect.");
+assert(workstreams.find((item) => item.workstreamId === "ODX26-WS-09")?.latestUpdate === "On-site Tech Forum is scheduled for Sep. 3, 15:00–15:30 (30 minutes), with 何兴 and Micheal Feng / 冯方 confirmed. The final format may be a technical dialogue and remains TBD. 何兴 will cover CXL Optimized KV Cache Solution; Micheal Feng will cover AiSIO. Booth system demos are pre-recorded video playback and align with the On-site presentation content by 何兴.", "ODX26-WS-09 On-site update is incorrect.");
+const socialUpdate = workstreams.find((item) => item.workstreamId === "ODX26-WS-07");
+const prUpdate = workstreams.find((item) => item.workstreamId === "ODX26-WS-08");
+assert(socialUpdate?.latestUpdate === "KOL booth exploration with 智能纪元AGI is confirmed for ODX 2026." && socialUpdate?.remarks?.includes("Booth Exploration / 探展"), "ODX26-WS-07 KOL information is incorrect.");
+assert(prUpdate?.latestUpdate === "Onsite PR interview by TMTPost / 钛媒体 with Micheal Feng / 冯方 is confirmed." && prUpdate?.remarks?.includes("Confirmed PR: TMTPost / 钛媒体 × Micheal Feng / 冯方"), "ODX26-WS-08 PR information is incorrect.");
 
 if (failures.length) {
   console.error(`ODX data quality failed:\n- ${failures.join("\n- ")}`);
