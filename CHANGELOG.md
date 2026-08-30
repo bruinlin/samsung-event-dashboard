@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.3-web - 2026-08-30
+
+- Updated confirmed ODX 2026 execution progress: all workstreams except Contract, Social Communication, PR & Media, and Post-event Report are now Completed at 100%.
+- Completed all Main Forum Keynote stages.
+- Preserves DDL, owner and unrelated Workstream data in the static baseline.
+
 ## 1.9.2-web - 2026-08-28
 
 - Updated ODX 2026 award information with three confirmed Samsung award categories while retaining the exact presentation timing as TBD.

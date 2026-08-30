@@ -14,24 +14,24 @@ const failures = [];
 const validDate = (value) => /^\d{4}-\d{2}-\d{2}$/.test(String(value || "")) && !Number.isNaN(new Date(`${value}T00:00:00Z`).getTime());
 const assert = (condition, message) => { if (!condition) failures.push(message); };
 const expectedProcesses = [
-  ["ODX26-WS-10", "Gifts", "In Progress", 80, "TBD", "2026-08-06"],
-  ["ODX26-WS-11", "Product Information & Assets", "In Progress", 20, "TBD", "2026-08-14"],
-  ["ODX26-WS-12", "Event Agenda & Personnel Details", "In Progress", 50, "TBD", "2026-08-25"],
+  ["ODX26-WS-10", "Gifts", "Completed", 100, "TBD", "2026-08-06"],
+  ["ODX26-WS-11", "Product Information & Assets", "Completed", 100, "TBD", "2026-08-14"],
+  ["ODX26-WS-12", "Event Agenda & Personnel Details", "Completed", 100, "TBD", "2026-08-25"],
   ["ODX26-WS-13", "Post-event Report", "Planning", 0, "TBD", "2026-09-03"]
 ];
 const expectedWorkstreamStates = [
-  ["ODX26-WS-01", "In Progress", 80],
+  ["ODX26-WS-01", "Completed", 100],
   ["ODX26-WS-02", "Completed", 100],
-  ["ODX26-WS-03", "In Progress", 30],
-  ["ODX26-WS-04", "In Progress", 90],
+  ["ODX26-WS-03", "Completed", 100],
+  ["ODX26-WS-04", "Completed", 100],
   ["ODX26-WS-05", "In Progress", 60],
-  ["ODX26-WS-06", "In Progress", 60],
+  ["ODX26-WS-06", "Completed", 100],
   ["ODX26-WS-07", "In Progress", 20],
   ["ODX26-WS-08", "Planning", 0],
-  ["ODX26-WS-09", "In Progress", 40],
-  ["ODX26-WS-10", "In Progress", 80],
-  ["ODX26-WS-11", "In Progress", 20],
-  ["ODX26-WS-12", "In Progress", 50],
+  ["ODX26-WS-09", "Completed", 100],
+  ["ODX26-WS-10", "Completed", 100],
+  ["ODX26-WS-11", "Completed", 100],
+  ["ODX26-WS-12", "Completed", 100],
   ["ODX26-WS-13", "Planning", 0]
 ];
 
@@ -98,10 +98,8 @@ assert(report?.stages?.[0]?.id === "report-draft" && report?.stages?.[0]?.status
 assert(report?.stages?.[1]?.id === "final-report" && report?.stages?.[1]?.status === "Planning" && report?.stages?.[1]?.dueDate === "2026-09-03", "ODX26-WS-13: Final Report is incorrect.");
 
 const keynote = workstreams.find((item) => item.workstreamId === "ODX26-WS-03");
-assert(keynote?.currentStageId === "first-washing", "ODX26-WS-03: current stage must be first-washing.");
-assert(keynote?.stages?.[0]?.id === "initial-draft" && keynote?.stages?.[0]?.status === "Completed" && keynote?.stages?.[0]?.completedDate === "", "ODX26-WS-03: Initial Draft status is incorrect.");
-assert(keynote?.stages?.[1]?.id === "first-washing" && keynote?.stages?.[1]?.status === "In Progress", "ODX26-WS-03: First Washing status is incorrect.");
-assert(keynote?.stages?.slice(2).every((stage) => stage.status === "Planning"), "ODX26-WS-03: later stages must remain Planning.");
+assert(keynote?.currentStageId === "final-approval", "ODX26-WS-03: current stage must be final-approval.");
+assert(keynote?.stages?.length === 5 && keynote.stages.every((stage) => stage.status === "Completed" && stage.completedDate === ""), "ODX26-WS-03: all Keynote stages must be Completed without inferred completion dates.");
 
 const social = workstreams.find((item) => item.workstreamId === "ODX26-WS-07");
 assert(social?.workflow === "social-publication", "ODX26-WS-07: Social workflow marker is missing.");
