@@ -14,7 +14,7 @@ window.EVENT_DATASETS = window.EVENT_DATASETS || {};
 window.EVENT_DATASETS.ODX_2026 = {
   meta: {
     schemaVersion: "1.8",
-    lastUpdated: "2026-08-30",
+    lastUpdated: "2026-09-09",
     updatedBy: "Bruin"
   },
 
@@ -28,7 +28,7 @@ window.EVENT_DATASETS.ODX_2026 = {
     city: "北京",
     venue: "北京国家会议中心二期",
     organizer: "ODCC / Open Data Center Committee",
-    eventScale: "25 Keynotes · 184 Sessions · 3-day event",
+    eventScale: "8,000㎡ Exhibition Area · 5,726 Event Visitors (+201.8% YoY)",
     eventType: "行业技术大会",
     sponsorshipLevel: "Diamond Sponsor / 钻石赞助",
     participationForms: [
@@ -40,46 +40,43 @@ window.EVENT_DATASETS.ODX_2026 = {
       "Booth"
     ],
     showParticipationInHero: true,
-    themeCN: "开放AI Infra，普惠算力赋能",
+    themeCN: "开放 AI Infra，普惠算力赋能",
+    themeEN: "Open AI Infra, Empowering Inclusive Computing",
     boothArea: "36㎡",
     boothNumber: "B9",
-    detailedAgenda: "TBD",
-    overallStatus: "In Progress",
-    reportStatus: "Planning",
+    boothLayout: "Four-side-open / 四面开口",
+    detailedAgenda: "Completed / 已完成",
+    overallStatus: "Completed",
+    reportStatus: "Completed",
     showcaseLabel: "Physical / Technology Showcase / 实物与技术展示",
     showcasedProducts: ["PM1763", "BM1773", "CMM-D"],
-    systemDemoVideos: ["CXL Memory Pooling", "MoE Offloading Project", "MySQL + QLC Project", "KV Cache with Seamless FDP"],
+    systemDemoVideos: ["FDP", "NVMe Large Atomic", "CXL"],
     demoFormat: "Pre-recorded video playback / 预录视频播放",
     resultMetrics: [
       {
         label: "Booth Visitors / 展位访问",
-        value: "TBD",
-        note: "Total booth visitors during the event"
+        value: "1,752",
+        note: "+20% YoY · Samsung Booth B9 · 3 event days"
       },
       {
         label: "On-site Forum Attendees / 现场论坛参与人次",
-        value: "TBD",
-        note: "Total attendance across On-site Tech Forum sessions"
+        value: "~60 Peak",
+        note: "20 min Q&A · 7 questioners"
       },
       {
         label: "New Followers / 新增粉丝",
-        value: "TBD",
-        note: "New social followers generated during the event"
+        value: "+333",
+        note: "+20.8% follower growth · +694 likes & saves"
       },
       {
         label: "PR Article Coverage / PR文章覆盖数量",
-        value: "TBD",
-        note: "Number of published PR / media coverage articles"
-      },
-      {
-        label: "Tech Article Views / 技术文章阅读量",
-        value: "TBD",
-        note: "Total views of the ODX technical article"
+        value: "64",
+        note: ">9.78M potential audience"
       }
     ],
     officialWebsite: "https://www.odx.top/",
     sessionsSubtitle: "主论坛、官方分论坛、现场技术论坛与领奖环节",
-    currentSummary: "2026 ODX 将于 2026 年 9 月 2 日至 4 日在北京国家会议中心二期举行，共设置 25 场 Keynote 和 184 场 Session。三星将以 Diamond Sponsor 身份参与 Main Forum Keynote、Official Breakout Session、On-site Tech Forum、Booth、System Demo Videos 及 Tech Article。Samsung Booth B9（36㎡）将展示 PM1763、BM1773 及 CMM-D / CXL，并播放 CXL Memory Pooling、MoE Offloading Project、MySQL + QLC Project 和 KV Cache with Seamless FDP 预录系统 Demo。zNAND-O 仅作为 Main Forum Keynote 技术内容呈现，不安排 Booth 展示。"
+    currentSummary: "ODX 2026 completed on 4 September. The event recorded 5,726 visitors (+201.8% YoY) across an 8,000㎡ exhibition area. As Diamond Sponsor, Samsung delivered a Main Forum Keynote, Official Breakout Session, 60-minute Booth On-site Tech Forum, PM1763 / BM1773 / CMM-D showcase, three pre-recorded system demos, three ODX awards, TMTPost expert interview, KOL coverage and full social communication. Samsung Booth B9 recorded 1,752 visitors (+20% YoY). The Main Forum Keynote drew approximately 1,000 attendees, while the On-site Tech Forum reached a peak audience of around 60 and generated a 20-minute Q&A with seven attendees raising questions. PR generated 64 pieces of same-day coverage with >9.78M potential audience, while rednote gained +333 followers and +694 likes & saves. zNAND-O remained Keynote-only and was not a Booth exhibit."
   },
 
   keynote: {
@@ -90,8 +87,8 @@ window.EVENT_DATASETS.ODX_2026 = {
     date: "2026-09-03",
     time: "10:30-10:45",
     topicEN: "Beyond the Memory Wall: Rearchitecting the Data Path for Agentic AI",
-    topicCN: "突破内存墙：重构智能体 AI 数据路径",
-    status: "In Progress"
+    topicCN: "突破内存墙：重构面向智能体 AI 的数据通路",
+    status: "Completed"
   },
 
   workstreams: [
@@ -107,8 +104,8 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "Bruin",
       dueDate: "2026-08-10",
       actualCompletionDate: "",
-      latestUpdate: "Organizer 0824 V1 preliminary agenda is available. Event dates, new venue at China National Convention Center Phase II, Diamond sponsorship, Booth B9, Main Forum Keynote, Official Breakout Session and Sep. 3 On-site Tech Forum timing are now available.",
-      nextAction: "Track organizer agenda revisions and confirm the final three-day agenda, Award details and any remaining organizer-side timing changes.",
+      latestUpdate: "ODX 2026 completed on 4 September at China National Convention Center Phase II. Final event scale: 8,000㎡ exhibition area and 5,726 visitors (+201.8% YoY).",
+      nextAction: "Closed / No further action.",
       remarks: ""
     },
     {
@@ -123,8 +120,8 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "Bruin & Leo",
       dueDate: "2026-07-22",
       actualCompletionDate: "2026-07-22",
-      latestUpdate: "Jay Hyun / 玄在雄 confirmed for Main Forum Keynote; 豆坤 confirmed for Official Breakout Session; 何兴 and Micheal Feng / 冯方 confirmed for the Sep. 3 On-site Tech Forum.",
-      nextAction: "/",
+      latestUpdate: "Jay Hyun / 玄在雄, Dou Kun / 豆坤, He Xing / 何兴 and Michael Feng / 冯方 completed their confirmed ODX 2026 speaking engagements.",
+      nextAction: "Closed / No further action.",
       remarks: ""
     },
     {
@@ -147,8 +144,8 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "Bruin & Leo",
       dueDate: "2026-08-26",
       actualCompletionDate: "",
-      latestUpdate: "Keynote title is confirmed as 'Beyond the Memory Wall: Rearchitecting the Data Path for Agentic AI'. First-washing v0.3 has received DSK feedback. Current revisions cover memory hierarchy, benchmark consistency, zNAND-O storyline, video treatment and production QA.",
-      nextAction: "Incorporate DSK feedback and complete the remaining benchmark, video and production revisions while retaining the confirmed keynote title and speaker information.",
+      latestUpdate: "Jay Hyun delivered 'Beyond the Memory Wall: Rearchitecting the Data Path for Agentic AI' on 3 September to approximately 1,000 attendees. zNAND-O remained Keynote-only technical content.",
+      nextAction: "Closed / No further action.",
       remarks: ""
     },
     {
@@ -163,8 +160,8 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "媛媛 & Dennis",
       dueDate: "2026-08-10",
       actualCompletionDate: "",
-      latestUpdate: "Quotation is nearly finalized based on the latest ODX booth and operation scope. Only DSK confirmation remains outstanding.",
-      nextAction: "Obtain final DSK confirmation and close the quotation.",
+      latestUpdate: "Quotation process closed for ODX 2026.",
+      nextAction: "Closed / No further action.",
       remarks: ""
     },
     {
@@ -174,13 +171,13 @@ window.EVENT_DATASETS.ODX_2026 = {
       categoryId: "business-commercial",
       categoryNameCN: "商务与商业管理",
       categoryNameEN: "Business & Commercial",
-      status: "In Progress",
-      progress: 60,
+      status: "Completed",
+      progress: 100,
       owner: "媛媛 & Dennis",
       dueDate: "2026-09-20",
       actualCompletionDate: "",
-      latestUpdate: "Contract remains in progress. No newer confirmed signing milestone is available in the current project materials.",
-      nextAction: "Confirm current contract approval/signing status and validate the final contract DDL, especially the current 2026-09-20 date.",
+      latestUpdate: "Contract process closed for ODX 2026.",
+      nextAction: "Closed / No further action.",
       remarks: ""
     },
     {
@@ -195,8 +192,8 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "媛媛 & Dennis",
       dueDate: "2026-08-14",
       actualCompletionDate: "",
-      latestUpdate: "Booth Design V5 issued. Core 6m × 6m layout is established with central round showcase, 75-inch presentation screen, 65-inch signage, poster walls, reception and meeting/presentation area. Physical / technology showcase is confirmed: PM1763, BM1773 and CMM-D / CXL. Pre-recorded system demo videos are confirmed: CXL Memory Pooling, MoE Offloading Project, MySQL + QLC Project and KV Cache with Seamless FDP.",
-      nextAction: "Finalize booth graphics, PM1763 / BM1773 / CMM-D showcase assets, demo playback assets and On-site Tech Forum integration.",
+      latestUpdate: "Samsung Booth B9 (36㎡, four-side-open) completed with PM1763, BM1773 and CMM-D showcase, plus FDP, NVMe Large Atomic and CXL pre-recorded system demos.",
+      nextAction: "Closed / No further action.",
       remarks: ""
     },
     {
@@ -206,21 +203,21 @@ window.EVENT_DATASETS.ODX_2026 = {
       categoryId: "social-pr-reporting",
       categoryNameCN: "传播、公关与报告",
       categoryNameEN: "Social, PR & Reporting",
-      status: "In Progress",
-      progress: 20,
+      status: "Completed",
+      progress: 100,
       workflow: "social-publication",
       stages: [
-        { id: "planning-draft", workflowStep: "planning", nameCN: "传播计划", nameEN: "Planning", status: "In Progress", dueDate: "2026-08-19", completedDate: "" },
-        { id: "draft", workflowStep: "draft", nameCN: "内容初稿", nameEN: "Draft", status: "Planning", dueDate: "", completedDate: "" },
-        { id: "publish", workflowStep: "publish", nameCN: "发布", nameEN: "Publish", status: "Planning", dueDate: "", completedDate: "" }
+        { id: "planning-draft", workflowStep: "planning", nameCN: "传播计划", nameEN: "Planning", status: "Completed", dueDate: "2026-08-19", completedDate: "" },
+        { id: "draft", workflowStep: "draft", nameCN: "内容初稿", nameEN: "Draft", status: "Completed", dueDate: "", completedDate: "" },
+        { id: "publish", workflowStep: "publish", nameCN: "发布", nameEN: "Publish", status: "Completed", dueDate: "", completedDate: "" }
       ],
-      currentStageId: "planning-draft",
+      currentStageId: "publish",
       owner: "Seloma",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "KOL booth exploration with 智能纪元AGI is confirmed for ODX 2026.",
-      nextAction: "Finalize social posting schedule, KOL booth-exploration coordination, onsite content capture, CTA and gift interaction execution.",
-      remarks: "KOL: 智能纪元AGI\nFormat: Booth Exploration / 探展\nOnsite timing, publishing timing, platform details, content angle and final metrics remain TBD."
+      latestUpdate: "Social communication completed: +333 followers (+20.8%), +694 likes & saves (+43.6%), 366 interactive participants and 237 PM1763 preferences (64.8%).",
+      nextAction: "Closed / No further action.",
+      remarks: "KOL 智能纪元 AGI completed Booth B9, product showcase, Jay Hyun Main Forum Keynote and On-site Tech Forum coverage with one original short video published on 4 September. Final Social links are available in Resources & Documents."
     },
     {
       workstreamId: "ODX26-WS-08",
@@ -229,14 +226,14 @@ window.EVENT_DATASETS.ODX_2026 = {
       categoryId: "social-pr-reporting",
       categoryNameCN: "传播、公关与报告",
       categoryNameEN: "Social, PR & Reporting",
-      status: "Planning",
-      progress: 0,
+      status: "Completed",
+      progress: 100,
       owner: "Iris & Christy",
       dueDate: "2026-09-02",
       actualCompletionDate: "",
-      latestUpdate: "Onsite PR interview by TMTPost / 钛媒体 with Micheal Feng / 冯方 is confirmed.",
-      nextAction: "Complete TMTPost / 钛媒体 interview coordination, including timing, interview angle, questions, onsite capture and follow-up coverage.",
-      remarks: "Confirmed PR: TMTPost / 钛媒体 × Micheal Feng / 冯方\nRole: Samsung Semiconductor Memory Strategy Planning Director / 三星半导体 Memory 战略规划总监\nExact interview time, questions, angle, output format, publication timing and coverage result remain TBD."
+      latestUpdate: "PR completed: official press release published on 3 September; 64 same-day media coverage pieces generated >9.78M potential audience. TMTPost technical discussion completed with He Xing and Michael Feng.",
+      nextAction: "Closed / No further action.",
+      remarks: "Official press release: 三星半导体亮相 2026 首届算博会，以创新存储方案赋能智能体 AI\nTMTPost / 钛媒体 technical discussion: CXL / KV Cache, inference-driven enterprise SSD demand, PM1763 / PCIe Gen6 and AiSIO. Final link is available in Resources & Documents."
     },
     {
       workstreamId: "ODX26-WS-09",
@@ -250,8 +247,8 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "Bruin",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "On-site Tech Forum is scheduled for Sep. 3, 15:00–15:30 (30 minutes), with 何兴 and Micheal Feng / 冯方 confirmed. The final format may be a technical dialogue and remains TBD. 何兴 will cover CXL Optimized KV Cache Solution; Micheal Feng will cover AiSIO. Booth system demos are pre-recorded video playback and align with the On-site presentation content by 何兴.",
-      nextAction: "Confirm the final dialogue / presentation format, speaker flow or moderator arrangement, finalize demo-video playback setup, staffing, equipment, rehearsal and onsite SOP.",
+      latestUpdate: "On-site Tech Forum completed on 3 September, 15:00–16:00. He Xing and Michael Feng presented to a peak audience of approximately 60; Q&A ran approximately 20 minutes with seven attendees raising questions.",
+      nextAction: "Closed / No further action.",
       remarks: ""
     },
     {
@@ -266,8 +263,8 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "TBD",
       dueDate: "2026-08-06",
       actualCompletionDate: "",
-      latestUpdate: "Final gift selection has been confirmed. Gift plan and usage are defined; procurement remains outstanding.",
-      nextAction: "Complete gift procurement and confirm quantity, delivery schedule and onsite allocation.",
+      latestUpdate: "On-site Tech Forum gifts were well received. Gift distribution completed.",
+      nextAction: "Closed / No further action.",
       remarks: ""
     },
     {
@@ -282,9 +279,9 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "TBD",
       dueDate: "2026-08-14",
       actualCompletionDate: "",
-      latestUpdate: "Physical / technology showcase is confirmed: PM1763, BM1773 and CMM-D / CXL. System demo videos are confirmed for CXL Memory Pooling, MoE Offloading Project, MySQL + QLC Project and KV Cache with Seamless FDP.",
-      nextAction: "Complete approved product / technology copy and assets, CMM-D messaging and the four final demo video files.",
-      remarks: ""
+      latestUpdate: "Final physical / technology showcase completed: PM1763, BM1773 and CMM-D. Final pre-recorded system demo categories: FDP, NVMe Large Atomic and CXL.",
+      nextAction: "Closed / No further action.",
+      remarks: "ODCC co-created technical publications: 《让存储成为 AI 计算的新引擎：三星的 AI 存储战略全景》; 《KV Cache 和 CXL 内存池化…三星 CXL 内存与存储技术新探索》; 《从“疯狂吃盘”到高效推理：三星如何解决 AI 推理的“存储焦虑”》."
     },
     {
       workstreamId: "ODX26-WS-12",
@@ -298,8 +295,8 @@ window.EVENT_DATASETS.ODX_2026 = {
       owner: "TBD",
       dueDate: "2026-08-25",
       actualCompletionDate: "",
-      latestUpdate: "Sep. 2 Opening Ceremony includes three confirmed Samsung awards; exact Samsung award presentation timing remains TBD. Main Forum Keynote is confirmed for Sep. 3 at 10:30–10:45. The On-site Tech Forum is scheduled for Sep. 3 at 15:00–15:30 with 何兴 and Micheal Feng / 冯方. 豆坤 is confirmed for the Sep. 4 Official Breakout Session at 15:40–16:00.",
-      nextAction: "Confirm exact Award presentation timing, final On-site interaction format, final organizer agenda, Samsung onsite personnel and the complete three-day run sheet.",
+      latestUpdate: "Final Samsung agenda completed: Award Ceremony 9:50–10:10 on 2 September; Main Forum Keynote 10:30–10:45 on 3 September; On-site Tech Forum 15:00–16:00 on 3 September; Official Breakout Session 15:20–15:40 on 4 September.",
+      nextAction: "Closed / No further action.",
       remarks: ""
     },
     {
@@ -309,19 +306,19 @@ window.EVENT_DATASETS.ODX_2026 = {
       categoryId: "social-pr-reporting",
       categoryNameCN: "传播、公关与报告",
       categoryNameEN: "Social, PR & Reporting",
-      status: "Planning",
-      progress: 0,
+      status: "Completed",
+      progress: 100,
       stages: [
-        { id: "report-draft", nameCN: "报告初稿", nameEN: "Report Draft", status: "Planning", dueDate: "2026-08-31", completedDate: "" },
-        { id: "final-report", nameCN: "最终报告", nameEN: "Final Report", status: "Planning", dueDate: "2026-09-03", completedDate: "" }
+        { id: "report-draft", nameCN: "报告初稿", nameEN: "Report Draft", status: "Completed", dueDate: "2026-08-31", completedDate: "" },
+        { id: "final-report", nameCN: "最终报告", nameEN: "Final Report", status: "Completed", dueDate: "2026-09-03", completedDate: "" }
       ],
-      currentStageId: "report-draft",
+      currentStageId: "final-report",
       owner: "TBD",
       dueDate: "2026-09-03",
       actualCompletionDate: "",
-      latestUpdate: "Pre-event post-event-report skeleton has been prepared based on the OCTS format. The reporting narrative will prioritize Samsung's Technical Leadership across the Main Forum Keynote, zNAND-O storyline inside the keynote, On-site Tech Forum, Official Breakout, PM1763 / BM1773 / CMM-D Booth Showcase, pre-recorded system demos, TMTPost / 钛媒体 interview, 智能纪元AGI booth exploration and Tech Article.",
-      nextAction: "Reconfirm report DDLs and assign onsite evidence collection for Technical Leadership, including audience response, technical questions, demo / product interest, media interview, KOL coverage and final KPI results.",
-      remarks: "Reporting logic: zNAND-O is Keynote-only technical content. Booth showcase: PM1763 / BM1773 / CMM-D. System Demo: CXL Memory Pooling / MoE Offloading Project / MySQL + QLC Project / KV Cache with Seamless FDP. Key Technical Leadership evidence to track onsite: Main Forum Keynote; zNAND-O storyline inside keynote; On-site Tech Forum; Official Breakout; PM1763 / BM1773 / CMM-D Booth Showcase; pre-recorded system demos; TMTPost / 钛媒体 interview with Micheal Feng / 冯方; 智能纪元AGI booth exploration; Tech Article."
+      latestUpdate: "Final ODX 2026 Post-event Report completed on 9 Sep with final event results, PR/Social performance, VOC, industry analysis and booth benchmark.",
+      nextAction: "Closed / No further action.",
+      remarks: "Final observations: TMTPost received the Keynote technical substance well; improve China-audience resonance next time through bilingual slides, brief Chinese opening / closing remarks and Chinese-language derivative assets. On-site Tech Forum gifts were well received; use numbered tickets or post-session redemption for future large-crowd distribution. Industry themes: AI Inference & Token Economics; Cross-Layer Memory & Storage Tiering; Ecosystem Competition & Technical Visibility."
     }
   ],
 
@@ -331,49 +328,49 @@ window.EVENT_DATASETS.ODX_2026 = {
       type: "ODX Opening Ceremony / Award Ceremony",
       speaker: "Kevin Yoon",
       role: "Samsung Representative",
-      topicEN: "TBD",
-      topicCN: "TBD",
+      topicEN: "",
+      topicCN: "",
       date: "2026-09-02",
-      time: "TBD",
-      status: "Planning",
+      time: "09:50-10:10",
+      status: "Completed",
       awards: [
-        { category: "Annual Leading Figure", recipient: "CVP Kevin Yoon" },
-        { category: "Annual Breakthrough Project", recipient: "PM1763 PCIe Gen6 SSD" },
-        { category: "Annual Pioneer Enterprise", recipient: "Shanghai Samsung Semiconductor" }
+        { category: "2026 ODX Industry Leader / 领军人物", recipient: "Kevin Yoon" },
+        { category: "2026 ODX Breakthrough Project / 突破项目", recipient: "PM1763 PCIe Gen6 SSD" },
+        { category: "2026 ODX Pioneer Enterprise / 先锋企业", recipient: "Samsung Semiconductor" }
       ],
-      remarks: "Samsung will receive three confirmed awards during the Sep. 2 AM Opening Ceremony. Exact Samsung award presentation timing remains TBD."
+      remarks: "Samsung Award Ceremony completed on 2 September, 09:50–10:10."
     },
     {
       sessionId: "ODX-SESSION-01",
       type: "Official Breakout Session / 官方分论坛",
-      speaker: "豆坤",
-      role: "三星（中国）半导体有限公司高级项目经理",
-      topicEN: "TBD",
+      speaker: "Dou Kun / 豆坤",
+      role: "Senior Project Manager, Samsung Semiconductor (China)",
+      topicEN: "Decoupling, Sharing, Efficiency: Scenario Verification of CXL Memory Pooling",
       topicCN: "解耦·共享·增效：CXL 内存池化的场景验证",
       date: "2026-09-04",
-      time: "15:40-16:00",
-      status: "Planning",
-      remarks: ""
+      time: "15:20-15:40",
+      status: "Completed",
+      remarks: "Storage System Forum · 2F, Room 253 · Core focus: CXL memory pooling, shared / disaggregated memory, scenario validation and AI memory expansion."
     },
     {
       sessionId: "ODX-ONSITE-01",
       type: "On-site Tech Forum / 现场技术论坛",
       date: "2026-09-03",
-      time: "15:00-15:30",
-      duration: "30 min",
-      format: "TBD — Possible dialogue format / 形式待定，可能采用对话形式",
-      status: "Planning",
+      time: "15:00-16:00",
+      duration: "60 min",
+      format: "Technical Forum / 技术论坛",
+      status: "Completed",
       overallTopics: [
-        "CXL Memory Pooling",
-        "MoE Offloading Project",
-        "MySQL + QLC Project",
-        "KV Cache with Seamless FDP",
+        "CXL / KV Cache",
+        "MoE Offloading",
+        "FDP SSD",
+        "QLC Atomic Write",
         "AiSIO"
       ],
       participants: [
         {
           speaker: "何兴",
-          role: "西安三星电子研究所 存储解决方案部技术总监",
+          role: "Technical Director of the Storage Solution Department, Samsung R&D Institute Xi'an",
           topicEN: "CXL Optimized KV Cache Solution",
           topicCN: "CXL 优化的 KV Cache 解决方案",
           subTopics: [
@@ -383,14 +380,14 @@ window.EVENT_DATASETS.ODX_2026 = {
           ]
         },
         {
-          speaker: "Micheal Feng",
+          speaker: "Michael Feng",
           speakerCN: "冯方",
-          role: "三星半导体 Memory 战略规划总监",
+          role: "Director of Memory Strategic Planning, Samsung Semiconductor",
           topicEN: "Feeding Storage to Accelerators: AiSIO",
-          topicCN: "TBD"
+          topicCN: ""
         }
       ],
-      remarks: "Shared 30-minute onsite technical session. Overall technical scope: CXL Memory Pooling; MoE Offloading Project; MySQL + QLC Project; KV Cache with Seamless FDP; AiSIO. Final interaction format remains TBD."
+      remarks: "Completed 60-minute On-site Tech Forum. Peak audience: approximately 60. Q&A: approximately 20 minutes with seven attendees raising questions."
     }
   ],
 
@@ -487,29 +484,204 @@ window.EVENT_DATASETS.ODX_2026 = {
     }
   ],
 
-  // 外部资料入口：后续只需填写 url 和（如适用）accessCode，无需修改前端或 Supabase。
   resourceLinks: [
     {
-      id: "ODX-LINK-001",
-      nameCN: "全部附件",
-      nameEN: "All Attachments",
-      provider: "Baidu Netdisk",
-      descriptionCN: "ODX 2026 项目附件汇总，包括 Main Forum Keynote、On-site Tech Forum、Official Breakout Session、System Demo 及 Operation Plan。",
-      descriptionEN: "ODX 2026 consolidated event materials.",
-      url: "",
+      id: "ODX-LINK-PR-001",
+      nameCN: "钛媒体技术讨论",
+      nameEN: "TMTPost Technical Discussion",
+      provider: "TMTPost / 钛媒体",
+      descriptionCN: "何兴与 Michael Feng 围绕 CXL / KV Cache、企业级 SSD、PM1763 / PCIe Gen6 及 AiSIO 的技术讨论。",
+      descriptionEN: "Final technical discussion article.",
+      url: "https://www.tmtpost.com/8133976.html",
       accessCode: "",
-      status: "TBD"
+      status: "Published"
     },
     {
-      id: "ODX-LINK-002",
-      nameCN: "图片直播",
-      nameEN: "Photo Live",
-      provider: "Photo Live",
-      descriptionCN: "ODX 2026 活动现场图片直播。",
-      descriptionEN: "ODX 2026 onsite photo live gallery.",
-      url: "",
+      id: "ODX-LINK-KOL-001",
+      nameCN: "智能纪元 AGI 微信视频号",
+      nameEN: "Intelligent Era AGI · WeChat Channels",
+      provider: "WeChat Channels",
+      descriptionCN: "ODX 2026 KOL 原创短视频。",
+      descriptionEN: "KOL original short video.",
+      url: "https://channels.weixin.qq.com/finder-preview/pages/sph?id=A2r1iJiqzM",
       accessCode: "",
-      status: "TBD"
+      status: "Published"
+    },
+    {
+      id: "ODX-LINK-KOL-002",
+      nameCN: "智能纪元 AGI 小红书",
+      nameEN: "Intelligent Era AGI · rednote",
+      provider: "rednote",
+      descriptionCN: "ODX 2026 KOL 内容。",
+      descriptionEN: "KOL coverage.",
+      url: "https://xhslink.cn/o/6gv34xAa9xR",
+      accessCode: "",
+      status: "Published"
+    },
+    {
+      id: "ODX-LINK-KOL-003",
+      nameCN: "AI 科技研究员小红书",
+      nameEN: "AI Technology Researcher · rednote",
+      provider: "rednote",
+      descriptionCN: "ODX 2026 KOL 内容。",
+      descriptionEN: "KOL coverage.",
+      url: "https://xhslink.cn/o/728V9wUOLHj",
+      accessCode: "",
+      status: "Published"
+    },
+    {
+      id: "ODX-LINK-SOCIAL-001",
+      nameCN: "预热海报 · 微博",
+      nameEN: "Warm-up Poster · Weibo",
+      provider: "Weibo",
+      descriptionCN: "ODX 2026 社媒预热内容。",
+      descriptionEN: "Published social content.",
+      url: "https://weibo.com/7546687857/RfiDql5Px",
+      accessCode: "",
+      status: "Published"
+    },
+    {
+      id: "ODX-LINK-SOCIAL-002",
+      nameCN: "预热海报 · 微信",
+      nameEN: "Warm-up Poster · WeChat",
+      provider: "WeChat",
+      descriptionCN: "ODX 2026 社媒预热内容。",
+      descriptionEN: "Published social content.",
+      url: "https://mp.weixin.qq.com/s/ejSUubofmjL05mkKsd3G6w",
+      accessCode: "",
+      status: "Published"
+    },
+    {
+      id: "ODX-LINK-SOCIAL-003",
+      nameCN: "预热海报 · 小红书",
+      nameEN: "Warm-up Poster · rednote",
+      provider: "rednote",
+      descriptionCN: "ODX 2026 社媒预热内容。",
+      descriptionEN: "Published social content.",
+      url: "https://xhslink.cn/o/2ZdHqcuazLB",
+      accessCode: "",
+      status: "Published"
+    },
+    {
+      id: "ODX-LINK-SOCIAL-004",
+      nameCN: "一图读懂 · 微博",
+      nameEN: "At-a-Glance Infographic · Weibo",
+      provider: "Weibo",
+      descriptionCN: "ODX 2026 一图读懂。",
+      descriptionEN: "Published social content.",
+      url: "https://weibo.com/7546687857/5339024929330436",
+      accessCode: "",
+      status: "Published"
+    },
+    {
+      id: "ODX-LINK-SOCIAL-005",
+      nameCN: "一图读懂 · 微信",
+      nameEN: "At-a-Glance Infographic · WeChat",
+      provider: "WeChat",
+      descriptionCN: "ODX 2026 一图读懂。",
+      descriptionEN: "Published social content.",
+      url: "https://mp.weixin.qq.com/s/ozyKZgLelcQI0WdH7WCSgA",
+      accessCode: "",
+      status: "Published"
+    },
+    {
+      id: "ODX-LINK-SOCIAL-006",
+      nameCN: "一图读懂 · 小红书",
+      nameEN: "At-a-Glance Infographic · rednote",
+      provider: "rednote",
+      descriptionCN: "ODX 2026 一图读懂。",
+      descriptionEN: "Published social content.",
+      url: "https://xhslink.cn/o/6slFtAdRbCU",
+      accessCode: "",
+      status: "Published"
+    },
+    {
+      id: "ODX-LINK-SOCIAL-007",
+      nameCN: "新闻稿 · 微信",
+      nameEN: "Press Release · WeChat",
+      provider: "WeChat",
+      descriptionCN: "三星半导体亮相 2026 首届算博会，以创新存储方案赋能智能体 AI。",
+      descriptionEN: "Official press release.",
+      url: "https://mp.weixin.qq.com/s/5Cfs5qKdF9eUsmS5BiZcZw",
+      accessCode: "",
+      status: "Published"
+    },
+    {
+      id: "ODX-LINK-SOCIAL-008",
+      nameCN: "高光时刻 · 微博",
+      nameEN: "Event Highlights · Weibo",
+      provider: "Weibo",
+      descriptionCN: "ODX 2026 活动高光内容。",
+      descriptionEN: "Published social content.",
+      url: "https://weibo.com/7546687857/5339128459952427",
+      accessCode: "",
+      status: "Published"
+    },
+    {
+      id: "ODX-LINK-SOCIAL-009",
+      nameCN: "高光时刻 · 微信",
+      nameEN: "Event Highlights · WeChat",
+      provider: "WeChat",
+      descriptionCN: "ODX 2026 活动高光内容。",
+      descriptionEN: "Published social content.",
+      url: "https://mp.weixin.qq.com/s/7tqU4jfGX_AvXUxyVy0n_g",
+      accessCode: "",
+      status: "Published"
+    },
+    {
+      id: "ODX-LINK-SOCIAL-010",
+      nameCN: "高光时刻 · 小红书",
+      nameEN: "Event Highlights · rednote",
+      provider: "rednote",
+      descriptionCN: "ODX 2026 活动高光内容。",
+      descriptionEN: "Published social content.",
+      url: "https://xhslink.cn/o/77HDgulDzOM",
+      accessCode: "",
+      status: "Published"
+    },
+    {
+      id: "ODX-LINK-SOCIAL-011",
+      nameCN: "回顾视频 · 微博",
+      nameEN: "Recap Video · Weibo",
+      provider: "Weibo",
+      descriptionCN: "ODX 2026 回顾视频。",
+      descriptionEN: "Published social content.",
+      url: "https://weibo.com/7546687857/Rgzs7b8OX?pagetype=detail",
+      accessCode: "",
+      status: "Published"
+    },
+    {
+      id: "ODX-LINK-SOCIAL-012",
+      nameCN: "回顾视频 · 微信",
+      nameEN: "Recap Video · WeChat",
+      provider: "WeChat",
+      descriptionCN: "ODX 2026 回顾视频。",
+      descriptionEN: "Published social content.",
+      url: "https://mp.weixin.qq.com/s/8p8r45Ua3To1CGrMfIui5Q",
+      accessCode: "",
+      status: "Published"
+    },
+    {
+      id: "ODX-LINK-SOCIAL-013",
+      nameCN: "回顾视频 · 小红书",
+      nameEN: "Recap Video · rednote",
+      provider: "rednote",
+      descriptionCN: "ODX 2026 回顾视频。",
+      descriptionEN: "Published social content.",
+      url: "https://xhslink.cn/o/5BgbQCU1wOC",
+      accessCode: "",
+      status: "Published"
+    },
+    {
+      id: "ODX-LINK-SOCIAL-014",
+      nameCN: "金句视频 · 小红书",
+      nameEN: "Quote Video · rednote",
+      provider: "rednote",
+      descriptionCN: "ODX 2026 金句视频，发布于 9 月 8 日。",
+      descriptionEN: "Published social content.",
+      url: "https://xhslink.cn/o/eLKiBXhPfA",
+      accessCode: "",
+      status: "Published"
     }
   ]
 };

@@ -346,6 +346,7 @@
     $("hero-meta").innerHTML = [
       `<span>日期 <b>${eventDate}</b></span>`,
       `<span>地点 <b>${safeText(event.city)} · ${safeText(event.venue)}</b></span>`,
+      event.eventScale ? `<span>Event Scale / 活动规模 <b>${safeText(event.eventScale)}</b></span>` : "",
       event.eventType ? `<span>类型 <b>${safeText(event.eventType)}</b></span>` : "",
       participation ? `<span class="hero-participation"><span class="hero-meta-label">Participation / 参与方式</span><b>${safeText(participation)}</b></span>` : "",
       event.showEventCountdown ? `<span>Event Countdown <b>${safeText(eventCountdown(event.dateStart))}</b></span>` : "",
@@ -358,8 +359,10 @@
       : `Last updated <b>${formatDate(data.meta.lastUpdated)}</b><br>Updated by <b>${safeText(data.meta.updatedBy)}</b>`;
 
     const resultMetrics = Array.isArray(event.resultMetrics) ? event.resultMetrics : [];
-    $("hero-results").hidden = resultMetrics.length === 0;
-    $("hero-results").innerHTML = resultMetrics.map((item) => `
+    const heroResults = $("hero-results");
+    heroResults.hidden = resultMetrics.length === 0;
+    heroResults.classList.toggle("hero-results-count-4", resultMetrics.length === 4);
+    heroResults.innerHTML = resultMetrics.map((item) => `
       <div class="hero-result-item">
         <div class="hero-result-label">${safeText(item.label)}</div>
         <div class="hero-result-value">${safeText(item.value)}</div>
@@ -377,7 +380,7 @@
     const keynoteDate = isValidDate(keynote.date) ? keynote.date : "";
     const keynoteTime = String(keynote.time || "").trim().replace(/-/g, "–");
     const keynoteSchedule = [keynoteDate, keynoteTime].filter(Boolean).join(" · ");
-    const boothParts = [event.boothArea, event.boothNumber ? `Booth No. ${event.boothNumber}` : ""].filter(Boolean);
+    const boothParts = [event.boothArea, event.boothNumber ? `Booth No. ${event.boothNumber}` : "", event.boothLayout].filter(Boolean);
     const products = Array.isArray(event.showcasedProducts) ? event.showcasedProducts.filter(Boolean).join(" · ") : String(event.showcasedProducts || "").trim();
     const showcaseLabel = String(event.showcaseLabel || "Showcased Products").trim();
     const demoVideos = Array.isArray(event.systemDemoVideos) ? event.systemDemoVideos.filter(Boolean) : [];
@@ -1073,7 +1076,16 @@
         ${Array.isArray(participant.subTopics) && participant.subTopics.filter(Boolean).length ? `<div class="session-subtopics"><span>Topics</span><ul>${participant.subTopics.filter(Boolean).map((topic) => `<li>${safeText(topic)}</li>`).join("")}</ul></div>` : ""}
       </div>`;
     };
-    $("sessions-grid").innerHTML = (data.sessions || []).map((session) => `
+    $("sessions-grid").innerHTML = (data.sessions || []).map((session) => {
+      const topicEN = String(session.topicEN || "").trim();
+      const topicCN = String(session.topicCN || "").trim();
+      const hasTopicEN = topicEN && topicEN !== "TBD";
+      const hasTopicCN = topicCN && topicCN !== "TBD";
+      const standaloneSessionMarkup = `${session.speaker ? `<div class="session-speaker">${safeText(session.speaker)}</div>` : ""}
+        ${session.role ? `<div class="session-role">${safeText(session.role)}</div>` : ""}
+        ${(hasTopicEN || hasTopicCN) ? `<div class="session-topic">${hasTopicEN ? `<b>${safeText(topicEN)}</b>` : ""}${hasTopicEN && hasTopicCN ? "<br>" : ""}${hasTopicCN ? safeText(topicCN) : ""}</div>` : ""}
+        ${Array.isArray(session.subTopics) && session.subTopics.filter(Boolean).length ? `<div class="session-subtopics"><span>Topics</span><ul>${session.subTopics.filter(Boolean).map((topic) => `<li>${safeText(topic)}</li>`).join("")}</ul></div>` : ""}`;
+      return `
       <article class="session-card">
         <div class="session-top">
           <div>
@@ -1084,15 +1096,13 @@
         </div>
         ${Array.isArray(session.participants) && session.participants.length
           ? `<div class="session-participants">${session.participants.map(participantMarkup).join("")}</div>`
-          : `<div class="session-speaker">${safeText(session.speaker)}</div>
-             <div class="session-role">${safeText(session.role)}</div>
-             <div class="session-topic"><b>${safeText(session.topicEN)}</b><br>${safeText(session.topicCN)}</div>
-             ${Array.isArray(session.subTopics) && session.subTopics.filter(Boolean).length ? `<div class="session-subtopics"><span>Topics</span><ul>${session.subTopics.filter(Boolean).map((topic) => `<li>${safeText(topic)}</li>`).join("")}</ul></div>` : ""}`}
+          : standaloneSessionMarkup}
         ${awardsMarkup(session.awards)}
         ${session.format ? `<div class="session-format">Format / 形式: ${safeText(session.format)}</div>` : ""}
         ${session.comments || session.remarks ? `<div class="session-note">${safeText(session.comments || session.remarks, "")}</div>` : ""}
       </article>
-    `).join("");
+      `;
+    }).join("");
   }
 
   function renderResourceLinks(resourceLinks) {

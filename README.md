@@ -20,6 +20,8 @@ Project Calendar opens in `2 Weeks` view for every screen size. It shows the cur
 
 Documents & Deliverables sits directly below Attention Needed in the side column. Events with `resourceLinks` display those external cards alongside—not instead of—private PDF Documents. Safe document metadata may be visible publicly, but Preview and Download actions require an authenticated Viewer, Editor or Admin with event access and obtain a short-lived private Storage URL. Browser PDF upload is deliberately not available. No Storage object path is exposed to public viewers.
 
+For a closed event, set `event.overallStatus` and `event.reportStatus` to `Completed`, keep final results in the existing event and Workstream fields, and update every existing Stage only when completion is confirmed. Do not publish an internal post-event report PDF merely because its Workstream is completed.
+
 ## Access and collaboration
 
 - Public Viewer: can anonymously view the full public Dashboard and public Overlay; cannot download controlled files or edit.

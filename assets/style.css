@@ -134,6 +134,10 @@ h1 {
   margin-top: 18px;
 }
 
+.hero-results.hero-results-count-4 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .hero-results[hidden] { display: none; }
 
 .hero-result-item {

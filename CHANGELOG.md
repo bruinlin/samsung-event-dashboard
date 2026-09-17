@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.9.4-web - 2026-09-09
+
+- Closed ODX 2026 as a Completed event with final event, Booth, keynote, on-site forum, PR and Social results from the Final Post-event Report.
+- Completed all 13 Workstreams and all registered Keynote, Social and Post-event Report stages without inferring missing completion dates.
+- Replaced pre-event agenda timings, demo scope and planning language with final actual outcomes; added the confirmed PR, KOL and Social publication links.
+- Kept zNAND-O Keynote-only and did not expose the internal Final Post-event Report PDF.
+- Removed the unavailable Tech Article Views Hero KPI while preserving the completed Technical Publications workstream and its content.
+
 ## 1.9.3-web - 2026-08-30
 
 - Updated confirmed ODX 2026 execution progress: all workstreams except Contract, Social Communication, PR & Media, and Post-event Report are now Completed at 100%.
