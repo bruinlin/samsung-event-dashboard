@@ -11,7 +11,7 @@ window.EVENT_DATASETS = window.EVENT_DATASETS || {};
 window.EVENT_DATASETS.ICCAD_2026 = {
   meta: {
     schemaVersion: "1.9",
-    lastUpdated: "2026-07-29",
+    lastUpdated: "2026-10-27",
     updatedBy: "Codex"
   },
 
@@ -27,9 +27,9 @@ window.EVENT_DATASETS.ICCAD_2026 = {
     sponsorshipLevel: "Diamond Sponsor / 钻石赞助",
     participationForms: ["Booth"],
     showParticipationInHero: true,
-    boothArea: "56㎡",
+    boothArea: "54㎡",
     boothNumber: "C009-010 / C019-020 / C029-030",
-    showcasedProducts: "TBD",
+    showcasedProducts: "2.3D、3D Cube、2nm/3nm Wafer",
     overallStatus: "In Progress",
     reportStatus: "Planning",
     resultMetrics: [],
@@ -103,7 +103,7 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       owner: "TBD",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "TBD",
+      latestUpdate: "展示产品：2.3D、3D Cube、2nm/3nm Wafer。HPC 内容保留，Auto 内容缩减；本次 ICCAD 取消展品运输。",
       nextAction: "TBD",
       remarks: ""
     },
@@ -125,7 +125,7 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       owner: "TBD",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "TBD",
+      latestUpdate: "展台面积54㎡；大屏已收到2条视频，可播放。",
       nextAction: "TBD",
       remarks: ""
     },
@@ -141,8 +141,8 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       owner: "TBD",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "TBD",
-      nextAction: "TBD",
+      latestUpdate: "计划租赁约60㎡会议室，U型摆放，容纳约18人，尚待落实租赁。客户及三星参会名单确认中。",
+      nextAction: "近期确认客户及三星参会名单，并落实会议室租赁。",
       remarks: ""
     },
     {

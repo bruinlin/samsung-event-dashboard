@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.9.5-web - 2026-10-27
+
+- Updated ICCAD 2026 to the confirmed 54㎡ booth and 2.3D, 3D Cube, and 2nm/3nm Wafer showcase.
+- Retained HPC content, reduced Auto content, and recorded cancellation of exhibit transport for ICCAD only.
+- Recorded two received, playable large-screen videos and the planned approximately 60㎡, U-shaped meeting room for approximately 18 people, with rental still pending.
+- Recorded customer and Samsung attendee lists as under confirmation; preserved existing statuses, progress, owners, deadlines, and other event data.
+- Refreshed the ICCAD data and event registry cache versions.
+
 ## 1.9.4-web - 2026-09-09
 
 - Closed ODX 2026 as a Completed event with final event, Booth, keynote, on-site forum, PR and Social results from the Final Post-event Report.
