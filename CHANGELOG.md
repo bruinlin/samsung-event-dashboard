@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.6-web - 2026-10-27
+
+- Replaced the ICCAD 2026 showcase shorthand in Event Overview and Demo List with the latest five confirmed names: 2.3D Cube-E, 3D IC Cube-T/H, 2nm GAA Wafer, All-in-one Heterogeneous, and The Evolution of Transistors.
+- Removed 3nm Wafer from the current ICCAD showcase without changing other confirmed event or planning details.
+- Refreshed the ICCAD data and event registry cache versions.
+
 ## 1.9.5-web - 2026-10-27
 
 - Updated ICCAD 2026 to the confirmed 54㎡ booth and 2.3D, 3D Cube, and 2nm/3nm Wafer showcase.

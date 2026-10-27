@@ -29,7 +29,7 @@ window.EVENT_DATASETS.ICCAD_2026 = {
     showParticipationInHero: true,
     boothArea: "54㎡",
     boothNumber: "C009-010 / C019-020 / C029-030",
-    showcasedProducts: "2.3D、3D Cube、2nm/3nm Wafer",
+    showcasedProducts: "2.3D Cube-E、3D IC Cube-T/H、2nm GAA Wafer、All-in-one Heterogeneous、The Evolution of Transistors",
     overallStatus: "In Progress",
     reportStatus: "Planning",
     resultMetrics: [],
@@ -103,7 +103,7 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       owner: "TBD",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "展示产品：2.3D、3D Cube、2nm/3nm Wafer。HPC 内容保留，Auto 内容缩减；本次 ICCAD 取消展品运输。",
+      latestUpdate: "展示产品：2.3D Cube-E、3D IC Cube-T/H、2nm GAA Wafer、All-in-one Heterogeneous、The Evolution of Transistors。HPC 内容保留，Auto 内容缩减；本次 ICCAD 取消展品运输。",
       nextAction: "TBD",
       remarks: ""
     },
