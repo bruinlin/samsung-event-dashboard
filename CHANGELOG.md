@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.9.7-web - 2026-10-27
+
+- Updated all 12 ICCAD workstreams with reviewed planning assessments and visible explanations distinguishing planning estimates from verified completion and unverified baseline progress.
+- Scheduled internal task and stage targets separately from the confirmed October 31 attendee-form deadline, retaining the November 19–20 event dates and marking internal targets as proposals awaiting confirmation.
+- Completed only the confirmed exhibit list and the documented design brief/initial design; kept unknown actual completion dates blank and retained every existing owner.
+- Added three onsite execution stages and the standard Social Content Draft/Publish stages, with conditional publication scope and parallel onsite preparation actions.
+- Added ICCAD planning validation for date ordering, completion scope, deadline labels and preservation of unrelated data; refreshed ICCAD and registry cache versions.
+
 ## 1.9.6-web - 2026-10-27
 
 - Replaced the ICCAD 2026 showcase shorthand in Event Overview and Demo List with the latest five confirmed names: 2.3D Cube-E, 3D IC Cube-T/H, 2nm GAA Wafer, All-in-one Heterogeneous, and The Evolution of Transistors.
