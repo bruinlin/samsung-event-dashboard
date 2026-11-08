@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.8-web - 2026-11-08
+
+- Preserve Workstream and Stage overlay versions even when every override flag is unset, preventing false save conflicts for seeded rows.
+- Keep seeded timestamps and Member attribution out of live-update and edit-dialog metadata unless a field override exists.
+- Add `node scripts/check_overlay_versions.mjs` to cover current-version saves, stale-version rejection, baseline display and actual-update attribution.
+
 ## 1.9.7-web - 2026-10-27
 
 - Updated all 12 ICCAD workstreams with reviewed planning assessments and visible explanations distinguishing planning estimates from verified completion and unverified baseline progress.
