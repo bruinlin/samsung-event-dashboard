@@ -47,7 +47,7 @@ window.EVENT_DATASETS.ICCAD_2026 = {
     speaker: "Simon Hu",
     title: "Samsung",
     date: "2026-11-19",
-    time: "Afternoon (Beijing time) / 下午（北京时间）",
+    time: "14:40–15:00 (Beijing time / 北京时间)",
     topicEN: "Samsung Foundry: Innovative All-in-One",
     topicCN: "面向未来，一体化的异构集成创新方案",
     status: "Completed"
@@ -91,9 +91,9 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       owner: "TBD",
       dueDate: "2026-11-18",
       actualCompletionDate: "",
-      latestUpdate: "11 月 19 日下午（北京时间），Simon Hu 完成一场定向邀请的展台技术演讲。",
+      latestUpdate: "11 月 19 日 14:40–15:00（北京时间），Simon Hu 完成一场定向邀请的展台技术演讲。",
       nextAction: "",
-      remarks: "演讲题目：Samsung Foundry: Innovative All-in-One（面向未来，一体化的异构集成创新方案）。此为三星展台演讲，不是大会主论坛。未确认确切开场和结束时间。"
+      remarks: "演讲题目：Samsung Foundry: Innovative All-in-One（面向未来，一体化的异构集成创新方案）。此为三星展台演讲，不是大会主论坛。"
     },
     {
       workstreamId: "ICCAD26-WS-03",
@@ -310,7 +310,7 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       topicEN: "Samsung Foundry: Innovative All-in-One",
       topicCN: "面向未来，一体化的异构集成创新方案",
       date: "2026-11-19",
-      time: "Afternoon (Beijing time) / 下午（北京时间）",
+      time: "14:40–15:00 (Beijing time / 北京时间)",
       status: "Completed",
       format: "Invitation-only / 定向邀请"
     }
