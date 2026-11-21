@@ -275,15 +275,21 @@
   function applyPublicUpdates(baseData, overlay) {
     const data = cloneData(baseData);
     const workstreams = new Map((data.workstreams || []).map((item) => [item.workstreamId, item]));
+    // The explicit ICCAD closeout supersedes earlier workflow fields only.
+    // Retain owners, dates and versions; a later editor update remains effective.
+    const closeoutAt = Date.parse(data.meta?.workstreamCloseoutAt || "");
+    const afterCloseout = (item, row) => !Number.isFinite(closeoutAt) ||
+      item.requiresOverlayRegistration || Date.parse(row.updated_at || "") > closeoutAt;
     (overlay?.workstreams || []).forEach((row) => {
       const item = workstreams.get(row.workstream_id);
       if (!item) return;
-      if (row.status_set) item.status = row.status;
-      if (row.progress_set) item.progress = Math.max(0, Math.min(100, Math.trunc(Number(row.progress)) || 0));
+      const applyWorkflow = !item.notRequired && afterCloseout(item, row);
+      if (applyWorkflow && row.status_set) item.status = row.status;
+      if (applyWorkflow && row.progress_set) item.progress = Math.max(0, Math.min(100, Math.trunc(Number(row.progress)) || 0));
       if (row.due_date_set) item.dueDate = row.due_date || "";
       if (row.owner_set) item.owner = row.owner || "";
-      if (row.latest_update_set) item.latestUpdate = row.latest_update || "";
-      if (row.next_action_set) item.nextAction = row.next_action || "";
+      if (applyWorkflow && row.latest_update_set) item.latestUpdate = row.latest_update || "";
+      if (applyWorkflow && row.next_action_set) item.nextAction = row.next_action || "";
       // Seeded rows still carry the concurrency version, but are not user updates.
       item._collaboration = { version: Number(row.version || 1) };
       if (row.status_set || row.progress_set || row.due_date_set || row.owner_set || row.latest_update_set || row.next_action_set) {
@@ -300,7 +306,7 @@
       const item = workstreams.get(row.workstream_id);
       const stage = item?.stages?.find((entry) => entry.id === row.stage_id);
       if (!stage) return;
-      if (row.status_set) stage.status = row.status;
+      if (afterCloseout(item, row) && row.status_set) stage.status = row.status;
       if (row.due_date_set) stage.dueDate = row.due_date || "";
       if (row.owner_set) stage.owner = row.owner || "";
       if (row.completed_date_set) stage.completedDate = row.completed_date || "";

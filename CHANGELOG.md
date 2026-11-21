@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-21 | ICCAD workstream closeout
+
+- Closed the existing applicable ICCAD workstreams; marked PR & Media as No Need and excluded it from progress. Added one pending, separate post-event Survey workstream. No other event records or database permissions changed.
+
 ## 1.9.8-web - 2026-11-08
 
 - Preserve Workstream and Stage overlay versions even when every override flag is unset, preventing false save conflicts for seeded rows.

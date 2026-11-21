@@ -12,7 +12,9 @@ const parse = (source, key) => {
   vm.runInNewContext(source, context);
   return JSON.parse(JSON.stringify(context.window[key]));
 };
-const data = parse(read("data/ICCAD_2026.js"), "EVENT_DATASETS").ICCAD_2026;
+// Test the planning snapshot on its frozen release, not on the post-event data.
+const planningSnapshot = execFileSync("git", ["show", "32cc418089126a42a90e96ad081ad9af23fba2c3:data/ICCAD_2026.js"], { cwd: root, encoding: "utf8" });
+const data = parse(planningSnapshot, "EVENT_DATASETS").ICCAD_2026;
 const context = { window: {} };
 vm.runInNewContext(read("assets/workflow-state.js"), context);
 const workflow = context.window.DashboardWorkflow;

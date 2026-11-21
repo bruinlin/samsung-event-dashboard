@@ -9,7 +9,8 @@
     "Under Review": ["Under Review", "purple"],
     "Completed": ["Completed", "green"],
     "Blocked": ["Blocked", "red"],
-    "Overdue": ["Overdue", "red"]
+    "Overdue": ["Overdue", "red"],
+    "No Need": ["No Need", "grey"]
   };
 
   const STATUS_COUNT_LABELS = {
@@ -264,7 +265,7 @@
   function defaultCalendarMonth(data) {
     const deadlines = [];
     (data.workstreams || []).forEach((item) => {
-      if (isCompletedStatus(workstreamStatus(item))) return;
+      if (item.notRequired || isCompletedStatus(workstreamStatus(item))) return;
       if (isValidDate(item.dueDate)) deadlines.push(item.dueDate);
       stagesFor(item).forEach((stage) => {
         if (stage.status !== "Completed" && isValidDate(stage.dueDate)) deadlines.push(stage.dueDate);
@@ -292,11 +293,11 @@
   }
 
   function workstreamStatus(item) {
-    return window.DashboardWorkflow.workstreamStatus(item);
+    return item.notRequired ? "No Need" : window.DashboardWorkflow.workstreamStatus(item);
   }
 
   function workstreamDisplayStatus(item) {
-    return window.DashboardWorkflow.displayWorkstreamStatus(item, todayIso());
+    return item.notRequired ? "No Need" : window.DashboardWorkflow.displayWorkstreamStatus(item, todayIso());
   }
 
   function stageDisplayStatus(stage) {
@@ -305,6 +306,7 @@
 
   function workstreamProgress(item) {
     const status = workstreamStatus(item);
+    if (item.notRequired) return null;
     if (status === "Planning") return 0;
     if (status === "Completed") return 100;
     const value = Number(item.progress);
@@ -443,8 +445,9 @@
 
   function renderStatusCounts(data) {
     const counts = (data.workstreams || []).reduce((result, item) => {
+      if (item.notRequired) return result;
       const derivedStatus = workstreamStatus(item);
-    const status = VALID_STATUSES.includes(derivedStatus) ? derivedStatus : "Planning";
+      const status = VALID_STATUSES.includes(derivedStatus) ? derivedStatus : "Planning";
       result[status] = (result[status] || 0) + 1;
       return result;
     }, {});
@@ -511,13 +514,14 @@
     const completed = assessed.filter((item) => workstreamStatus(item) === "Completed").length;
     const progressValues = assessed.map(workstreamProgress).filter((value) => Number.isFinite(value));
     const progress = progressValues.length ? Math.round(progressValues.reduce((sum, value) => sum + value, 0) / progressValues.length) : 0;
-    const statuses = items.map(workstreamStatus);
+    const applicable = items.filter((item) => !item.notRequired);
+    const statuses = applicable.map(workstreamStatus);
     let status = "In Progress";
     if (statuses.length && statuses.every((value) => value === "Completed")) status = "Completed";
     else if (statuses.includes("Blocked")) status = "Blocked";
     else if (statuses.includes("Under Review")) status = "Under Review";
     else if (statuses.length && statuses.every((value) => value === "Planning")) status = "Planning";
-    return { completed, total: items.length, progress, status };
+    return { completed, total: applicable.length, progress, status };
   }
 
   function existingOwnerOptions() {
@@ -527,6 +531,10 @@
       stagesFor(item).forEach((stage) => { if (stage.owner) owners.add(stage.owner); });
     });
     return [...owners].sort((a, b) => a.localeCompare(b, "zh-CN"));
+  }
+
+  function canEditWorkstream(item) {
+    return !item.notRequired && (!item.requiresOverlayRegistration || Boolean(item._collaboration)) && canEditCurrentEvent();
   }
 
   function canEditCurrentEvent() {
@@ -581,9 +589,9 @@
     const detailButton = hasExpandableContent
       ? `<button class="detail-button" type="button" data-detail-id="${id}" aria-expanded="false" aria-label="展开 ${safeText(item.nameCN)} ${stages.length ? "阶段" : "详情"}">＋</button>`
       : "";
-    const editButton = canEditCurrentEvent()
+    const editButton = canEditWorkstream(item)
       ? `<button class="edit-button" type="button" data-edit-workstream="${id}">Edit</button>`
-      : "";
+      : item.requiresOverlayRegistration && !item._collaboration ? '<span class="muted">Read-only / 仅查看</span>' : "";
     const detailRow = hasExpandableContent
       ? `<tr class="detail-row" data-detail-row="${id}" hidden>
           <td colspan="7">
@@ -605,7 +613,7 @@
         <td data-label="Progress">${progressCell(item)}</td>
         <td data-label="Owner / Final DDL">
           ${item.owner ? `<div class="date-stack"><span>${safeText(item.owner)}</span></div>` : ""}
-          <div class="date-stack" style="margin-top:7px"><b>Final DDL / 最终截止</b><span>${formatDeadline(item.dueDate)}</span></div>
+          ${item.notRequired ? "" : `<div class="date-stack" style="margin-top:7px"><b>Final DDL / 最终截止</b><span>${formatDeadline(item.dueDate)}</span></div>`}
         </td>
         <td data-label="Latest Update">${safeText(item.latestUpdate)}</td>
         <td data-label="Next Action">${safeText(item.nextAction)}</td>
@@ -655,6 +663,7 @@
     const missing = [];
     let completedWithoutDate = 0;
     (data.workstreams || []).forEach((item) => {
+      if (item.notRequired) return;
       const status = workstreamStatus(item);
       if (item.dueDate && !isValidDate(item.dueDate)) issues.push(`${item.workstreamId}: Task Final DDL is invalid`);
       if (!item.dueDate && !isCompletedStatus(status)) missing.push({ type: "task", categoryId: categoryFor(item).id, owner: item.owner || "", workstreamId: item.workstreamId });
@@ -697,6 +706,7 @@
       }
     }
     (data.workstreams || []).forEach((item) => {
+      if (item.notRequired) return;
       const category = categoryFor(item);
       const status = workstreamStatus(item);
       if (isValidDate(item.dueDate)) {
@@ -1006,6 +1016,7 @@
   function buildAttentionItems(data) {
     const attention = [];
     (data.workstreams || []).forEach((item) => {
+      if (item.notRequired) return;
       const candidates = [];
       stagesFor(item).forEach((stage) => {
         if (isCompletedStatus(stage.status)) return;
@@ -1174,7 +1185,7 @@
   function resolveEditContext(identity) {
     if (!identity || identity.eventId !== state.eventId || !state.data) return null;
     const item = state.data.workstreams.find((entry) => entry.workstreamId === identity.workstreamId);
-    if (!item) return null;
+    if (!item || !canEditWorkstream(item)) return null;
     if (identity.entityType === "stage") {
       const stage = stagesFor(item).find((entry) => entry.id === identity.stageId);
       if (!stage) return null;

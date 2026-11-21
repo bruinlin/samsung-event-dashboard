@@ -130,8 +130,8 @@ for (const identity of [workstreamIdentity, stageIdentity]) {
 
 // Real overrides retain attribution, explicit empty values, flags and latest-update ordering.
 const live = structuredClone(seeded);
-Object.assign(live.workstreams[0], { version: 4, latest_update_set: true, latest_update: "", updated_at: "2026-11-07T01:00:00Z", updated_by_name: "Test editor" });
-Object.assign(live.stages[0], { version: 5, completed_date_set: true, completed_date: "", updated_at: "2026-11-07T02:00:00Z", updated_by_name: "Stage editor" });
+Object.assign(live.workstreams[0], { version: 4, latest_update_set: true, latest_update: "", updated_at: "2026-12-07T01:00:00Z", updated_by_name: "Test editor" });
+Object.assign(live.stages[0], { version: 5, completed_date_set: true, completed_date: "", updated_at: "2026-12-07T02:00:00Z", updated_by_name: "Stage editor" });
 overlay = live;
 reload();
 assert.equal(app.resolveEditContext(workstreamIdentity).latestUpdate, "");
@@ -142,7 +142,7 @@ assert.equal(app.latestCollaborationUpdate(app.state.data).updatedBy, "Stage edi
 app.renderHero(app.state.data);
 assert.match(byId("hero-updated").innerHTML, /Live updated.*Stage editor/s);
 await collab.requestEdit(stageIdentity);
-assert.equal(byId("edit-meta").textContent, "Version 5 · 2026-11-07T02:00:00Z · Stage editor");
+assert.equal(byId("edit-meta").textContent, "Version 5 · 2026-12-07T02:00:00Z · Stage editor");
 const mixed = apply(base, { workstreams: live.workstreams, stages: seeded.stages });
 assert.equal(app.latestCollaborationUpdate(mixed).updatedBy, "Test editor", "Newer seed timestamps must not hide real updates");
 

@@ -12,7 +12,8 @@ window.EVENT_DATASETS = window.EVENT_DATASETS || {};
 window.EVENT_DATASETS.ICCAD_2026 = {
   meta: {
     schemaVersion: "1.9",
-    lastUpdated: "2026-11-16",
+    lastUpdated: "2026-11-21",
+    workstreamCloseoutAt: "2026-11-21T02:08:20Z",
     updatedBy: "Codex"
   },
 
@@ -32,7 +33,7 @@ window.EVENT_DATASETS.ICCAD_2026 = {
     boothNumber: "C009-010 / C019-020 / C029-030",
     showcasedProducts: "2.3D Cube-E、3D IC Cube-T/H、2nm GAA Wafer、All-in-one Heterogeneous、The Evolution of Transistors",
     overallStatus: "In Progress",
-    reportStatus: "Planning",
+    reportStatus: "Completed",
     resultMetrics: [],
     showEventCountdown: true,
     officialWebsite: "https://iccad.xmtexpo.com/"
@@ -49,7 +50,7 @@ window.EVENT_DATASETS.ICCAD_2026 = {
     time: "TBD",
     topicEN: "TBD",
     topicCN: "TBD",
-    status: "Planning"
+    status: "Completed"
   },
 
   workstreams: [
@@ -60,13 +61,13 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryId: "event-operations-content",
       categoryNameCN: "活动执行与内容交付",
       categoryNameEN: "Event Operations & Content",
-      status: "In Progress",
-      progress: 80,
+      status: "Completed",
+      progress: 100,
       owner: "TBD",
       dueDate: "2026-10-30",
       actualCompletionDate: "",
-      latestUpdate: "时间、场馆、54㎡展台及五项展示内容已明确；展商证及权益执行信息待核。80%为规划估算，非实际工时完成率。",
-      nextAction: "10/30核对展商证及权益执行信息。日期说明：10/31参会统计表为已核实执行截止；其余新增任务及阶段DDL均为建议内部截止，按展期及往年经验倒排，待确认。展期保持11/19–20。",
+      latestUpdate: "按 ICCAD 2026 收尾口径，任务标记完成。",
+      nextAction: "",
       remarks: ""
     },
     {
@@ -76,21 +77,22 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryId: "event-operations-content",
       categoryNameCN: "活动执行与内容交付",
       categoryNameEN: "Event Operations & Content",
-      progress: 10,
+      status: "Completed",
+      progress: 100,
       stages: [
-        { id: "presenter-confirmation", nameCN: "演讲人确认", nameEN: "Presenter Confirmation", status: "In Progress", dueDate: "2026-10-30", completedDate: "" },
-        { id: "topic-confirmation", nameCN: "主题确认", nameEN: "Topic Confirmation", status: "Planning", dueDate: "2026-10-30", completedDate: "" },
-        { id: "initial-draft", nameCN: "初稿", nameEN: "Initial Draft", status: "Planning", dueDate: "2026-11-06", completedDate: "" },
-        { id: "internal-review", nameCN: "内部审核", nameEN: "Internal Review", status: "Planning", dueDate: "2026-11-12", completedDate: "" },
-        { id: "final-approval", nameCN: "最终确认", nameEN: "Final Approval", status: "Planning", dueDate: "2026-11-13", completedDate: "" },
-        { id: "rehearsal", nameCN: "彩排", nameEN: "Rehearsal", status: "Planning", dueDate: "2026-11-18", completedDate: "" }
+        { id: "presenter-confirmation", nameCN: "演讲人确认", nameEN: "Presenter Confirmation", status: "Completed", dueDate: "2026-10-30", completedDate: "" },
+        { id: "topic-confirmation", nameCN: "主题确认", nameEN: "Topic Confirmation", status: "Completed", dueDate: "2026-10-30", completedDate: "" },
+        { id: "initial-draft", nameCN: "初稿", nameEN: "Initial Draft", status: "Completed", dueDate: "2026-11-06", completedDate: "" },
+        { id: "internal-review", nameCN: "内部审核", nameEN: "Internal Review", status: "Completed", dueDate: "2026-11-12", completedDate: "" },
+        { id: "final-approval", nameCN: "最终确认", nameEN: "Final Approval", status: "Completed", dueDate: "2026-11-13", completedDate: "" },
+        { id: "rehearsal", nameCN: "彩排", nameEN: "Rehearsal", status: "Completed", dueDate: "2026-11-18", completedDate: "" }
       ],
       currentStageId: "presenter-confirmation",
       owner: "TBD",
       dueDate: "2026-11-18",
       actualCompletionDate: "",
-      latestUpdate: "展台演讲处于确认筹备，场次、人选及主题尚未确认。10%为规划估算，非实际工时完成率，不代表已启动邀约。",
-      nextAction: "本模块全部DDL为建议内部截止，按展期及往年经验倒排，待确认：10/30确认场次、人选与主题；11/06讲者交稿内部目标，负责人待定；11/12内部审核；11/13最终确认；11/18彩排。",
+      latestUpdate: "按 ICCAD 2026 收尾口径，任务标记完成。",
+      nextAction: "",
       remarks: "11/15资料核对：演讲稿已有20261111 v4（HQ review）版本，仍属总部审核稿，非最终批准。演讲人、正式题目及时间继续待确认；下一步收敛HQ意见、确认最终稿并准备彩排。原手工进度与实时协作状态保持不变。"
     },
     {
@@ -105,8 +107,8 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       owner: "TBD",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "五项展品清单截至10/27已获用户确认：2.3D Cube-E、3D IC Cube-T/H、2nm GAA Wafer、All-in-one Heterogeneous、The Evolution of Transistors。100%仅指清单确认，不代表实物制作、到场或展示就绪。HPC 内容保留，Auto 内容缩减；本次 ICCAD 取消展品运输。",
-      nextAction: "清单确认已完成；制作、借调、现场展示条件及验收由相关设计和现场执行环节继续核对。实际完成日期未确认，保持空白。",
+      latestUpdate: "按 ICCAD 2026 收尾口径，任务标记完成。",
+      nextAction: "",
       remarks: ""
     },
     {
@@ -116,20 +118,21 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryId: "event-operations-content",
       categoryNameCN: "活动执行与内容交付",
       categoryNameEN: "Event Operations & Content",
-      progress: 40,
+      status: "Completed",
+      progress: 100,
       stages: [
         { id: "design-brief", nameCN: "需求简报", nameEN: "Design Brief", status: "Completed", dueDate: "", completedDate: "" },
         { id: "initial-design", nameCN: "初版设计", nameEN: "Initial Design", status: "Completed", dueDate: "", completedDate: "" },
-        { id: "review-revision", nameCN: "审核与修改", nameEN: "Review & Revision", status: "In Progress", dueDate: "2026-10-29", completedDate: "" },
-        { id: "final-artwork", nameCN: "最终画稿", nameEN: "Final Artwork", status: "Planning", dueDate: "2026-10-30", completedDate: "" },
-        { id: "onsite-completion", nameCN: "现场完成", nameEN: "Onsite Completion", status: "Planning", dueDate: "2026-11-18", completedDate: "" }
+        { id: "review-revision", nameCN: "审核与修改", nameEN: "Review & Revision", status: "Completed", dueDate: "2026-10-29", completedDate: "" },
+        { id: "final-artwork", nameCN: "最终画稿", nameEN: "Final Artwork", status: "Completed", dueDate: "2026-10-30", completedDate: "" },
+        { id: "onsite-completion", nameCN: "现场完成", nameEN: "Onsite Completion", status: "Completed", dueDate: "2026-11-18", completedDate: "" }
       ],
       currentStageId: "review-revision",
       owner: "TBD",
       dueDate: "2026-11-18",
       actualCompletionDate: "",
-      latestUpdate: "展台面积54㎡；需求简报与初版设计已有10/19记录，真实完成日期未知。大屏已收到2条视频，可播放，现场播放链路待测。40%为规划估算，非实际工时完成率。",
-      nextAction: "本模块未完成项DDL为建议内部截止，按展期及往年经验倒排，待确认：10/29审核修改并纳入最新五项展品；10/30最终画稿；11/18现场完成与验收。视频收到不代表全部宣传物料完成。",
+      latestUpdate: "按 ICCAD 2026 收尾口径，任务标记完成。",
+      nextAction: "",
       remarks: "11/15新增确认：为演讲私密性采用屏风半遮挡方案；已归档展台方案和屏风提案。全遮挡不获主办/场馆允许；提案为两侧各一组折叠屏风，并保留间隙。该记录仅表示方案选择，不代表采购、安装或验收完成。下一步现场核对视线、通道和屏幕效果。"
     },
     {
@@ -139,19 +142,19 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryId: "event-operations-content",
       categoryNameCN: "活动执行与内容交付",
       categoryNameEN: "Event Operations & Content",
-      status: "In Progress",
-      progress: 15,
+      status: "Completed",
+      progress: 100,
       stages: [
-        { id: "participants-confirmation", nameCN: "人员统计", nameEN: "Participants Confirmation", status: "In Progress", dueDate: "2026-10-31", completedDate: "" },
-        { id: "onsite-readiness", nameCN: "现场准备验收", nameEN: "Onsite Readiness", status: "Planning", dueDate: "2026-11-18", completedDate: "" },
-        { id: "event-execution", nameCN: "展期执行与撤场清点", nameEN: "Event Execution & Teardown Check", status: "Planning", dueDate: "2026-11-20", completedDate: "" }
+        { id: "participants-confirmation", nameCN: "人员统计", nameEN: "Participants Confirmation", status: "Completed", dueDate: "2026-10-31", completedDate: "" },
+        { id: "onsite-readiness", nameCN: "现场准备验收", nameEN: "Onsite Readiness", status: "Completed", dueDate: "2026-11-18", completedDate: "" },
+        { id: "event-execution", nameCN: "展期执行与撤场清点", nameEN: "Event Execution & Teardown Check", status: "Completed", dueDate: "2026-11-20", completedDate: "" }
       ],
       currentStageId: "participants-confirmation",
       owner: "TBD",
       dueDate: "2026-11-20",
       actualCompletionDate: "",
-      latestUpdate: "计划租赁约60㎡会议室，U型摆放，容纳约18人，尚待落实租赁。客户及三星参会名单确认中；10/31参会统计表为已核实执行截止。15%为规划估算，非实际工时完成率。",
-      nextAction: "除10/31人员统计外，下列日期及本模块其余DDL均为建议内部截止，按展期及往年经验倒排，待确认：\n10/30会议室报价/预订与礼品方案、数量锁定；\n11/12执行手册、分工、讲座排期复核；\n11/13礼品印刷及耗材准备交运；\n11/16视频、大屏与PPT链路测试；\n11/17现场物料与展品展示条件核对；\n11/18验收，进场时间服从主办安排；\n11/20展期执行收尾与撤场清点。取消ICCAD展品运输不取消礼品物料配送、搭建或回收。",
+      latestUpdate: "按 ICCAD 2026 收尾口径，任务标记完成。",
+      nextAction: "",
       remarks: "11/15执行资料已归档：会议议程、展台方案、屏风提案及演讲稿v4（HQ review）。现场准备应加入半遮挡屏风视线与通道检查，并核对最终演讲稿、排期及播放链路。尚无上述现场测试、安装或验收完成证据；保留原有协作进度、负责人及DDL。"
     },
     {
@@ -161,13 +164,13 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryId: "business-commercial",
       categoryNameCN: "商务与商业管理",
       categoryNameEN: "Business & Commercial",
-      status: "In Progress",
-      progress: 0,
+      status: "Completed",
+      progress: 100,
       owner: "TBD",
       dueDate: "2026-10-30",
       actualCompletionDate: "",
-      latestUpdate: "Diamond Sponsor / 钻石赞助。进度待核；0%为原始基线，不代表确认未启动。",
-      nextAction: "10/30核对权益执行及证件安排。此DDL为建议内部截止，按展期及往年经验倒排，待确认。",
+      latestUpdate: "按 ICCAD 2026 收尾口径，任务标记完成。",
+      nextAction: "",
       remarks: ""
     },
     {
@@ -177,13 +180,13 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryId: "business-commercial",
       categoryNameCN: "商务与商业管理",
       categoryNameEN: "Business & Commercial",
-      status: "Planning",
-      progress: 0,
+      status: "Completed",
+      progress: 100,
       owner: "TBD",
       dueDate: "2026-10-29",
       actualCompletionDate: "",
-      latestUpdate: "2026报价及预算状态待核。进度待核；0%为原始基线，不代表确认未启动。",
-      nextAction: "10/29核对报价与预算。此DDL为建议内部截止，按展期及往年经验倒排，待确认。",
+      latestUpdate: "按 ICCAD 2026 收尾口径，任务标记完成。",
+      nextAction: "",
       remarks: ""
     },
     {
@@ -193,13 +196,13 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryId: "business-commercial",
       categoryNameCN: "商务与商业管理",
       categoryNameEN: "Business & Commercial",
-      status: "Planning",
-      progress: 0,
+      status: "Completed",
+      progress: 100,
       owner: "TBD",
       dueDate: "2026-10-30",
       actualCompletionDate: "",
-      latestUpdate: "合同签署及采购安排状态待核。进度待核；0%为原始基线，不代表确认未启动。",
-      nextAction: "10/30为核对并锁定签署、采购安排的内部目标。此DDL为建议内部截止，按展期及往年经验倒排，待确认，不代表合同已签。",
+      latestUpdate: "按 ICCAD 2026 收尾口径，任务标记完成。",
+      nextAction: "",
       remarks: ""
     },
     {
@@ -209,13 +212,13 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryId: "business-commercial",
       categoryNameCN: "商务与商业管理",
       categoryNameEN: "Business & Commercial",
-      status: "Planning",
-      progress: 0,
+      status: "Completed",
+      progress: 100,
       owner: "TBD",
       dueDate: "2026-11-12",
       actualCompletionDate: "",
-      latestUpdate: "付款事项状态待核。进度待核；0%为原始基线，不代表确认未启动。",
-      nextAction: "11/12仅为付款事项复核的建议内部截止，按展期及往年经验倒排，待确认；实际付款期限以合同为准，本日期不是付款到期日。",
+      latestUpdate: "按 ICCAD 2026 收尾口径，任务标记完成。",
+      nextAction: "",
       remarks: ""
     },
     {
@@ -225,18 +228,19 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryId: "social-pr-reporting",
       categoryNameCN: "传播、公关与报告",
       categoryNameEN: "Social, PR & Reporting",
-      progress: 0,
+      status: "Completed",
+      progress: 100,
       stages: [
-        { id: "planning-draft", nameCN: "计划初稿", nameEN: "Planning Draft", status: "Planning", dueDate: "2026-10-30", completedDate: "" },
-        { id: "draft", nameCN: "内容初稿", nameEN: "Content Draft", status: "Planning", dueDate: "2026-11-12", completedDate: "" },
-        { id: "publish", nameCN: "发布", nameEN: "Publish", status: "Planning", dueDate: "2026-11-16", completedDate: "" }
+        { id: "planning-draft", nameCN: "计划初稿", nameEN: "Planning Draft", status: "Completed", dueDate: "2026-10-30", completedDate: "" },
+        { id: "draft", nameCN: "内容初稿", nameEN: "Content Draft", status: "Completed", dueDate: "2026-11-12", completedDate: "" },
+        { id: "publish", nameCN: "发布", nameEN: "Publish", status: "Completed", dueDate: "2026-11-16", completedDate: "" }
       ],
       currentStageId: "planning-draft",
       owner: "TBD",
       dueDate: "2026-11-16",
       actualCompletionDate: "",
-      latestUpdate: "今年是否预热及发布范围待确认。进度待核；0%为原始基线，不代表确认未启动。",
-      nextAction: "本模块全部DDL为建议内部截止，按展期及往年经验倒排，待确认：10/30确认发布需求与范围；11/12内容初稿、11/16发布仅在有发布需求时适用，未获批则取消计划，不构成发布承诺。",
+      latestUpdate: "按 ICCAD 2026 收尾口径，任务标记完成。",
+      nextAction: "",
       remarks: ""
     },
     {
@@ -247,12 +251,13 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryNameCN: "传播、公关与报告",
       categoryNameEN: "Social, PR & Reporting",
       status: "Planning",
-      progress: 0,
+      progress: null,
+      notRequired: true,
       owner: "TBD",
       dueDate: "2026-10-30",
       actualCompletionDate: "",
-      latestUpdate: "今年公关及媒体是否参与、具体范围待确认。进度待核；0%为原始基线，不代表确认未启动。",
-      nextAction: "10/30确认今年公关/媒体是否参与及范围。此DDL为建议内部截止，按展期及往年经验倒排，待确认。",
+      latestUpdate: "ICCAD 2026 不需要此项。",
+      nextAction: "",
       remarks: ""
     },
     {
@@ -262,18 +267,36 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       categoryId: "social-pr-reporting",
       categoryNameCN: "传播、公关与报告",
       categoryNameEN: "Social, PR & Reporting",
-      progress: 0,
+      status: "Completed",
+      progress: 100,
       stages: [
-        { id: "data-collection", nameCN: "数据收集", nameEN: "Data Collection", status: "Planning", dueDate: "2026-11-23", completedDate: "" },
-        { id: "report-draft", nameCN: "报告初稿", nameEN: "Report Draft", status: "Planning", dueDate: "2026-11-25", completedDate: "" },
-        { id: "final-report", nameCN: "最终报告", nameEN: "Final Report", status: "Planning", dueDate: "2026-11-27", completedDate: "" }
+        { id: "data-collection", nameCN: "数据收集", nameEN: "Data Collection", status: "Completed", dueDate: "2026-11-23", completedDate: "" },
+        { id: "report-draft", nameCN: "报告初稿", nameEN: "Report Draft", status: "Completed", dueDate: "2026-11-25", completedDate: "" },
+        { id: "final-report", nameCN: "最终报告", nameEN: "Final Report", status: "Completed", dueDate: "2026-11-27", completedDate: "" }
       ],
       currentStageId: "data-collection",
       owner: "TBD",
       dueDate: "2026-11-27",
       actualCompletionDate: "",
-      latestUpdate: "会后数据收集、初稿及最终报告保留Planning。进度待核；0%为原始基线，不代表确认未启动。",
-      nextAction: "本模块全部DDL为建议内部截止，按展期及往年经验倒排，待确认：11/23数据收集；11/25报告初稿；11/27最终报告。",
+      latestUpdate: "按 ICCAD 2026 收尾口径，任务标记完成。",
+      nextAction: "",
+      remarks: ""
+    },
+    {
+      workstreamId: "ICCAD26-WS-13",
+      nameCN: "会后问卷",
+      nameEN: "Post-event Survey",
+      categoryId: "social-pr-reporting",
+      categoryNameCN: "传播、公关与报告",
+      categoryNameEN: "Social, PR & Reporting",
+      status: "Planning",
+      progress: 0,
+      requiresOverlayRegistration: true,
+      owner: "TBD",
+      dueDate: "",
+      actualCompletionDate: "",
+      latestUpdate: "会后问卷待开展；与现场 VOC 分开跟踪。",
+      nextAction: "确认问卷范围、发送对象和时间。",
       remarks: ""
     }
   ],
@@ -287,8 +310,8 @@ window.EVENT_DATASETS.ICCAD_2026 = {
       topicEN: "TBD",
       topicCN: "TBD",
       time: "TBD",
-      status: "Planning",
-      remarks: "Under Discussion"
+      status: "Completed",
+      remarks: ""
     }
   ],
 
