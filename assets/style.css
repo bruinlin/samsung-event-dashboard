@@ -928,3 +928,42 @@ footer { display: flex; justify-content: space-between; gap: 16px; padding: 4px 
   .side-column .panel, .side-column .panel:last-child { grid-column: auto; margin: 0; }
   a { text-decoration: none; }
 }
+
+/* Annual portfolio, separate from individual event dashboards. */
+.dashboard-nav { display: flex; align-items: center; margin-bottom: 13px; }
+.dashboard-nav a { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 7px 12px; color: #073e86; border: 1px solid #cbdaf0; border-radius: 10px; background: #fff; font-size: 13px; font-weight: 700; text-decoration: none; }
+.dashboard-nav a:hover, .dashboard-nav a[aria-current="page"] { color: #fff; background: #0b4a99; border-color: #0b4a99; }
+.dashboard-nav a:focus-visible, .annual-card-linked a:focus-visible { outline: 3px solid #1468c5; outline-offset: 3px; }
+.annual-overview[hidden], #event-detail[hidden] { display: none; }
+.annual-hero { min-height: 0; }
+.annual-hero p { margin-bottom: 0; max-width: 54ch; }
+.annual-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 20px 0 18px; }
+.annual-card { display: flex; flex-direction: column; min-width: 0; border: 1px solid #dce5f0; border-radius: 16px; background: #fff; box-shadow: 0 5px 15px rgba(7, 49, 107, .05); }
+.annual-card-linked a { flex: 1; display: flex; flex-direction: column; border-radius: inherit; color: inherit; text-decoration: none; }
+.annual-card-linked:hover, .annual-card-linked:focus-within { border-color: #75a4dc; box-shadow: 0 8px 20px rgba(7, 49, 107, .1); }
+.annual-card-main { flex: 1; padding: 18px 17px; }
+.annual-card-code { display: inline-block; padding: 4px 9px; border-radius: 6px; background: #edf4fd; color: #164a90; font-size: 11px; font-weight: 750; letter-spacing: .08em; }
+.annual-card h2 { color: var(--ink-900); margin: 8px 0 0; font-size: 18px; line-height: 1.4; overflow-wrap: anywhere; }
+.annual-card-note { margin: 13px 0 0; color: var(--ink-600, #48596f); font-size: 12px; line-height: 1.45; overflow-wrap: anywhere; }
+.annual-card h3 { margin: 0 0 6px; color: var(--ink-500); font-size: 11px; font-weight: 700; }
+.annual-card-details, .annual-card-metrics { margin: 13px 0 0; display: grid; gap: 7px; }
+.annual-card-details > div { display: grid; grid-template-columns: 107px minmax(0, 1fr); gap: 7px; align-items: baseline; }
+.annual-card dt { color: var(--ink-500); font-size: 11px; font-weight: 650; }
+.annual-card dd { margin: 0; color: var(--ink-800); font-size: 13px; line-height: 1.45; overflow-wrap: anywhere; }
+.annual-card-talks { margin-top: 13px; }
+.annual-card-talks ul { margin: 0; padding: 0; list-style: none; }
+.annual-card-talks li { display: grid; gap: 2px; margin-bottom: 7px; color: var(--ink-800); font-size: 12px; overflow-wrap: anywhere; }
+.annual-card-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.annual-card-metrics > div { padding: 8px; min-width: 0; border-radius: 8px; background: #f2f6fb; }
+.annual-card-metrics dd { margin-top: 3px; color: #0b3e83; font-size: 16px; font-weight: 750; }
+.annual-card-metrics small { display: block; margin-top: 2px; color: var(--ink-700); font-size: 10px; font-weight: 500; }
+.annual-card-footer { display: flex; justify-content: space-between; align-items: center; min-height: 42px; padding: 8px 17px; border-top: 1px solid #e7edf4; color: var(--ink-500); font-size: 12px; font-weight: 650; }
+.annual-card-linked .annual-card-footer { color: #124b92; }
+@media (max-width: 1020px) { .annual-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .annual-grid { grid-template-columns: 1fr; gap: 12px; margin-top: 16px; } }
+@media print { .annual-card { break-inside: avoid; box-shadow: none; } }
+
+.annual-sources { margin: 0 0 18px; padding: 12px 15px; border: 1px solid #dce5f0; border-radius: 12px; color: var(--ink-700); background: #fff; font-size: 12px; line-height: 1.5; }
+.annual-sources summary { cursor: pointer; color: #124b92; font-weight: 650; }
+.annual-sources ul { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 10px 0 0; padding: 0 0 0 17px; }
+.annual-sources a { color: #124b92; }

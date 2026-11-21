@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-21 | Annual event overview
+
+- Added a 2026 Event Overview with seven source-checked event cards, linking to the three existing event dashboards. Kept direct event routes and the default landing event unchanged.
+
 ## 2026-11-21 | ICCAD workstream closeout
 
 - Closed the existing applicable ICCAD workstreams; marked PR & Media as No Need and excluded it from progress. Added one pending, separate post-event Survey workstream. No other event records or database permissions changed.

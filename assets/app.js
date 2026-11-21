@@ -53,6 +53,7 @@
   const state = {
     data: null,
     eventId: "",
+    navigationVersion: 0,
     quickFilter: "all",
     status: "all",
     owner: "all",
@@ -210,14 +211,36 @@
     const item = registry.find((event) => event.eventId === state.eventId);
     const source = item ? window.EVENT_DATASETS?.[item.dataKey] : null;
     if (!source) return;
-    state.data = await mergeCollaborativeData(cloneEventData(source));
+    const navigationVersion = state.navigationVersion;
+    const data = await mergeCollaborativeData(cloneEventData(source));
+    if (navigationVersion !== state.navigationVersion) return;
+    state.data = data;
     renderDashboard();
   }
 
-  async function loadEvent(eventId, { historyMode = "push" } = {}) {
+  function annualRouteId() {
+    return window.DashboardAnnualOverview?.routeId;
+  }
+
+  function showAnnualOverview(registry, { focusHeading = false } = {}) {
+    state.navigationVersion++;
+    state.data = null;
+    state.eventId = "";
+    window.DashboardCollab?.subscribe?.("");
+    $("event-detail").hidden = true;
+    $("annual-overview").hidden = false;
+    $("annual-overview-link").setAttribute("aria-current", "page");
+    $("annual-grid").innerHTML = window.DashboardAnnualOverview.markup(window.ANNUAL_OVERVIEW_2026 || [], registry);
+    $("footer-event-id").textContent = "2026 Event Overview";
+    document.title = "2026 Event Overview · Samsung Event Dashboard";
+    if (focusHeading) $("annual-title").focus();
+  }
+
+  async function loadEvent(eventId, { historyMode = "push", focusHeading = false } = {}) {
     const registry = window.EVENT_INDEX?.events || [];
     const item = registry.find((event) => event.eventId === eventId);
     if (!item) throw new Error(`活动未登记：${eventId}`);
+    const navigationVersion = ++state.navigationVersion;
 
     window.EVENT_DATASETS = window.EVENT_DATASETS || {};
     if (!window.EVENT_DATASETS[item.dataKey]) await loadScript(item.dataFile);
@@ -225,6 +248,7 @@
     const source = window.EVENT_DATASETS[item.dataKey];
     if (!source) throw new Error(`数据文件未注册 window.EVENT_DATASETS.${item.dataKey}`);
     const data = await mergeCollaborativeData(cloneEventData(source));
+    if (navigationVersion !== state.navigationVersion) return;
 
     state.data = data;
     state.eventId = eventId;
@@ -254,6 +278,7 @@
       else if (historyMode === "push") window.history.pushState(null, "", nextUrl);
     }
     renderDashboard();
+    if (focusHeading) $("event-title").focus();
     window.DashboardCollab?.subscribe?.(eventId);
     window.DashboardCollab?.refreshAccess?.({ notifyOnFailure: false }).then(() => renderDashboard()).catch(() => {});
   }
@@ -1222,6 +1247,10 @@
 
   function renderDashboard() {
     const data = state.data;
+    if (!data) return;
+    $("annual-overview").hidden = true;
+    $("annual-overview-link").removeAttribute("aria-current");
+    $("event-detail").hidden = false;
     $("project-calendar").hidden = false;
     $("workstream-title").textContent = "Workstream Progress";
     $("workstream-column-label").textContent = "工作模块";
@@ -1445,7 +1474,26 @@
       },
     });
     bindEvents();
+    window.addEventListener("hashchange", async () => {
+      const nextId = window.location.hash.replace(/^#/, "");
+      if (nextId && nextId === annualRouteId()) {
+        showAnnualOverview(registry.events, { focusHeading: true });
+        return;
+      }
+      if (!registry.events.some((item) => item.eventId === nextId)) {
+        if (nextId) return;
+        try { await loadEvent(defaultEventId(registry.events), { historyMode: "replace", focusHeading: true }); }
+        catch (error) { showToast(error.message); }
+        return;
+      }
+      try { await loadEvent(nextId, { historyMode: "none", focusHeading: true }); }
+      catch (error) { showToast(error.message); }
+    });
     const hashId = window.location.hash.replace(/^#/, "");
+    if (hashId && hashId === annualRouteId()) {
+      showAnnualOverview(registry.events);
+      return;
+    }
     const hasValidHash = registry.events.some((item) => item.eventId === hashId);
     const initial = hasValidHash ? hashId : defaultEventId(registry.events);
     try { await loadEvent(initial, { historyMode: hasValidHash ? "none" : "replace" }); }
@@ -1453,12 +1501,6 @@
       console.error(error);
       showToast(error.message);
     }
-    window.addEventListener("hashchange", async () => {
-      const nextId = window.location.hash.replace(/^#/, "");
-      if (nextId === state.eventId || !registry.events.some((item) => item.eventId === nextId)) return;
-      try { await loadEvent(nextId, { historyMode: "none" }); }
-      catch (error) { showToast(error.message); }
-    });
   }
 
   init();

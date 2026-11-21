@@ -736,7 +736,7 @@
     stopRealtime();
     state.activeEventId = eventId;
     renderAccess();
-    if (!configured || config.enableRealtime === false || !state.session?.access_token || !canDownload(eventId)) return;
+    if (!eventId || !configured || config.enableRealtime === false || !state.session?.access_token || !canDownload(eventId)) return;
     try { await ensureFreshSession(); }
     catch { return; }
     if (state.activeEventId !== eventId) return;
