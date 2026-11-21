@@ -9,7 +9,11 @@ window.ANNUAL_OVERVIEW_2026 = [
     venue: "深圳前海华侨城 JW 万豪酒店",
     theme: "穿越周期，释放价值",
     talks: [{ speaker: "Silwan Chang（张实完）", title: "AI系统架构演进：驱动未来AI的存储技术 / Architecting AI Systems: Storage for the Next Generation of AI" }],
-    note: "未见公开到场人数"
+    metrics: [
+      { label: "全展专业访客", value: "6,200+" },
+      { label: "全场企业演讲听众", value: "约 1,800", note: "非三星单场人数" },
+      { label: "三星展台问卷参与者", value: "495", note: "不是展台到访人数" }
+    ]
   },
   {
     code: "AUTO",
