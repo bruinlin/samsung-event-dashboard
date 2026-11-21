@@ -34,6 +34,11 @@ assert.match(dataFor("OCTS").find((m) => m.label === "三星分论坛").note, /�
 assert.match(dataFor("ODX").find((m) => m.value === "1,752").note, /3 天.*估计/);
 assert.equal(dataFor("ODX").find((m) => m.value === "约 60").note, "现场峰值");
 assert.equal(dataFor("GMIF").find((m) => m.label === "同期展商").value, "约 40 家");
+const gmif = cards.find((card) => card.code === "GMIF");
+assert.match(gmif.talks[0].title, /^The Memory Revolution: Building the Foundation of Agentic AI/);
+assert.notEqual(gmif.talks[0].title, cards.find((card) => card.code === "ODX").talks[0].title);
+assert.match(gmif.note, /沿用 ODX 演讲材料.*KV Cache.*PM1763\/BM1773.*端侧 zNAND-O/);
+assert.match(gmif.note, /杰出AI存储产业引领奖/);
 assert.match(html, /三星半导体展示主题：Architecting AI Systems/);
 assert.match(html, /PM1763 获 PCIe 6.0 年度创新先锋奖/);
 assert.match(dataFor("CIIE").find((m) => m.value === "5,412 人次").note, /11 月 5 日，含 DS 区/);

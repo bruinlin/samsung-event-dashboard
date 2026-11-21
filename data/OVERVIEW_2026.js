@@ -69,7 +69,8 @@ window.ANNUAL_OVERVIEW_2026 = [
     metrics: [
       { label: "专业观众注册", value: "3,000+", note: "注册人数，非实到人数" },
       { label: "同期展商", value: "约 40 家" }
-    ]
+    ],
+    note: "沿用 ODX 演讲材料，聚焦智能体 AI 的 KV Cache 存储、PM1763/BM1773 与端侧 zNAND-O。三星获「杰出AI存储产业引领奖」。"
   },
   {
     code: "CIIE",
