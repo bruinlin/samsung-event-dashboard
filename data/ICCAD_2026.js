@@ -305,13 +305,14 @@ window.EVENT_DATASETS.ICCAD_2026 = {
     {
       sessionId: "ICCAD-SESSION-01",
       type: "Booth Presentation",
-      speaker: "TBD",
-      role: "TBD",
-      topicEN: "TBD",
-      topicCN: "TBD",
-      time: "TBD",
+      speaker: "Simon Hu",
+      role: "Samsung",
+      topicEN: "Samsung Foundry: Innovative All-in-One",
+      topicCN: "面向未来，一体化的异构集成创新方案",
+      date: "2026-11-19",
+      time: "Afternoon (Beijing time) / 下午（北京时间）",
       status: "Completed",
-      remarks: ""
+      format: "Invitation-only / 定向邀请"
     }
   ],
 
