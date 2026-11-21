@@ -35,12 +35,20 @@ const pr = data.workstreams[10], survey = data.workstreams[12];
 assert.equal(pr.nameEN, "PR & Media");
 assert.equal(view.workstreamDisplayStatus(pr), "No Need");
 assert.equal(pr.progress, null);
-assert.equal(survey.nameEN, "Post-event Survey");
-assert.equal(view.workstreamStatus(survey), "Planning");
-assert.equal(survey.progress, 0);
+assert.equal(data.event.overallStatus, "Completed");
+load("event_data.js");
+assert.equal(context.window.EVENT_INDEX.events.find((x) => x.eventId === "ICCAD_2026").overallStatus, data.event.overallStatus);
+assert.equal(survey.workstreamId, "ICCAD26-WS-13");
+assert.equal(data.workstreams.filter((x) => /Survey/i.test(x.nameEN)).length, 1);
+assert.equal(survey.nameEN, "On-site Booth Survey");
+assert.equal(survey.categoryId, "event-operations-content");
+assert.equal(view.workstreamStatus(survey), "Completed");
+assert.equal(survey.progress, 100);
 assert.equal(survey.dueDate, "");
+assert.equal(survey.nextAction, "");
+assert.match(survey.latestUpdate, /展会期间.*444 份有效问卷/);
 assert.match(view.workstreamRows(survey), /Read-only/);
-for (const x of data.workstreams.filter((x) => x !== pr && x !== survey)) {
+for (const x of data.workstreams.filter((x) => x !== pr)) {
   assert.equal(view.workstreamStatus(x), "Completed");
   assert.equal(x.progress, 100);
   assert.equal(x.actualCompletionDate, "");
@@ -48,9 +56,9 @@ for (const x of data.workstreams.filter((x) => x !== pr && x !== survey)) {
 }
 assert.equal(data.workstreams.flatMap((x) => x.stages || []).filter((s) => s.status === "Completed").length, 20);
 assert.equal(view.categorySummary(data.workstreams).total, 12);
-assert.equal(view.categorySummary(data.workstreams).completed, 11);
-assert.equal(view.buildCalendarItems(data).some((x) => x.workstreamId === pr.workstreamId), false);
-assert.equal(view.buildAttentionItems(data).map((x) => x.workstreamId).join(","), survey.workstreamId);
+assert.equal(view.categorySummary(data.workstreams).completed, 12);
+assert.equal(view.buildCalendarItems(data).some((x) => x.workstreamId === pr.workstreamId || x.workstreamId === survey.workstreamId), false);
+assert.equal(view.buildAttentionItems(data).length, 0);
 
 const overlay = { workstreams: [
   { workstream_id: data.workstreams[0].workstreamId, status_set: true, status: "In Progress", progress_set: true, progress: 5, owner_set: true, owner: "Existing owner", next_action_set: true, next_action: "Old", updated_at: "2026-11-01T00:00:00Z", version: 8 },
@@ -72,4 +80,4 @@ assert.equal(merge({ event: { eventId: "ODX_2026" }, workstreams: [data.workstre
 const git = (...args) => execFileSync("git", args, { cwd: new URL("../", import.meta.url), encoding: "utf8" });
 const base = "32cc418089126a42a90e96ad081ad9af23fba2c3";
 for (const p of ["data/OCTS_2026.js", "data/ODX_2026.js", "supabase/seed_dashboard.sql", "config.js"]) assert.equal(read(p), git("show", base+":"+p), p);
-console.log("ICCAD closeout: 11 completed workstreams / 20 stages, PR excluded, one pending Survey, stale overlay and unaffected events verified.");
+console.log("ICCAD closeout: 12 completed workstreams / 20 stages, PR excluded, one completed on-site Survey, stale overlay and unaffected events verified.");

@@ -31,8 +31,8 @@ window.EVENT_INDEX = {
       eventId: "ICCAD_2026",
       label: "ICCAD 2026",
       dateStart: "2026-11-19",
-      overallStatus: "In Progress",
-    dataFile: "data/ICCAD_2026.js?v=1.9.13",
+      overallStatus: "Completed",
+    dataFile: "data/ICCAD_2026.js?v=1.9.14",
       dataKey: "ICCAD_2026"
     }
   ]

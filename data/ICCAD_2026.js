@@ -32,7 +32,7 @@ window.EVENT_DATASETS.ICCAD_2026 = {
     boothArea: "54㎡",
     boothNumber: "C009-010 / C019-020 / C029-030",
     showcasedProducts: "2.3D Cube-E、3D IC Cube-T/H、2nm GAA Wafer、All-in-one Heterogeneous、The Evolution of Transistors",
-    overallStatus: "In Progress",
+    overallStatus: "Completed",
     reportStatus: "Completed",
     resultMetrics: [
       {
@@ -305,19 +305,19 @@ window.EVENT_DATASETS.ICCAD_2026 = {
     },
     {
       workstreamId: "ICCAD26-WS-13",
-      nameCN: "会后问卷",
-      nameEN: "Post-event Survey",
-      categoryId: "social-pr-reporting",
-      categoryNameCN: "传播、公关与报告",
-      categoryNameEN: "Social, PR & Reporting",
-      status: "Planning",
-      progress: 0,
+      nameCN: "现场展台问卷",
+      nameEN: "On-site Booth Survey",
+      categoryId: "event-operations-content",
+      categoryNameCN: "活动执行与内容交付",
+      categoryNameEN: "Event Operations & Content",
+      status: "Completed",
+      progress: 100,
       requiresOverlayRegistration: true,
       owner: "TBD",
       dueDate: "",
       actualCompletionDate: "",
-      latestUpdate: "会后问卷待开展；与现场 VOC 分开跟踪。",
-      nextAction: "确认问卷范围、发送对象和时间。",
+      latestUpdate: "展会期间完成现场展台问卷，共收回 444 份有效问卷。",
+      nextAction: "",
       remarks: ""
     }
   ],
