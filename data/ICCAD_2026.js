@@ -34,7 +34,28 @@ window.EVENT_DATASETS.ICCAD_2026 = {
     showcasedProducts: "2.3D Cube-E、3D IC Cube-T/H、2nm GAA Wafer、All-in-one Heterogeneous、The Evolution of Transistors",
     overallStatus: "In Progress",
     reportStatus: "Completed",
-    resultMetrics: [],
+    resultMetrics: [
+      {
+        label: "Booth Visitors / 展位访问",
+        value: "2,400+",
+        note: "+20% YoY · Samsung booth · 2 event days"
+      },
+      {
+        label: "Total Meetings / 会议总数",
+        value: "73+",
+        note: "Samsung · 2 event days"
+      },
+      {
+        label: "Booth Session Attendees / 展台演讲到场",
+        value: "70",
+        note: "1 invitation-only session / 1 场定向邀请演讲"
+      },
+      {
+        label: "Booth VOC Responses / 展台问卷",
+        value: "444",
+        note: "Valid on-site responses / 现场有效反馈"
+      }
+    ],
     showEventCountdown: true,
     officialWebsite: "https://iccad.xmtexpo.com/"
   },
