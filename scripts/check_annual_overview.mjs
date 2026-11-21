@@ -26,7 +26,16 @@ assert.equal(dataFor("CFMS").find((m) => m.label === "全展专业访客").value
 assert.match(dataFor("CFMS").find((m) => m.value === "约 1,800").note, /非三星单场/);
 assert.match(dataFor("CFMS").find((m) => m.value === "495").note, /不是展台到访/);
 assert.equal(dataFor("AUTO").find((m) => m.label === "三星正式客户会议").value, "30 场");
-assert.match(dataFor("AUTO").find((m) => m.value === "126 次").note, /含上述 30 场/);
+assert.match(dataFor("AUTO").find((m) => m.value === "126 次").note, /含 30 场/);
+assert.equal(dataFor("AUTO").find((m) => m.label === "三星展位到访").value, "340 人次");
+assert.match(dataFor("AUTO").find((m) => m.value === "426 人次").note, /4 个主题各讲两场.*累计到场人次/);
+assert.match(html, /开放计算技术大会/);
+assert.match(dataFor("OCTS").find((m) => m.label === "三星分论坛").note, /不合计/);
+assert.match(dataFor("ODX").find((m) => m.value === "1,752").note, /3 天.*估计/);
+assert.equal(dataFor("ODX").find((m) => m.value === "约 60").note, "现场峰值");
+assert.equal(dataFor("GMIF").find((m) => m.label === "同期展商").value, "约 40 家");
+assert.match(html, /三星半导体展示主题：Architecting AI Systems/);
+assert.match(html, /PM1763 获 PCIe 6.0 年度创新先锋奖/);
 assert.match(dataFor("CIIE").find((m) => m.value === "5,412 人次").note, /11 月 5 日，含 DS 区/);
 assert.match(dataFor("CIIE").find((m) => m.value === "1,021 人次").note, /已计入三星综合展台/);
 const blocked = overview.markup([{ code: "CFMS", title: "<img>", eventRouteId: "CFMS_2026" }, { code: "Odd", eventRouteId: '"><img>' }], registry);
