@@ -12,6 +12,20 @@ window.ANNUAL_OVERVIEW_2026 = [
     note: "未见公开到场人数"
   },
   {
+    code: "AUTO",
+    title: "Auto China 2026 · 北京车展",
+    date: "2026.04.24–05.03",
+    venue: "中国国际展览中心（顺义馆）及首都国际会展中心 · 北京",
+    theme: "领时代·智未来",
+    metrics: [
+      { label: "全展参观人次", value: "128 万" },
+      { label: "全展展览面积", value: "38 万平方米" },
+      { label: "三星正式客户会议", value: "30 场", note: "三星参展 4 月 24–27 日" },
+      { label: "三星客户及合作伙伴到访", value: "126 次", note: "含上述 30 场正式客户会议" }
+    ],
+    note: "三星半导体参与联合展示。"
+  },
+  {
     code: "OCTS",
     title: "OCP China Technical Summit",
     date: "2026.07.09",
@@ -45,6 +59,20 @@ window.ANNUAL_OVERVIEW_2026 = [
     metrics: [{ label: "专业观众注册", value: "3,000+", note: "注册人数，非实到人数" }]
   },
   {
+    code: "CIIE",
+    title: "第九届中国国际进口博览会",
+    date: "2026.11.05–10",
+    venue: "上海国家会展中心",
+    theme: "新时代，共享未来",
+    metrics: [
+      { label: "全展累计进场人次", value: "93.1 万" },
+      { label: "全展注册人数", value: "47 万+" },
+      { label: "三星综合展台首日到访", value: "5,412 人次", note: "11 月 5 日，含 DS 区" },
+      { label: "三星半导体（DS）区首日到访", value: "1,021 人次", note: "已计入三星综合展台首日到访" }
+    ],
+    note: "三星半导体展示存储、图像传感器与 AI 系统；未核实专场演讲。"
+  },
+  {
     code: "ICCAD",
     title: "ICCAD-Expo 2026",
     date: "2026.11.19–20",
@@ -58,29 +86,5 @@ window.ANNUAL_OVERVIEW_2026 = [
       { label: "展台有效问卷", value: "444" }
     ],
     eventRouteId: "ICCAD_2026"
-  },
-  {
-    code: "AUTO",
-    title: "Auto China 2026 · 北京车展",
-    date: "2026.04.24–05.03",
-    venue: "中国国际展览中心（顺义馆）及首都国际会展中心 · 北京",
-    theme: "领时代·智未来",
-    metrics: [
-      { label: "全展参观人次", value: "128 万" },
-      { label: "全展展览面积", value: "38 万平方米" }
-    ],
-    note: "三星半导体参与联合展示。"
-  },
-  {
-    code: "CIIE",
-    title: "第九届中国国际进口博览会",
-    date: "2026.11.05–10",
-    venue: "上海国家会展中心",
-    theme: "新时代，共享未来",
-    metrics: [
-      { label: "全展累计进场人次", value: "93.1 万" },
-      { label: "全展注册人数", value: "47 万+" }
-    ],
-    note: "三星半导体展示存储、图像传感器与 AI 系统；未核实专场演讲。"
   }
 ];
